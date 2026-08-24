@@ -37,19 +37,26 @@
   function brand() {
     return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00";
   }
+  /* the chat glitch sparks in both brand colours, never one */
+  function other() {
+    var css = getComputedStyle(document.documentElement);
+    var lime = css.getPropertyValue("--qevr-body").trim() || "#CCFF00";
+    var pink = css.getPropertyValue("--qevr-pink").trim() || "#FF007F";
+    return brand() === pink ? lime : pink;
+  }
 
   /* fill the screen in stepped batches, then hand over */
   function cover(done) {
     if (reduce) { done(); return; }
     var c = makeCanvas(), g = grid(c), on = new Uint8Array(g.cols * g.rows);
     var per = Math.ceil(g.order.length / FRAMES), i = 0, frame = 0;
-    var inkC = ink(), brandC = brand();
+    var inkC = ink(), brandC = brand(), otherC = other();
 
     function draw() {
       g.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       for (var n = 0; n < on.length; n++) {
         if (!on[n]) continue;
-        g.ctx.fillStyle = on[n] === 2 ? brandC : inkC;
+        g.ctx.fillStyle = on[n] === 3 ? otherC : (on[n] === 2 ? brandC : inkC);
         g.ctx.fillRect((n % g.cols) * CELL, Math.floor(n / g.cols) * CELL, CELL, CELL);
       }
     }
@@ -57,7 +64,8 @@
       var slice = g.order.slice(i, i + per); i += per; frame++;
       for (var n = 0; n < slice.length; n++) {
         /* a few brand pixels spark before they settle to ink */
-        on[slice[n]] = Math.random() < 0.012 ? 2 : 1;
+        var r = Math.random();
+        on[slice[n]] = r < 0.010 ? 2 : (r < 0.018 ? 3 : 1);
       }
       draw();
       if (i < g.order.length) { setTimeout(step, FRAME_MS); return; }
@@ -73,14 +81,14 @@
     if (!c) c = makeCanvas();
     var g = grid(c), on = new Uint8Array(g.cols * g.rows);
     for (var n = 0; n < on.length; n++) on[n] = 1;
-    var inkC = ink(), brandC = brand();
+    var inkC = ink(), brandC = brand(), otherC = other();
     var per = Math.ceil(g.order.length / FRAMES), i = 0;
 
     function draw() {
       g.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       for (var n = 0; n < on.length; n++) {
         if (!on[n]) continue;
-        g.ctx.fillStyle = on[n] === 2 ? brandC : inkC;
+        g.ctx.fillStyle = on[n] === 3 ? otherC : (on[n] === 2 ? brandC : inkC);
         g.ctx.fillRect((n % g.cols) * CELL, Math.floor(n / g.cols) * CELL, CELL, CELL);
       }
     }
@@ -90,7 +98,10 @@
       for (var n = 0; n < slice.length; n++) on[slice[n]] = 0;
       /* sparks on the cells that are about to go */
       var nxt = g.order.slice(i, i + per);
-      for (var m = 0; m < nxt.length; m++) if (Math.random() < 0.03) on[nxt[m]] = 2;
+      for (var m = 0; m < nxt.length; m++) {
+        var rr = Math.random();
+        if (rr < 0.026) on[nxt[m]] = 2; else if (rr < 0.046) on[nxt[m]] = 3;
+      }
       draw();
       if (i < g.order.length) { setTimeout(step, FRAME_MS); return; }
       if (c.parentNode) c.parentNode.removeChild(c);

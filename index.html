@@ -36,42 +36,50 @@
     </div>
     <div class="arrival__mascot" id="arrivalSlot">
       <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
+      <div class="arrival__hint" id="mascotHint"></div>
     </div>
   </section>
 
-  <section id="manifesto">
-    <div class="heading"><canvas data-cells="O MUNDO" data-fit="420"></canvas></div>
-    <div class="world__grid">
-      <div class="world__col copy" id="worldCopy"></div>
-      <div class="world__col">
-        <div class="people__lead" id="peopleLead"></div>
-        <div id="peopleList"></div>
-        <div class="world__close" id="worldClose"></div>
+  <section class="blocks">
+    <div class="block" id="manifesto" data-open="true">
+      <button class="heading heading--toggle" aria-expanded="true" aria-controls="mundoBody">
+        <canvas data-cells="O MUNDO" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+      </button>
+      <div class="block__body" id="mundoBody">
+        <div class="world__grid">
+          <div class="world__col copy" id="worldCopy"></div>
+          <div class="world__col">
+            <div class="people__lead" id="peopleLead"></div>
+            <div id="peopleList"></div>
+            <div class="world__close" id="worldClose"></div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <section id="stances" data-open="true">
-    <button class="heading heading--toggle" id="stancesToggle" aria-expanded="true" aria-controls="stancesGrid">
-      <canvas data-cells="O JEITO DELE" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
-    </button>
-    <div class="stances__grid" id="stancesGrid"></div>
-  </section>
+    <div class="block" id="stances" data-open="false">
+      <button class="heading heading--toggle" aria-expanded="false" aria-controls="stancesGrid">
+        <canvas data-cells="O JEITO DELE" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+      </button>
+      <div class="block__body"><div class="stances__grid" id="stancesGrid"></div></div>
+    </div>
 
-  <section class="closing" id="fim">
-    <div class="closing__col" id="regras" data-open="true">
-      <button class="heading heading--toggle" id="regrasToggle" aria-expanded="true" aria-controls="neversList">
+    <div class="block" id="regras" data-open="false">
+      <button class="heading heading--toggle" aria-expanded="false" aria-controls="neversList">
         <canvas data-cells="REGRAS" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
       </button>
-      <div class="stances__grid" id="neversList"></div>
+      <div class="block__body"><div class="stances__grid" id="neversList"></div></div>
     </div>
-    <div class="closing__col gift" id="presente" data-open="true">
-      <button class="heading heading--toggle" id="presenteToggle" aria-expanded="true" aria-controls="giftBody">
+
+    <div class="block" id="presente" data-open="false">
+      <button class="heading heading--toggle" aria-expanded="false" aria-controls="giftBody">
         <canvas data-cells="UM PRESENTE" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
       </button>
-      <div class="copy" id="giftBody"></div>
+      <div class="block__body">
+        <div class="copy gift" id="giftBody"></div>
+        <div class="stamp" id="stamp"></div>
+      </div>
     </div>
-    <div class="stamp" id="stamp"></div>
   </section>
 </main>
 
@@ -139,10 +147,10 @@
 
   function syncTitles() {
     var map = [
-      ["#manifesto .heading canvas", COPY.world.title],
-      ["#stancesToggle canvas", COPY.stances.title],
-      ["#regrasToggle canvas", COPY.nevers.title],
-      [".gift .heading canvas", COPY.gift.title]
+      ["#manifesto .heading--toggle canvas", COPY.world.title],
+      ["#stances .heading--toggle canvas", COPY.stances.title],
+      ["#regras .heading--toggle canvas", COPY.nevers.title],
+      ["#presente .heading--toggle canvas", COPY.gift.title]
     ];
     map.forEach(function (pair) {
       var c = document.querySelector(pair[0]);
@@ -167,27 +175,19 @@
   }
 
   /* on a phone the two long sections stay shut until you open them */
-  var TOGGLES = [["stancesToggle", "stances"], ["regrasToggle", "regras"], ["presenteToggle", "presente"]];
+  /* four identical blocks. O MUNDO opens by default, the rest wait to be asked,
+     and it behaves the same on a desktop as on a phone. */
   function wireToggles() {
-    TOGGLES.forEach(function (pair) {
-      var btn = document.getElementById(pair[0]);
-      var box = document.getElementById(pair[1]);
-      if (!btn || !box) return;
+    [].forEach.call(document.querySelectorAll(".block"), function (box) {
+      var btn = box.querySelector(".heading--toggle");
+      if (!btn) return;
       btn.addEventListener("click", function () {
-        /* opening a section is not a page change, so it does not glitch */
+        /* opening a block is not a page change, so it does not glitch */
         var open = box.getAttribute("data-open") === "true";
         box.setAttribute("data-open", open ? "false" : "true");
         btn.setAttribute("aria-expanded", open ? "false" : "true");
       });
     });
-    if (isSmall()) {
-      TOGGLES.forEach(function (pair) {
-        var btn = document.getElementById(pair[0]);
-        var box = document.getElementById(pair[1]);
-        if (box) box.setAttribute("data-open", "false");
-        if (btn) btn.setAttribute("aria-expanded", "false");
-      });
-    }
   }
 
   /* all three headings render at one shared cell size, so they match */
@@ -281,12 +281,15 @@
   function buildGift() {
     var host = document.getElementById("giftBody");
     COPY.gift.paragraphs.forEach(function (t) { host.appendChild(para(t)); });
+    /* the closing line is the last thing UM PRESENTE says, not a footer */
     var stamp = document.getElementById("stamp");
     var parts = COPY.stamp.split(". ");
     stamp.innerHTML = "";
     var b = document.createElement("b"); b.textContent = parts[0] + ".";
     stamp.appendChild(b);
     stamp.appendChild(document.createTextNode(" " + parts.slice(1).join(". ")));
+    var hint = document.getElementById("mascotHint");
+    if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
   }
 
   /* ---------- he starts life size, then takes his corner ---------- */

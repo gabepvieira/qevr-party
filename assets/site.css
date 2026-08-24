@@ -16,7 +16,7 @@
   --brand: var(--qevr-body);
   --accent: var(--qevr-body);
 
-  --gut: clamp(18px, 4.5vw, 68px);
+  --gut: clamp(16px, 4vw, 64px);
   --rule: 1px;
   --bar: 52px;
 }
@@ -26,12 +26,7 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 
 * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
 
-html {
-  background: var(--ground);
-  /* no scroll-snap. it hijacks the scroll the moment a section is taller than the
-     screen, and the reader should always be the one driving. */
-  scroll-behavior: smooth;
-}
+html { background: var(--ground); scroll-behavior: smooth; }
 
 body {
   background: var(--ground);
@@ -46,7 +41,7 @@ body {
 
 ::selection { background: var(--brand); color: var(--qevr-ink); }
 
-/* ---------- the bar. the studio is never more than one tap away ---------- */
+/* ---------- bar ---------- */
 
 .bar {
   position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 60;
@@ -65,142 +60,124 @@ body {
 .bar__nav a:hover, .bar__nav a:focus-visible { color: var(--qevr-ink); background: var(--brand); outline: none; }
 .bar__nav a[aria-current="page"] { color: var(--qevr-light); border-color: var(--qevr-muted); }
 
-/* ---------- thermometer, doing the scrollbar's job ---------- */
+/* ---------- thermometer ---------- */
 
 .thermo { position: fixed; left: 0; top: 0; bottom: 0; width: 10px; background: var(--qevr-hair); z-index: 70; }
 .thermo__fill { position: absolute; left: 0; right: 0; top: 0; height: 0; background: var(--brand); }
 .thermo.is-fire .thermo__fill { background: var(--qevr-fire); box-shadow: 0 0 18px 2px var(--qevr-fire); }
 
-/* ---------- sections ---------- */
-
 main { padding-left: 10px; padding-top: var(--bar); }
 
-main > section {
+/* ---------- arrival ---------- */
+
+.arrival {
   min-height: calc(100svh - var(--bar));
-  padding: clamp(30px, 5vh, 60px) var(--gut);
+  padding: clamp(24px, 4vh, 56px) var(--gut);
   border-bottom: var(--rule) solid var(--qevr-hair);
-  scroll-margin-top: var(--bar);
-  display: flex; flex-direction: column; justify-content: center;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center; gap: clamp(24px, 5vw, 88px);
 }
-
-.heading { display: block; margin-bottom: clamp(20px, 3.4vh, 40px); }
-.heading canvas { display: block; image-rendering: pixelated; }
-
-/* a heading that opens. on desktop it just looks like a heading. */
-.heading--toggle {
-  background: transparent; border: 0; padding: 0; width: 100%;
-  font: inherit; color: inherit; text-align: left; cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.heading--toggle { overflow: hidden; }
-.heading--toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 6px; }
-.heading__mark { display: none; }
-
-.copy p {
-  font-size: clamp(14px, 1.35vw, 19px);
-  line-height: 1.8;
-  letter-spacing: 0.045em;
-  max-width: 64ch;
-}
-.copy p + p { margin-top: 1.35em; }
-.copy p.dim { color: var(--qevr-muted); }
-.copy p.mark { color: var(--brand); }
-
-/* ---------- the world: prose on the left, the people on the right ---------- */
-
-.world__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 72px); align-items: start; }
-.world__col { min-width: 0; }
-
-.people__lead { font-size: clamp(13px, 1.15vw, 16px); color: var(--brand); font-weight: 700; line-height: 1.6; margin-bottom: clamp(12px, 2vh, 20px); }
-.person { display: grid; gap: 4px; padding: clamp(9px, 1.2vh, 14px) 0; border-bottom: var(--rule) solid var(--qevr-hair); }
-.person:first-of-type { border-top: var(--rule) solid var(--qevr-hair); }
-.person__term { font-size: clamp(12px, 1vw, 14.5px); color: var(--qevr-light); font-weight: 700; letter-spacing: .1em; }
-.person__def { font-size: clamp(11.5px, .95vw, 13.5px); color: var(--qevr-muted); line-height: 1.65; }
-.world__close { margin-top: clamp(16px, 2.6vh, 30px); }
-.world__close p { font-size: clamp(12.5px, 1.05vw, 15px); line-height: 1.7; color: var(--qevr-muted); }
-.world__close p + p { margin-top: .9em; }
-.world__close p:last-child { color: var(--brand); }
-
-/* ---------- arrival: the fork ---------- */
-
-.arrival { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(24px, 5vw, 88px); }
 .arrival__left { display: flex; flex-direction: column; gap: clamp(14px, 2.6vh, 30px); }
 .arrival__word canvas, .arrival__city canvas { display: block; image-rendering: pixelated; }
 .arrival__rule { width: clamp(40px, 8vw, 96px); height: 6px; background: var(--brand); box-shadow: 4px 4px 0 var(--qevr-hair); }
-.arrival__mascot { display: grid; place-items: center; }
+.arrival__mascot { display: grid; place-items: center; gap: 14px; }
+.arrival__hint { font-size: clamp(10px, 1.05vw, 12px); letter-spacing: .2em; color: var(--qevr-muted); text-align: center; }
 
 .doors { display: flex; flex-wrap: wrap; gap: 0; margin-top: clamp(10px, 2vh, 22px); }
 .door {
   display: flex; flex-direction: column; gap: 7px;
   padding: clamp(16px, 2vw, 24px) clamp(20px, 2.6vw, 34px);
-  text-decoration: none;
-  border: var(--rule) solid var(--qevr-hair);
-  margin: 0 -1px -1px 0;
-  color: var(--qevr-light);
-  min-width: min(100%, 230px);
+  text-decoration: none; border: var(--rule) solid var(--qevr-hair);
+  margin: 0 -1px -1px 0; color: var(--qevr-light); min-width: min(100%, 230px);
 }
 .door strong { font-size: clamp(14px, 1.5vw, 19px); font-weight: 700; letter-spacing: .1em; }
 .door span { font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .12em; }
 .door--lead { background: var(--brand); color: var(--qevr-ink); box-shadow: 6px 6px 0 var(--qevr-hair); }
-.door--lead span { color: var(--qevr-ink); opacity: .8; }
+.door--lead span { color: var(--qevr-ink); opacity: .85; }
 .door:hover, .door:focus-visible { background: var(--qevr-surface); color: var(--qevr-light); outline: none; }
 .door--lead:hover, .door--lead:focus-visible { background: var(--brand); color: var(--qevr-ink); box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); }
 
-/* ---------- stances: nine headlines, one screen ---------- */
+/* ---------- the four blocks: one stack, identical at every width ---------- */
+
+.blocks { padding: clamp(24px, 5vh, 64px) var(--gut) clamp(48px, 9vh, 110px); }
+.block { border: var(--rule) solid var(--qevr-hair); margin-bottom: -1px; }
+.heading--toggle {
+  background: transparent; border: 0; width: 100%;
+  padding: clamp(15px, 2vh, 22px) clamp(15px, 1.8vw, 24px);
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  overflow: hidden;
+}
+.heading--toggle:hover { background: var(--qevr-surface); }
+.heading--toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: -4px; }
+.heading--toggle canvas { display: block; image-rendering: pixelated; }
+.heading__mark { display: block; width: 14px; height: 6px; background: var(--qevr-hair); flex: none; }
+[data-open="true"] > .heading--toggle .heading__mark { width: 30px; background: var(--brand); }
+.block__body { padding: 0 clamp(15px, 1.8vw, 24px) clamp(20px, 3vh, 32px); }
+[data-open="false"] .block__body { display: none; }
+
+/* ---------- world ---------- */
+
+.copy p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.75; letter-spacing: .045em; max-width: 64ch; }
+.copy p + p { margin-top: 1.3em; }
+.copy p.dim { color: var(--qevr-muted); }
+.copy p.mark { color: var(--brand); }
+
+.world__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 64px); align-items: start; }
+.world__col { min-width: 0; }
+.people__lead { font-size: clamp(12.5px, 1.05vw, 15px); color: var(--brand); font-weight: 700; line-height: 1.6; margin-bottom: clamp(10px, 1.8vh, 18px); }
+.person { display: grid; gap: 4px; padding: clamp(8px, 1.1vh, 13px) 0; border-bottom: var(--rule) solid var(--qevr-hair); }
+.person:first-of-type { border-top: var(--rule) solid var(--qevr-hair); }
+.person__term { font-size: clamp(11.5px, .95vw, 14px); color: var(--brand); font-weight: 700; letter-spacing: .1em; }
+.person__def { font-size: clamp(11.5px, .92vw, 13px); color: var(--qevr-muted); line-height: 1.6; }
+.world__close { margin-top: clamp(14px, 2.2vh, 26px); padding-top: clamp(12px, 1.8vh, 20px); border-top: var(--rule) solid var(--qevr-hair); }
+.world__close p { font-size: clamp(12px, 1vw, 14px); line-height: 1.65; color: var(--qevr-muted); }
+.world__close p + p { margin-top: .85em; }
+.world__close p:last-child { color: var(--brand); }
+
+/* ---------- tiles: O JEITO DELE and REGRAS use the same component ---------- */
 
 .stances__grid {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
   border-top: var(--rule) solid var(--qevr-hair);
   border-left: var(--rule) solid var(--qevr-hair);
 }
+#neversList { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .stance {
   border-right: var(--rule) solid var(--qevr-hair);
   border-bottom: var(--rule) solid var(--qevr-hair);
   background: transparent; color: inherit; font: inherit;
   text-transform: inherit; letter-spacing: inherit; text-align: left;
-  padding: clamp(14px, 1.9vw, 24px);
+  padding: clamp(13px, 1.7vw, 22px);
   cursor: pointer; display: flex; flex-direction: column;
   align-items: flex-start; justify-content: flex-start;
-  min-height: clamp(104px, 12vh, 140px); width: 100%;
+  min-height: clamp(96px, 11vh, 132px); width: 100%;
 }
 .stance:hover, .stance:focus-visible { background: var(--qevr-surface); outline: none; }
 .stance[aria-expanded="true"] { background: var(--qevr-surface); }
-.stance__idx { font-size: 10.5px; color: var(--qevr-muted); display: block; margin-bottom: 9px; }
+.stance__idx { font-size: 10px; color: var(--qevr-muted); display: block; margin-bottom: 8px; }
 .stance[aria-expanded="true"] .stance__idx { color: var(--brand); }
-.stance__head { font-size: clamp(13px, 1.05vw, 16px); line-height: 1.5; font-weight: 700; }
-.stance__body { display: none; order: 2; margin-top: 13px; padding-top: 13px; border-top: var(--rule) solid var(--qevr-hair); }
+.stance__head { font-size: clamp(12.5px, 1vw, 15px); line-height: 1.5; font-weight: 700; }
+.stance__body { display: none; order: 2; margin-top: 12px; padding-top: 12px; border-top: var(--rule) solid var(--qevr-hair); }
 .stance[aria-expanded="true"] .stance__body { display: block; }
-.stance__body p { font-size: clamp(11.5px, .92vw, 13.5px); line-height: 1.72; color: var(--qevr-muted); }
-.stance__body p + p { margin-top: .85em; }
-/* signage, not a tooltip: the bar states that the tile opens */
+.stance__body p { font-size: clamp(11px, .9vw, 13px); line-height: 1.7; color: var(--qevr-muted); }
+.stance__body p + p { margin-top: .8em; }
 .stance::after { content: ""; display: block; order: 3; margin-top: auto; width: 14px; height: 6px; background: var(--qevr-hair); }
 .stance:hover::after, .stance:focus-visible::after { background: var(--qevr-muted); }
-.stance[aria-expanded="true"]::after { width: 38px; background: var(--brand); }
+.stance[aria-expanded="true"]::after { width: 36px; background: var(--brand); }
 
-/* ---------- closing: the nevers and the gift share one screen ---------- */
+/* ---------- gift ---------- */
 
-.closing { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(20px, 3vh, 40px); align-content: center; }
-#neversList { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 1100px) { #neversList { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.closing__col { min-width: 0; }
-
-.gift .copy p { font-size: clamp(14px, 1.3vw, 19px); line-height: 1.65; max-width: 46ch; }
-.gift .copy p:last-child { color: var(--accent); }
+.gift p { font-size: clamp(14px, 1.3vw, 19px); line-height: 1.7; max-width: 52ch; }
 .stamp {
-  grid-column: 1 / -1;
-  margin-top: clamp(20px, 3.4vh, 40px);
-  padding-top: clamp(16px, 2.4vh, 26px);
+  margin-top: clamp(18px, 3vh, 34px); padding-top: clamp(14px, 2.2vh, 24px);
   border-top: 3px solid var(--brand);
-  font-size: clamp(16px, 2vw, 30px);
-  line-height: 1.4;
-  font-weight: 700;
-  color: var(--qevr-light);
-  letter-spacing: .04em;
-  max-width: 30ch;
+  font-size: clamp(15px, 1.9vw, 28px); line-height: 1.4; font-weight: 700;
+  color: var(--qevr-light); letter-spacing: .04em; max-width: 30ch;
 }
 .stamp b { color: var(--brand); font-weight: 700; }
 
-/* ---------- the companion ---------- */
+/* ---------- companion ---------- */
 
 .companion { position: fixed; right: clamp(10px, 2.4vw, 36px); bottom: clamp(10px, 2.4vh, 36px); z-index: 50; width: 220px; height: 220px; display: grid; place-items: center; pointer-events: none; }
 .companion .mascot { pointer-events: auto; }
@@ -208,68 +185,28 @@ main > section {
 .mascot canvas { display: block; image-rendering: pixelated; }
 .mascot:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
 
-@media (max-width: 1100px) { .stances__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1100px) {
+  .stances__grid, #neversList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 @media (max-width: 900px) {
-  .world__grid { grid-template-columns: 1fr; gap: clamp(20px, 3vh, 32px); }
+  .world__grid { grid-template-columns: 1fr; gap: clamp(18px, 3vh, 30px); }
   .arrival { grid-template-columns: 1fr; align-content: center; }
   .arrival__mascot { justify-self: start; }
+  .arrival__hint { text-align: left; }
 }
 
 @media (max-width: 720px) {
-  /* on a phone the two long sections stay shut until tapped, and nothing
-     reserves a full screen it is not using */
-  main > section { min-height: 0; }
-  .arrival { min-height: calc(100svh - var(--bar)); }
-  .heading--toggle {
-    border: var(--rule) solid var(--qevr-hair);
-    padding: 15px 16px; margin-bottom: 0;
-  }
-  .heading--toggle .heading__mark {
-    display: block; width: 14px; height: 6px; background: var(--qevr-hair); flex: none;
-  }
-  [data-open="true"] > .heading--toggle .heading__mark { width: 28px; background: var(--brand); }
-  [data-open="false"] .stances__grid,
-  [data-open="false"] #neversList,
-  [data-open="false"] #giftBody { display: none; }
-  [data-open="true"] .stances__grid,
-  [data-open="true"] #neversList,
-  [data-open="true"] #giftBody { margin-top: 14px; }
-  /* the three headings read as one stack: shared borders, no section rule between */
-  .heading--toggle { margin-bottom: -1px; }
-  #stances { border-bottom: 0; padding-bottom: 0; }
-  #fim { padding-top: 0; }
-  .closing { gap: 0; }
-  [data-open="true"] + .closing__col .heading--toggle,
-  [data-open="true"] .stances__grid { margin-bottom: 14px; }
-
-  /* the world reads as a phone page, not a shrunken desktop one */
-  .copy p { font-size: 14px; line-height: 1.7; }
-  .world__grid { gap: 22px; }
-  .people__lead { font-size: 12.5px; margin-bottom: 12px; }
-  .person { grid-template-columns: 1fr; gap: 3px; padding: 9px 0; }
-  .person__term { color: var(--brand); font-size: 11.5px; }
-  .person__def { font-size: 12.5px; line-height: 1.55; }
-  .world__close { margin-top: 18px; padding-top: 14px; border-top: var(--rule) solid var(--qevr-hair); }
-  .world__close p { font-size: 12.5px; line-height: 1.6; }
-
-  /* phones pay for every pixel of height, so tighten the repeating rows */
-  .stances__grid { grid-template-columns: minmax(0, 1fr); }
-  .stance { min-height: 0; padding: 11px 14px; }
-  .stance__idx { margin-bottom: 5px; font-size: 9.5px; }
-  .stance__head { font-size: 12.5px; line-height: 1.45; }
-  .stance::after { margin-top: 9px; }
-  .stance[aria-expanded="true"] .stance__body { margin-top: 10px; padding-top: 10px; }
-  .heading { margin-bottom: 16px; }
-  .person { padding: 7px 0; }
-  .stamp { font-size: 15px; max-width: none; }
-  main > section { padding-top: 24px; padding-bottom: 24px; }
-  .stamp { margin-top: 20px; padding-top: 14px; }
+  .stances__grid, #neversList { grid-template-columns: minmax(0, 1fr); }
   .companion { width: 150px; height: 150px; right: 4px; bottom: 4px; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
   .door { min-width: 100%; }
-  main > section { justify-content: flex-start; }
+  .copy p { font-size: 14px; line-height: 1.7; }
+  .stance { min-height: 0; padding: 12px 14px; }
+  .stance__head { font-size: 12.5px; line-height: 1.45; }
+  .stance::after { margin-top: 9px; }
+  .stamp { font-size: 15px; max-width: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

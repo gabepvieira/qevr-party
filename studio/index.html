@@ -119,68 +119,85 @@
     else { stage._running = false; stage.pos.x = 0; stage.pos.y = 0; stage.squash = 1; stage.applyTransform(); }
   }
 
-  /* Paint him at an exact pixel size instead of a whole multiple of 34. Cell
-     boundaries are rounded so runs never gap or overlap, and the scale is
-     uniform on both axes, so there is no shear. This is what kills the padding:
-     he is exactly as wide as the box, not the nearest multiple that fits. */
-  function paintChipBox(canvas, name, boxW, boxH) {
+  /* He is drawn only in columns 6..28 and rows 5..29 of the 34x34 grid, so
+     rendering the full grid renders a black margin as wide as he is. Crop to
+     the real bounds and fill the box exactly, with rounded cell boundaries so
+     runs never gap, and the same scale on both axes so there is no shear. */
+  var C = window.Qevr.CROP;
+  var ASPECT = C.w / C.h;
+
+  function paintChipBox(canvas, name, w, h) {
     var m = window.Qevr.matrix(name);
     if (!m) return;
-    var size = Math.max(8, Math.floor(Math.min(boxW, boxH)));
+    w = Math.max(8, Math.round(w)); h = Math.max(8, Math.round(h));
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = Math.round(size * dpr);
-    canvas.height = Math.round(size * dpr);
-    canvas.style.width = size + "px";
-    canvas.style.height = size + "px";
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px"; canvas.style.height = h + "px";
     var ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, size, size);
-    var n = m.n, body = brandColor(), ink = inkColor();
-    for (var y = 0; y < n; y++) {
-      var y0 = Math.round(y * size / n), y1 = Math.round((y + 1) * size / n);
-      for (var x = 0; x < n; x++) {
-        var v = m.cells[y * n + x];
+    ctx.clearRect(0, 0, w, h);
+    var body = brandColor(), ink = inkColor(), n = m.n;
+    for (var gy = 0; gy < C.h; gy++) {
+      var y0 = Math.round(gy * h / C.h), y1 = Math.round((gy + 1) * h / C.h);
+      for (var gx = 0; gx < C.w; gx++) {
+        var v = m.cells[(gy + C.y0) * n + (gx + C.x0)];
         if (!v) continue;
-        var x0 = Math.round(x * size / n), x1 = Math.round((x + 1) * size / n);
+        var x0 = Math.round(gx * w / C.w), x1 = Math.round((gx + 1) * w / C.w);
         ctx.fillStyle = v === 2 ? ink : body;
         ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
       }
     }
   }
 
-  var COLS = [3, 4, 6, 8];
+  /* 24 cells exactly. The cell is sized to him, and the stage column takes
+     whatever width is left, so there is no black inside any cell. */
+  var COLS = [4, 6, 8];
   function layoutFaces() {
+    var bodyEl = document.querySelector(".studio__body");
     var grid = document.getElementById("facesGrid");
-    var panel = grid.parentElement;
-    var pw = panel.clientWidth, ph = panel.clientHeight;
-    if (!pw || !ph) return;
-    var nameH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--faceName")) || 18;
+    var totalW = bodyEl.clientWidth, ph = bodyEl.clientHeight;
+    if (!totalW || !ph) return;
+    var nameH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--faceName")) || 15;
     var phone = window.matchMedia("(max-width: 860px)").matches;
+    var mw, mh, cols;
 
-    var pick = null;
-    COLS.forEach(function (c) {
-      var rows = Math.ceil(24 / c);
-      var cellW = Math.floor(pw / c) - 1;
-      if (cellW < 60) return;
-      /* on a phone the cell is square and the panel scrolls; on a desktop the
-         rows stretch so the grid ends exactly at the bottom of the panel */
-      var rowH = phone ? (cellW + nameH + 1) : Math.floor(ph / rows);
-      var art = Math.min(cellW, rowH - nameH - 1);
-      if (art < 40) return;
-      if (!pick || art > pick.art) pick = { c: c, rows: rows, rowH: rowH, art: art };
-    });
-    if (!pick) pick = { c: phone ? 3 : 6, rows: 8, rowH: 120, art: 100 };
+    if (phone) {
+      cols = 3;
+      var panel = grid.parentElement.clientWidth || totalW;
+      mw = Math.floor(panel / cols) - 1;
+      mh = Math.round(mw / ASPECT);
+      bodyEl.style.gridTemplateColumns = "";
+    } else {
+      var best = null;
+      COLS.forEach(function (c) {
+        var rows = Math.ceil(24 / c);
+        var rowH = Math.floor(ph / rows);
+        var hh = rowH - nameH - 3;
+        if (hh < 50) return;
+        var ww = Math.round(hh * ASPECT);
+        var panelW = c * (ww + 1) + 2;
+        var stageW = totalW - panelW;
+        if (stageW < 250 || stageW > totalW * 0.45) return;
+        if (!best || ww > best.ww) best = { c: c, ww: ww, hh: hh, stageW: stageW };
+      });
+      if (best) {
+        cols = best.c; mw = best.ww; mh = best.hh;
+        bodyEl.style.gridTemplateColumns = best.stageW + "px minmax(0, 1fr)";
+      } else {
+        cols = 6;
+        bodyEl.style.gridTemplateColumns = "";
+        var pw = grid.parentElement.clientWidth || totalW;
+        var rowH2 = Math.floor(ph / 4);
+        mh = rowH2 - nameH - 3;
+        mw = Math.min(Math.floor(pw / cols) - 1, Math.round(mh * ASPECT));
+        mh = Math.round(mw / ASPECT);
+      }
+    }
 
-    grid.style.gridTemplateColumns = "repeat(" + pick.c + ", minmax(0, 1fr))";
-    grid.style.gridAutoRows = pick.rowH + "px";
-
-    /* measure the real art box after layout, then fill it exactly */
-    var probe = document.querySelector(".face__art");
-    if (!probe) return;
-    var r = probe.getBoundingClientRect();
-    var boxW = r.width || pick.art, boxH = r.height || pick.art;
+    grid.style.gridTemplateColumns = "repeat(" + cols + ", minmax(0, 1fr))";
+    grid.style.gridAutoRows = (mh + nameH + 3) + "px";
     [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), boxW, boxH);
+      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), mw, mh);
     });
   }
 
@@ -192,8 +209,8 @@
     /* measure the column, never the art box: the art box is sized by him, so
        measuring it would feed back on itself and shrink him every relayout */
     var phone = window.matchMedia("(max-width: 860px)").matches;
-    var availH = phone ? document.querySelector(".stage__art").clientHeight : availW;
-    var cell = Math.max(2, Math.floor(Math.min(availW, availH) * 0.99 / 34));
+    var availH = phone ? document.querySelector(".stage__art").clientHeight : (availW / ASPECT);
+    var cell = Math.max(2, Math.floor(Math.min(availW / C.w, availH / C.h)));
     stage.setCell(cell);
   }
 

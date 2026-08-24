@@ -2,13 +2,17 @@
   "lang": "pt-BR",
   "brand": "QEVR",
   "city": "SÃO PAULO",
-  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Escrever em português de verdade: ler em voz alta antes de commitar. Se soar como tradução do inglês, está errado.",
-
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Escrever em português de verdade: ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
   "doors": {
-    "manifesto": { "label": "O MANIFESTO", "sub": "O QUE ESTE APP É" },
-    "studio": { "label": "O ESTÚDIO", "sub": "AS 23 CARAS DELE" }
+    "manifesto": {
+      "label": "O MANIFESTO",
+      "sub": "O QUE ESTE APP É"
+    },
+    "studio": {
+      "label": "O ESTÚDIO",
+      "sub": "AS 23 CARAS DELE"
+    }
   },
-
   "world": {
     "title": "O MUNDO",
     "face": "Content",
@@ -20,10 +24,22 @@
     "people": {
       "lead": "E TBM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
       "items": [
-        ["AMIGOS", "PESSOAS QUE VC CONHECEU NO ROLE, E QUE AGORA SÃO PARTE DA SUA VIDA."],
-        ["DESCONHECIDOS", "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."],
-        ["FICANTES E EX-FICANTES", "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SEMPRE SABE ONDE ELAS TÃO."],
-        ["O AMOR DA SUA VIDA", "UMA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."]
+        [
+          "AMIGOS",
+          "PESSOAS QUE VC CONHECEU NO ROLE, E QUE AGORA SÃO PARTE DA SUA VIDA."
+        ],
+        [
+          "DESCONHECIDOS",
+          "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
+        ],
+        [
+          "FICANTES E EX-FICANTES",
+          "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SEMPRE SABE ONDE ELAS TÃO."
+        ],
+        [
+          "O AMOR DA SUA VIDA",
+          "UMA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
+        ]
       ]
     },
     "close": [
@@ -32,7 +48,6 @@
       "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
     ]
   },
-
   "stances": {
     "title": "O JEITO DELE",
     "items": [
@@ -110,33 +125,53 @@
       }
     ]
   },
-
   "nevers": {
     "title": "REGRAS",
     "face": "Angry",
     "lines": [
-      ["NUNCA TRANSFORMAR GENTE EM NÚMERO.", "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA EM PESSOA."],
-      ["NUNCA PARABENIZAR.", "SEM OFENSIVA, SEM MEDALHA, SEM RETROSPECTIVA."],
-      ["NUNCA INVENTAR PRESSA.", "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO."],
-      ["NUNCA MANDAR NO SEU GOSTO.", "SEM FEED DE RECOMENDAÇÃO, SEM EM ALTA. QUEM MANDA É A CIDADE E O RELÓGIO."],
-      ["NUNCA ROLAR PRA SEMPRE.", "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."],
-      ["NUNCA VENDER VC.", "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."],
-      ["NUNCA TE ENSINAR A USAR.", "SEM TOUR, SEM QUIZ. PISTA SE APRENDE PISANDO NELA."],
-      ["NUNCA FICAR BONITINHO.", "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."]
+      [
+        "NUNCA TRANSFORMAR GENTE EM NÚMERO.",
+        "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA EM PESSOA."
+      ],
+      [
+        "NUNCA PARABENIZAR.",
+        "SEM OFENSIVA, SEM MEDALHA, SEM RETROSPECTIVA."
+      ],
+      [
+        "NUNCA INVENTAR PRESSA.",
+        "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO."
+      ],
+      [
+        "NUNCA MANDAR NO SEU GOSTO.",
+        "SEM FEED DE RECOMENDAÇÃO, SEM EM ALTA. QUEM MANDA É A CIDADE E O RELÓGIO."
+      ],
+      [
+        "NUNCA ROLAR PRA SEMPRE.",
+        "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."
+      ],
+      [
+        "NUNCA VENDER VC.",
+        "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."
+      ],
+      [
+        "NUNCA TE ENSINAR A USAR.",
+        "SEM TOUR, SEM QUIZ. PISTA SE APRENDE PISANDO NELA."
+      ],
+      [
+        "NUNCA FICAR BONITINHO.",
+        "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."
+      ]
     ]
   },
-
   "gift": {
     "title": "UM PRESENTE",
     "face": "Stars",
     "paragraphs": [
-      "É UM PRESENTE PRA QUEM VC JÁ CONHECE. E PRA QUEM VC NUNCA VAI CONHECER.",
-      "INCLUSIVE PRA QUEM TÁ LENDO ISSO SOZINHO E NUNCA FOI NUMA NOITE DE TECHNO."
+      "QEVR É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. PRA TODOS QUE NUNCA VOU CONHECER.",
+      "UM APP PRA SER USADO ENTRE AMIGOS, OU SOZINHO."
     ]
   },
-
   "stamp": "QEVR É O APP QUE QUEM É FODA USA. NUNCA O APP QUE TENTA PARECER FODA.",
-
   "studio": {
     "faceLabel": "OLHA A CARINHA DELE",
     "codeLabel": "NO CÓDIGO",
@@ -145,6 +180,13 @@
     "glitchLabel": "CLIQUE AQUI",
     "gridHint": "AS 23 CARAS DELE",
     "metaTitle": "A REGRA DELE",
-    "metaLines": ["GRADE 34 X 34", "23 CARAS", "SÓ O ROSTO MUDA"]
+    "metaLines": [
+      "GRADE 34 X 34",
+      "23 CARAS",
+      "SÓ O ROSTO MUDA"
+    ]
+  },
+  "arrival": {
+    "mascotHint": "CLICA EM MIM"
   }
 }

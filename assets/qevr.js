@@ -7,6 +7,12 @@
   var DATA = null;
   var byName = {};
 
+  /* The 34x34 grid is half empty: nothing is drawn outside columns 6..28 or
+     rows 5..29. Rendering the whole grid means rendering a black margin as wide
+     as he is. Every draw crops to the real bounds, which are identical across
+     all 23 faces because the silhouette is constant. */
+  var CROP = { x0: 6, y0: 5, w: 23, h: 25 };
+
   function decode(expr) {
     var n = expr.rows.length;
     var m = new Uint8Array(n * n);
@@ -69,11 +75,11 @@
 
   Mascot.prototype.resize = function () {
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    var px = this.n * this.cell;
-    this.canvas.width = px * dpr;
-    this.canvas.height = px * dpr;
-    this.canvas.style.width = px + "px";
-    this.canvas.style.height = px + "px";
+    var w = CROP.w * this.cell, h = CROP.h * this.cell;
+    this.canvas.width = w * dpr;
+    this.canvas.height = h * dpr;
+    this.canvas.style.width = w + "px";
+    this.canvas.style.height = h + "px";
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     this.ctx.imageSmoothingEnabled = false;
   };
@@ -85,15 +91,18 @@
     var css = getComputedStyle(document.documentElement);
     var body = css.getPropertyValue("--brand").trim() || "#CCFF00";
     var ink = css.getPropertyValue("--qevr-ink").trim() || "#09090B";
-    ctx.clearRect(0, 0, n * c, n * c);
+    ctx.clearRect(0, 0, CROP.w * c, CROP.h * c);
     for (var y = 0; y < n; y++) {
+      var gy = y - CROP.y0;
+      if (gy < 0 || gy >= CROP.h) continue;
       var shear = this._shear && this._shear[y] ? this._shear[y] : 0;
       for (var x = 0; x < n; x++) {
         var v = this.render[y * n + x];
         if (!v) continue;
+        var sx = ((x + shear) % n + n) % n - CROP.x0;
+        if (sx < 0 || sx >= CROP.w) continue;
         ctx.fillStyle = v === 2 ? ink : body;
-        var sx = ((x + shear) % n + n) % n;
-        ctx.fillRect(sx * c, y * c, c, c);
+        ctx.fillRect(sx * c, gy * c, c, c);
       }
     }
   };
@@ -323,6 +332,7 @@
   };
 
   window.Qevr = {
+    CROP: CROP,
     load: load,
     Mascot: Mascot,
     names: function () { return Object.keys(byName); },
