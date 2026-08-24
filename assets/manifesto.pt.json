@@ -24,28 +24,30 @@
       "OU NÃO PENSANDO EM NADA.",
       "A PISTA PODE SER SOLITÁRIA ÀS VEZES. E A SOLIDÃO FAZ PARTE.",
       "E É POR ISSO QUE NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
-    ],
-    "people": {
-      "lead": "E TBM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
-      "items": [
-        [
-          "AMIGOS",
-          "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
-        ],
-        [
-          "DESCONHECIDOS",
-          "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
-        ],
-        [
-          "FICANTES E EX-FICANTES",
-          "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SABE QUEM ELAS SÃO."
-        ],
-        [
-          "O AMOR DA SUA VIDA",
-          "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
-        ]
+    ]
+  },
+  "people": {
+    "title": "AS PESSOAS",
+    "sub": "E O QUE ELAS SE TORNARAM",
+    "face": "Adoring",
+    "items": [
+      [
+        "AMIGOS",
+        "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
+      ],
+      [
+        "DESCONHECIDOS",
+        "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
+      ],
+      [
+        "FICANTES E EX-FICANTES",
+        "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SABE QUEM ELAS SÃO."
+      ],
+      [
+        "O AMOR DA SUA VIDA",
+        "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
       ]
-    },
+    ],
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS, TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
@@ -183,7 +185,9 @@
     "faceLabel": "OLHA A CARINHA DELE",
     "codeLabel": "NO CÓDIGO",
     "moveLabel": "ELE SE MEXE SOZINHO?",
+    "moveLabelShort": "SE MEXE?",
     "colorLabel": "MUDE A COR DO QEVR",
+    "colorLabelShort": "COR",
     "glitchLabel": "CLIQUE AQUI",
     "metaTitle": "A REGRA DELE",
     "metaLines": [
@@ -193,7 +197,7 @@
     ]
   },
   "arrival": {
-    "mascotHint": "CLICA EM MIM",
-    "colorQuestion": "SEU QEVR É VERDE OU ROSA?"
+    "mascotHint": "VAI, CLICA EM MIM",
+    "colorQuestion": "EU TBM MUDO DE COR :3"
   }
 }

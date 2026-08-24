@@ -1,10 +1,14 @@
-/* O ESTÚDIO. One single grid: a frame of the 23 faces around one big center
-   cell where QEVR lives with his playground. The strips each fill their edge
-   exactly (23 is prime, so the sides carry different counts — top 8, bottom 8,
-   left 4, right 3); the center cell absorbs every remainder, so the frame has
-   no black slack. Faces drift one slot around the ring, stepped, pausable. */
+/* O ESTÚDIO. One frame, one conveyor: all 23 faces, all the same size,
+   crawling slowly clockwise around the center plate where QEVR lives with
+   his playground. The chip size is solved from the viewport so a 4K monitor
+   just gets bigger faces — never mismatched ones. A hand over the frame
+   holds the crawl still; reduced motion turns it off.
 
-:root { --face-name: 20px; --chip-gap: 3px; }
+   On a phone there are no side strips and the page NEVER scrolls: one strip
+   of faces up top, one down below, each swipeable sideways and drifting
+   slowly on its own; the playground sits between them. */
+
+:root { --face-name: 20px; --chip-gap: 3px; --band-w: 160px; --band-h: 180px; --chip-w: 110px; --strip-h: 130px; }
 
 .bar { padding-left: var(--gut); }
 
@@ -12,30 +16,19 @@
   height: 100svh; padding-top: var(--bar); overflow: hidden;
   max-width: var(--wrap); margin-inline: auto;
 }
-.frame {
-  height: 100%; display: grid; gap: var(--chip-gap);
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  grid-template-areas:
-    "top    top    top"
-    "left   plate  right"
-    "bottom bottom bottom";
-}
+.frame { position: relative; height: 100%; }
 
-/* ---------- the strips ---------- */
+/* ---------- desktop: the conveyor lane and the plate it frames ---------- */
 
-.frame__strip { display: flex; gap: var(--chip-gap); min-width: 0; min-height: 0; }
-.frame__strip--top { grid-area: top; }
-.frame__strip--bottom { grid-area: bottom; }
-.frame__strip--left { grid-area: left; flex-direction: column; }
-.frame__strip--right { grid-area: right; flex-direction: column; }
+.lane { position: absolute; inset: 0; }
+.strip { display: none; }
 
 .face {
-  position: relative; min-width: 0; min-height: 0; flex: 1 1 0;
   border: 0; padding: 0; background: var(--ground);
   color: inherit; font: inherit; cursor: pointer;
   display: grid; grid-template-rows: minmax(0, 1fr) var(--face-name);
 }
+.lane .face { position: absolute; top: 0; left: 0; will-change: transform; }
 .face__art { display: grid; place-items: center; min-height: 0; min-width: 0; overflow: hidden; }
 .face canvas { display: block; image-rendering: pixelated; }
 .face__name {
@@ -52,7 +45,10 @@
 /* ---------- the center cell: his playground ---------- */
 
 .plate {
-  grid-area: plate; min-width: 0; min-height: 0; overflow: hidden;
+  position: absolute; z-index: 3;
+  top: var(--band-h); bottom: var(--band-h);
+  left: var(--band-w); right: var(--band-w);
+  min-width: 0; min-height: 0; overflow: hidden;
   border: var(--rule) solid var(--qevr-hair); background: var(--qevr-ink);
   display: flex; align-items: center; justify-content: center;
   gap: clamp(24px, 4vw, 64px);
@@ -84,29 +80,32 @@
   padding-top: 8px; border-top: var(--rule) solid var(--qevr-hair);
   color: var(--qevr-muted); font-size: 9px; line-height: 1.4; letter-spacing: .1em;
 }
+.stage__meta-title { display: block; color: var(--brand); font-weight: 700; letter-spacing: .2em; margin-bottom: 3px; }
 
-/* ---------- phone: the same sketch, read vertically. one grid, it scrolls:
-     a short strip of faces, then the playground spanning full width, then
-     the rest of the deck in rows of 3 (last row stretches). ---------- */
+/* ---------- phone: two swipeable strips, the playground between them,
+     and the page itself never scrolls ---------- */
 
 @media (max-width: 720px) {
-  .studio { height: auto; min-height: 100svh; overflow: visible; }
-  .frame {
-    height: auto;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
-    grid-template-areas: "top" "plate" "bottom";
-  }
-  .frame__strip--left, .frame__strip--right { display: none; }
-  .frame__strip--bottom {
-    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-  .frame__strip--bottom .face { grid-column: span 2; }
-  .frame__strip--bottom .face.face--wide { grid-column: span 3; }
+  .studio { height: 100svh; overflow: hidden; }
+  .frame { display: flex; flex-direction: column; height: 100%; }
+  .lane { display: none; }
 
-  .plate { flex-direction: column; gap: 10px; padding: 14px 16px 16px; }
-  .plate__panel { width: 100%; align-items: center; text-align: center; gap: 10px; }
-  .stage__name { font-size: clamp(21px, 7vw, 29px); margin-top: 3px; }
+  .strip {
+    display: flex; gap: var(--chip-gap); flex: none;
+    height: var(--strip-h);
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip .face { flex: none; width: var(--chip-w); height: 100%; }
+
+  .plate {
+    position: static; flex: 1 1 auto; min-height: 0;
+    flex-direction: column; gap: 8px; padding: 10px 16px 12px;
+    margin: var(--chip-gap) 0;
+  }
+  .plate__panel { width: 100%; align-items: center; text-align: center; gap: 8px; }
+  .stage__name { font-size: clamp(19px, 6vw, 26px); margin-top: 2px; }
   .stage__label, .stage__code { font-size: 8.5px; }
   .stage__controls { flex-direction: row; align-items: flex-end; justify-content: center; gap: 6px; width: 100%; }
   .ctlset { flex: 1 1 0; gap: 4px; }

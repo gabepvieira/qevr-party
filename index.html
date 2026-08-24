@@ -25,8 +25,8 @@
   <div class="bar__in">
     <a class="bar__mark" href="#topo" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
     <nav class="bar__nav">
-      <a href="#manifesto" aria-current="page">O MANIFESTO</a>
-      <a href="studio/">O ESTÚDIO</a>
+      <a href="#manifesto" aria-current="page" id="barManifesto">O MANIFESTO</a>
+      <a href="studio/" id="barStudio">O ESTÚDIO</a>
     </nav>
   </div>
 </header>
@@ -34,8 +34,8 @@
 <main>
   <section class="arrival" id="topo">
     <div class="arrival__mascot" id="arrivalSlot">
-      <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
       <div class="arrival__hint" id="mascotHint"></div>
+      <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
     </div>
     <div class="arrival__color" id="arrivalColor">
       <div class="arrival__question" id="arrivalColorQuestion"></div>
@@ -44,7 +44,6 @@
         <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
       </div>
     </div>
-    <div class="doors" id="doors"></div>
   </section>
 
   <section class="blocks">
@@ -57,14 +56,21 @@
         <span class="heading__mark"></span>
       </button>
       <div class="block__body" id="mundoBody">
-        <div class="world__grid">
-          <div class="world__col copy" id="worldCopy"></div>
-          <div class="world__col">
-            <div class="people__lead" id="peopleLead"></div>
-            <div class="people__grid" id="peopleList"></div>
-            <div class="world__close" id="worldClose"></div>
-          </div>
-        </div>
+        <div class="copy" id="worldCopy"></div>
+      </div>
+    </div>
+
+    <div class="block" id="pessoas" data-open="false">
+      <button class="heading heading--toggle" aria-expanded="false" aria-controls="peopleBody">
+        <span class="heading__text">
+          <canvas data-cells="AS PESSOAS" data-fit="470"></canvas>
+          <span class="heading__sub" data-sub="people"></span>
+        </span>
+        <span class="heading__mark"></span>
+      </button>
+      <div class="block__body" id="peopleBody">
+        <div class="people__grid" id="peopleList"></div>
+        <div class="world__close" id="worldClose"></div>
       </div>
     </div>
 
@@ -103,6 +109,8 @@
         <div class="stamp" id="stamp"></div>
       </div>
     </div>
+
+    <a class="door door--exit" id="studioDoor" href="studio/"></a>
   </section>
 </main>
 
@@ -181,11 +189,15 @@
     if (mascot) mascot.paint();
   }
 
+  /* picking a colour is a room change: it runs the same QR cascade as the doors */
   function chooseColor(mode) {
-    document.documentElement.setAttribute("data-mode", mode);
-    writeModePreference(mode);
-    syncArrivalColor();
-    repaintBrand();
+    if (document.documentElement.getAttribute("data-mode") === mode) return;
+    window.QevrCascade.through(function () {
+      document.documentElement.setAttribute("data-mode", mode);
+      writeModePreference(mode);
+      syncArrivalColor();
+      repaintBrand();
+    });
   }
 
   syncArrivalColor();
@@ -203,6 +215,7 @@
   function syncTitles() {
     var map = [
       ["#manifesto", COPY.world],
+      ["#pessoas", COPY.people],
       ["#stances", COPY.stances],
       ["#regras", COPY.nevers],
       ["#presente", COPY.gift]
@@ -277,30 +290,27 @@
     [].forEach.call(cs, function (c) { c.setAttribute("data-force-cell", minCell); drawCells(c); });
   }
 
+  /* the bar and the one exit door read their words from the deck, like everything */
   function buildDoors() {
-    var host = document.getElementById("doors");
-    var d = COPY.doors;
-    [["manifesto", "#manifesto", true], ["studio", "studio/", false]].forEach(function (spec) {
-      var cfg = d[spec[0]];
-      var a = document.createElement("a");
-      a.className = "door" + (spec[2] ? " door--lead" : "");
-      a.href = spec[1];
-      var s = document.createElement("strong"); s.textContent = cfg.label; a.appendChild(s);
-      var t = document.createElement("span"); t.textContent = cfg.sub; a.appendChild(t);
-      host.appendChild(a);
-    });
+    document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
+    document.getElementById("barStudio").textContent = COPY.doors.studio.label;
+    var exit = document.getElementById("studioDoor");
+    exit.innerHTML = "";
+    var s = document.createElement("strong"); s.textContent = COPY.doors.studio.label; exit.appendChild(s);
+    var t = document.createElement("span"); t.textContent = COPY.doors.studio.sub; exit.appendChild(t);
   }
 
   function buildWorld() {
     var w = COPY.world;
     var host = document.getElementById("worldCopy");
     w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i >= w.paragraphs.length - 2 ? "dim" : "")); });
+  }
 
-    document.getElementById("peopleLead").textContent = w.people.lead;
+  function buildPeople() {
     /* the people are a deck like any other list on this page: numbered tiles,
        same borders, same paddings. these stay open, they are the heart. */
     var list = document.getElementById("peopleList");
-    w.people.items.forEach(function (pair, i) {
+    COPY.people.items.forEach(function (pair, i) {
       var row = document.createElement("div"); row.className = "stance stance--still";
       var idx = document.createElement("span");
       idx.className = "stance__idx";
@@ -313,7 +323,7 @@
     });
 
     var close = document.getElementById("worldClose");
-    w.close.forEach(function (t) { close.appendChild(para(t)); });
+    COPY.people.close.forEach(function (t) { close.appendChild(para(t)); });
   }
 
   function buildTiles(grid, items) {
@@ -377,7 +387,11 @@
   var inCorner = false;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
   function arrivalCellFor() {
-    if (!isSmall()) return 16;
+    if (!isSmall()) {
+      /* the arrival owns the whole first screen now: he scales with it */
+      var byH = Math.floor((window.innerHeight * 0.52) / window.Qevr.CROP.h);
+      return Math.max(14, Math.min(22, byH));
+    }
     var arrival = document.getElementById("topo");
     var room = arrival && arrival.clientWidth ? arrival.clientWidth : window.innerWidth;
     var byWidth = Math.floor(Math.max(184, room - 40) / window.Qevr.CROP.w);
@@ -386,14 +400,15 @@
   }
   function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor(); }
   function boundsFor() {
-    return inCorner ? { x: isSmall() ? 14 : 26, y: isSmall() ? 10 : 20 }
+    /* the corner zone is small on purpose: he wanders a little, never onto the copy */
+    return inCorner ? { x: isSmall() ? 8 : 10, y: isSmall() ? 6 : 8 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
   }
   function placeMascot() {
     if (!mascot) return;
     var btn = document.getElementById("mascotBtn");
     var target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
-    if (btn.parentElement !== target) target.insertBefore(btn, target.firstChild);
+    if (btn.parentElement !== target) target.appendChild(btn);
     mascot.pos.x = 0; mascot.pos.y = 0; mascot.squash = 1;
     mascot.applyTransform();
     mascot.setCell(cellFor());
@@ -425,7 +440,7 @@
   /* ---------- he reads it with you ---------- */
   function watchSections() {
     if (!("IntersectionObserver" in window)) return;
-    var map = { manifesto: COPY.world.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
+    var map = { manifesto: COPY.world.face, pessoas: COPY.people.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting || !mascot || wasFire) return;
@@ -447,7 +462,7 @@
   ]).then(function (res) {
     COPY = res[0];
     syncTitles();
-    buildDoors(); buildWorld(); buildStances(); buildNevers(); buildGift();
+    buildDoors(); buildWorld(); buildPeople(); buildStances(); buildNevers(); buildGift();
     drawAllCells();
     unifyToggleHeadings();
     wireCascade();

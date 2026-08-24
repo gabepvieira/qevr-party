@@ -1,7 +1,10 @@
 # qevr.party — the public site
 
-First contact. A partier who has never heard of QEVR lands here. The arrival forks into
-two doors, O MANIFESTO and O ESTÚDIO, and a bar keeps both one tap away from anywhere.
+First contact. A partier who has never heard of QEVR lands here. The landing is two
+screens: the first is ONLY him — QEVR huge and centered, `VAI, CLICA EM MIM` above,
+`EU TBM MUDO DE COR :3` and the VERDE/ROSA choice below, nothing else. Scrolling past
+the fold starts the read (A CENA onward). The bar keeps O MANIFESTO and O ESTÚDIO one
+tap away from anywhere; the one door on the page is the studio exit after the stamp.
 
 **Live at https://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
 
@@ -48,20 +51,22 @@ no emoji, and it all lives in `assets/manifesto.pt.json` — never in markup.
 One rule, both pages, both breakpoints:
 
 - Everything is **left-aligned** inside one shared container (`--wrap`), and the bar
-  mark, the wordmark, the doors and the block stack all sit on the same left edge.
-  Desktop and phone agree; columns collapse, alignment never changes.
-- Two exceptions only: the mascot centers inside his own frame, and a label that names
-  a piece of art (CLICA EM MIM, a chip name) centers under that art.
+  mark, the wordmark, the block stack and the studio exit door all sit on the same
+  left edge. Desktop and phone agree; columns collapse, alignment never changes.
+- Two exceptions only: the arrival (the mascot's own full first screen — him, his
+  line, the colour choice) centers as a lockup, and a label that names a piece of art
+  (a chip name) centers with that art.
 - **Lime fill = where you are** (bar current page, the lead door). **White fill =
   hover.** Never the same treatment for both — a hover that looks like the active
   state is a lie.
 
 ## The section grammar
 
-The manifesto is an accordion of four blocks — A CENA (open on arrival), O JEITO DELE,
-REGRAS, UM PRESENTE — one open at a time, all four headings drawn at one shared cell
-size, each heading carrying a small descriptor that says what sits behind it
-(`sub` in the copy deck). A label that needs the click to explain itself is a bad label.
+The manifesto is an accordion of five blocks — A CENA (open on arrival), AS PESSOAS,
+O JEITO DELE, REGRAS, UM PRESENTE — one open at a time, all headings drawn at one
+shared cell size, each heading carrying a small descriptor that says what sits behind
+it (`sub` in the copy deck). A label that needs the click to explain itself is a bad
+label.
 
 Inside a block there are exactly two kinds of content:
 
@@ -72,30 +77,35 @@ Inside a block there are exactly two kinds of content:
   a deck with a hole in it is a bug.
 
 Interactive tiles open on tap (one at a time). The people tiles stay open — they are
-the heart of A CENA, not a disclosure.
+the heart of AS PESSOAS, not a disclosure.
 
 ## Screen budget
 
-Scrolling is the enemy. With A CENA open the whole manifesto is ~2 screens on a desktop
-and ~2.9 on a phone. The accordion is what keeps it there: opening a block closes the
-others. The studio never scrolls on desktop; on a phone it scrolls as one grid with
-the playground near the top. If you add content, keep the budget.
+Scrolling is the enemy. The landing's first screen is exactly one viewport (him and
+the colour choice); the read below stays ~1.5 screens with one block open. The
+accordion is what keeps it there: opening a block closes the others. The studio
+never scrolls — on ANY device; a phone explores the face strips by swiping them
+sideways. If you add content, keep the budget.
 
-## The studio: one single grid
+## The studio: one conveyor
 
-The studio is one grid: a frame of the 23 faces around one big center cell where
-QEVR lives with his playground (name, code, the three controls, the meta line).
-23 is prime, so the sides carry different counts on purpose — desktop runs top 8,
-bottom 8, left 4, right 3, each strip filling its edge exactly, and the center
-cell absorbs every remainder so the frame has no black slack. A phone reads the
-same sketch vertically: a strip of 3 faces, the playground spanning full width,
-then the rest in rows of 3 with the last row stretched; the page scrolls.
+The studio is one frame: the 23 faces crawling slowly clockwise around one big
+center cell where QEVR lives with his playground (name, code, the three controls,
+the meta line). Every chip is the SAME size — the size is solved from the viewport
+(`solveChipSize`), so a 4K monitor gets bigger faces, never mismatched ones. The
+top and bottom belts own the full width; the side belts sit inset between them,
+and at each corner a chip de-rezzes off one belt and re-rezzes on the next — the
+same glitch language as the cascade. Faces never teleport between seats.
 
-- The deck drifts one seat clockwise around the ring every ~2s, stepped, never
-  eased. A hand over the frame (or focus in it) holds it still; reduced motion
-  turns it off. `RING_MS` in `studio/index.html` sets the pace; `startRing()`
-  is the switch if it ever needs to be static.
-- The selection highlight travels with its face, not with a slot.
+A phone gets no side belts and the page NEVER scrolls: one strip of faces up top
+(12), one below (11), the playground pinned between them. Each strip drifts
+slowly on its own and swipes left/right to explore; a finger on a strip owns it,
+and the crawl resumes a beat after it lets go.
+
+- `LANE_SPEED` / `STRIP_SPEED` in `studio/index.html` set the crawl. A hand over
+  the frame (or focus in it) holds the desktop lane still; reduced motion turns
+  all drift off.
+- The selection highlight lives on the face itself and travels with it.
 - Face labels live in the `PT` map in `studio/index.html` — GP's voice, mapped
   onto the canonical codes, which never change.
 - Dividers are 3px of ground; hover is a white inset frame; selected is brand.

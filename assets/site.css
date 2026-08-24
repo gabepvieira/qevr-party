@@ -4,10 +4,11 @@
 
    ALIGNMENT STANDARD (applies to every page, every width):
    - Reading decks stay LEFT-ALIGNED inside one shared container.
-   - The mascot-first arrival and studio center plate are the sanctioned centered
-     compositions; labels that name art center with that art.
-   - Lime fill = where you are, or the primary door. White fill = hover. Never
-     the same treatment for both. */
+   - The mascot-first arrival (the full first screen) and the studio center
+     plate are the sanctioned centered compositions; labels that name art
+     center with that art.
+   - Lime fill = where you are. White fill = hover. Never the same treatment
+     for both. */
 
 :root {
   --qevr-ink: #09090B;
@@ -81,39 +82,37 @@ body {
 
 main { padding-left: 10px; padding-top: var(--bar); }
 
-/* ---------- arrival: one centered mascot-first stack ---------- */
+/* ---------- arrival: him and the colour question own the whole first screen ---------- */
 
 .arrival {
-  min-height: min-content;
+  min-height: calc(100svh - var(--bar));
   max-width: var(--wrap); margin-inline: auto;
   padding: clamp(18px, 3.4vh, 38px) var(--gut) clamp(22px, 4vh, 44px);
   border-bottom: var(--rule) solid var(--qevr-hair);
-  display: flex; flex-direction: column; align-items: center;
-  gap: clamp(10px, 1.8vh, 18px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(14px, 2.6vh, 28px);
 }
 /* him and his one instruction are a lockup: the label centers under the art */
 .arrival__mascot { display: grid; justify-items: center; gap: clamp(8px, 1.3vh, 14px); }
 .arrival__hint { font-size: clamp(11px, 1.1vw, 13px); letter-spacing: .24em; color: var(--brand); text-align: center; }
-.arrival__color { display: grid; justify-items: center; gap: 8px; width: min(100%, 360px); }
-.arrival__question { color: var(--qevr-muted); font-size: clamp(9px, .9vw, 10.5px); letter-spacing: .18em; text-align: center; }
-.arrival__color-controls { display: flex; justify-content: center; width: min(100%, 280px); }
+.arrival__color { display: grid; justify-items: center; gap: clamp(10px, 1.6vh, 16px); width: min(100%, 400px); }
+.arrival__question { color: var(--qevr-light); font-size: clamp(11px, 1.1vw, 14px); letter-spacing: .2em; text-align: center; }
+.arrival__color-controls { display: flex; justify-content: center; width: min(100%, 300px); }
 
-.doors { display: flex; gap: 0; width: min(100%, 640px); }
+/* ---------- the one door left: the studio exit at the end of the read ---------- */
+
 .door {
   display: flex; flex-direction: column; gap: 7px;
   padding: clamp(16px, 2vw, 24px) clamp(20px, 2.6vw, 34px);
   text-decoration: none; border: var(--rule) solid var(--qevr-hair);
-  margin: 0 -1px -1px 0; color: var(--qevr-light); min-width: 0;
-  flex: 1 1 0;
+  color: var(--qevr-light); min-width: 0;
 }
 .door strong { font-size: clamp(14px, 1.5vw, 19px); font-weight: 700; letter-spacing: .1em; }
 .door span { font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .12em; }
-.door--lead { background: var(--brand); color: var(--qevr-ink); box-shadow: 6px 6px 0 var(--qevr-hair); }
-.door--lead span { color: var(--qevr-ink); opacity: .85; }
+.door--exit { margin-top: clamp(24px, 4vh, 44px); }
 /* same grammar as the bar: hover is white */
-.door:not(.door--lead):hover, .door:not(.door--lead):focus-visible { background: var(--qevr-light); border-color: var(--qevr-light); color: var(--qevr-ink); outline: none; }
-.door:not(.door--lead):hover span, .door:not(.door--lead):focus-visible span { color: var(--qevr-ink); opacity: .7; }
-.door--lead:hover, .door--lead:focus-visible { box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); outline: none; }
+.door:hover, .door:focus-visible { background: var(--qevr-light); border-color: var(--qevr-light); color: var(--qevr-ink); outline: none; }
+.door:hover span, .door:focus-visible span { color: var(--qevr-ink); opacity: .7; }
 
 /* ---------- segmented controls: shared by arrival and studio ---------- */
 
@@ -153,8 +152,13 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .heading--toggle canvas { display: block; image-rendering: pixelated; }
 /* the label says what sits behind it */
 .heading__sub { font-size: clamp(10px, .95vw, 11.5px); letter-spacing: .18em; color: var(--qevr-muted); }
-.heading__mark { display: block; width: 14px; height: 6px; background: var(--qevr-muted); flex: none; }
-[data-open="true"] > .heading--toggle .heading__mark { width: 30px; background: var(--brand); }
+/* closed = a plus (this opens); open = the long brand dash */
+.heading__mark { display: block; position: relative; width: 14px; height: 14px; background: transparent; flex: none; }
+.heading__mark::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 6px; background: var(--qevr-muted); }
+.heading__mark::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 6px; background: var(--qevr-muted); }
+[data-open="true"] > .heading--toggle .heading__mark { width: 30px; height: 6px; }
+[data-open="true"] > .heading--toggle .heading__mark::before { top: 0; background: var(--brand); }
+[data-open="true"] > .heading--toggle .heading__mark::after { content: none; }
 .block__body { padding: 0 clamp(15px, 1.8vw, 24px) clamp(20px, 3vh, 32px); }
 [data-open="false"] .block__body { display: none; }
 
@@ -165,16 +169,14 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .copy p.dim { color: var(--qevr-muted); }
 .copy p.mark { color: var(--brand); }
 
-.world__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 64px); align-items: start; }
-.world__col { min-width: 0; }
-.people__lead { font-size: clamp(12.5px, 1.05vw, 15px); color: var(--brand); font-weight: 700; line-height: 1.6; margin-bottom: clamp(10px, 1.8vh, 18px); }
 /* the people are a deck like every other list: numbered tiles, same borders */
 .people__grid {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
+  max-width: 880px;
   border-top: var(--rule) solid var(--qevr-hair);
   border-left: var(--rule) solid var(--qevr-hair);
 }
-.world__close { margin-top: clamp(14px, 2.2vh, 26px); padding-top: clamp(12px, 1.8vh, 20px); border-top: var(--rule) solid var(--qevr-hair); }
+.world__close { margin-top: clamp(14px, 2.2vh, 26px); padding-top: clamp(12px, 1.8vh, 20px); border-top: var(--rule) solid var(--qevr-hair); max-width: 880px; }
 .world__close p { font-size: clamp(12px, 1vw, 14px); line-height: 1.65; color: var(--qevr-muted); }
 .world__close p + p { margin-top: .85em; }
 .world__close p:last-child { color: var(--brand); }
@@ -229,7 +231,8 @@ main { padding-left: 10px; padding-top: var(--bar); }
 
 /* ---------- companion ---------- */
 
-.companion { position: fixed; right: clamp(10px, 2.4vw, 36px); bottom: clamp(10px, 2.4vh, 36px); z-index: 50; width: 220px; height: 220px; display: grid; place-items: center; pointer-events: none; }
+/* a true corner: small zone, so he never sits on the reading (soul: never covers content) */
+.companion { position: fixed; right: clamp(8px, 1.6vw, 22px); bottom: clamp(8px, 1.6vh, 22px); z-index: 50; width: 130px; height: 130px; display: grid; place-items: center; pointer-events: none; }
 .companion .mascot { pointer-events: auto; }
 .mascot { background: transparent; border: 0; padding: 0; cursor: pointer; display: block; will-change: transform; }
 .mascot canvas { display: block; image-rendering: pixelated; }
@@ -239,10 +242,6 @@ main { padding-left: 10px; padding-top: var(--bar); }
   .stances__grid, #neversList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 900px) {
-  .world__grid { grid-template-columns: 1fr; gap: clamp(18px, 3vh, 30px); }
-}
-
 @media (max-width: 720px) {
   .stances__grid, #neversList, .people__grid { grid-template-columns: minmax(0, 1fr); }
   /* on a phone there is no free corner: he never covers content (soul rule),
@@ -250,9 +249,8 @@ main { padding-left: 10px; padding-top: var(--bar); }
   .companion { display: none; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
-  .arrival { padding-inline: 16px; gap: 10px; }
-  .doors { flex-direction: column; }
-  .door { min-width: 100%; padding: 13px 16px; }
+  .arrival { padding-inline: 16px; gap: 14px; }
+  .door { padding: 13px 16px; }
   .arrival__color-controls { width: min(100%, 260px); }
   .copy p { font-size: 13px; line-height: 1.62; }
   .world__close p { font-size: 12px; }

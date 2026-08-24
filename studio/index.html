@@ -29,8 +29,8 @@
 
 <main class="studio">
   <div class="frame" id="frame">
-    <div class="frame__strip frame__strip--top" id="stripTop"></div>
-    <div class="frame__strip frame__strip--left" id="stripLeft"></div>
+    <div class="lane" id="lane"></div>
+    <div class="strip strip--top" id="stripTop"></div>
 
     <section class="plate" aria-labelledby="stageName">
       <div class="stage__art">
@@ -44,30 +44,29 @@
         </div>
         <div class="stage__controls">
           <div class="ctlset">
-            <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short">SE MEXE?</span></div>
+            <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short" id="moveLabelShort">SE MEXE?</span></div>
             <div class="ctlrow">
               <button class="ctl" id="ctlLive" type="button" aria-pressed="true">SIM</button>
               <button class="ctl" id="ctlHold" type="button" aria-pressed="false">NÃO</button>
             </div>
           </div>
           <div class="ctlset">
-            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">MUDE A COR DO QEVR</span><span class="lbl-short">COR</span></div>
+            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">MUDE A COR DO QEVR</span><span class="lbl-short" id="colorLabelShort">COR</span></div>
             <div class="ctlrow">
               <button class="ctl ctl--swatch ctl--green" id="ctlGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
               <button class="ctl ctl--swatch ctl--pink" id="ctlPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
             </div>
           </div>
           <div class="ctlset ctlset--glitch">
-            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">CLIQUE AQUI</span><span class="lbl-short">CLIQUE AQUI</span></div>
+            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">CLIQUE AQUI</span><span class="lbl-short" id="glitchLabelShort">CLIQUE AQUI</span></div>
             <div class="ctlrow"><button class="ctl" id="ctlGlitch" type="button">GLITCH</button></div>
           </div>
         </div>
-        <div class="stage__meta" id="stageMeta"></div>
+        <div class="stage__meta"><span class="stage__meta-title" id="stageMetaTitle"></span><span id="stageMetaLines"></span></div>
       </div>
     </section>
 
-    <div class="frame__strip frame__strip--right" id="stripRight"></div>
-    <div class="frame__strip frame__strip--bottom" id="stripBottom"></div>
+    <div class="strip strip--bottom" id="stripBottom"></div>
   </div>
 </main>
 
@@ -100,21 +99,24 @@
   var live = true;
   var current = "Default";
   var names = [];
-  var slots = [];
-  var ringOffset = 0;
-  var ringTimer = 0;
+  var chips = [];
   var framePaused = false;
   var C = window.Qevr.CROP;
   var ASPECT = C.w / C.h;
   var GAP = 3;
   var NAME_H = 20;
-  var RING_MS = 2200;
+  /* the deck crawls, it never teleports: a slow conveyor, held still by a hand */
+  var LANE_SPEED = 12;      /* px per second, desktop loop */
+  var STRIP_SPEED = 10;     /* px per second, phone strips */
+  var TICK_MS = 80;
+  var lane = { L: 0, D: 0, S: 0, cellH: 0, W: 0, H: 0, phase: 0 };
+  var phoneMounted = null;  /* which layout the chips are mounted in */
   var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
 
   /* Canonical codes stay untouched; these are display labels only. */
   var PT = {
     "Default": "NORMAL", "Happy": "FELIZ", "Eyes Closed": "DORMINDO",
-    "Dead": "MORRI", "Joy": "FELIZ", "Anime": "ANIME", "Adoring": "ENCANTADO",
+    "Dead": "MORRI", "Joy": "ALEGRIA", "Anime": "ANIME", "Adoring": "ENCANTADO",
     "Laughing": "RISONHO", "Content": "CONTENTE", "Blissful": "EM PAZ", "Love": "IN LOVE",
     "Love Kissing": "BEIJINHOS", "Lovely": "SIMPÁTICO", "Naughty": "DANADINHO",
     "Kissing": "TE AMO", "Death": "MORTO (AGR DE VERDADE)", "Stars": "ESTRELINHAS",
@@ -187,109 +189,157 @@
     }
   }
 
-  function makeSlot(ringIndex, wide) {
+  function makeChip(name) {
     var button = document.createElement("button");
-    button.className = "face" + (wide ? " face--wide" : "");
+    button.className = "face";
     button.type = "button";
-    button.setAttribute("data-ring", String(ringIndex));
+    button.setAttribute("data-name", name);
     button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-label", label(name));
     var art = document.createElement("span");
     art.className = "face__art";
     art.appendChild(document.createElement("canvas"));
     button.appendChild(art);
     var title = document.createElement("span");
     title.className = "face__name";
+    title.textContent = label(name);
     button.appendChild(title);
     return button;
   }
 
-  /* the 23 faces occupy the ring slots at (ring + offset) mod 23, so the
-     whole deck drifts one seat clockwise per step and nothing ever repeats */
-  function renderSlots() {
-    if (!names.length) return;
-    slots.forEach(function (slot) {
-      var ring = parseInt(slot.getAttribute("data-ring"), 10);
-      var name = names[(ring + ringOffset) % names.length];
-      slot.setAttribute("data-name", name);
-      slot.setAttribute("aria-label", label(name));
-      slot.querySelector(".face__name").textContent = label(name);
-      var art = slot.querySelector(".face__art");
-      var w = Math.min(art.clientWidth, Math.round((art.clientHeight || 9999) * ASPECT));
-      paintChipBox(slot.querySelector("canvas"), name, w);
-      slot.setAttribute("aria-pressed", String(name === current));
+  function makeChips() {
+    chips = names.map(function (name) { return { name: name, el: makeChip(name) }; });
+  }
+
+  function paintChips(w) {
+    chips.forEach(function (chip) {
+      paintChipBox(chip.el.querySelector("canvas"), chip.name, w);
+      chip.el.style.width = Math.round(w) + "px";
     });
   }
 
-  /* one single grid: strips of faces framing the plate. each strip fills its
-     edge exactly; 23 is prime, so the counts differ per side on purpose. */
-  function buildFrame() {
-    var top = document.getElementById("stripTop");
-    var left = document.getElementById("stripLeft");
-    var right = document.getElementById("stripRight");
-    var bottom = document.getElementById("stripBottom");
-    [top, left, right, bottom].forEach(function (s) { s.innerHTML = ""; });
-    slots = [];
-    var frame = document.getElementById("frame");
-    var W = frame.clientWidth || window.innerWidth;
+  /* ---------- desktop: one circulation around the frame.
+     All 23 faces, all the same size, crawling clockwise. The top and bottom
+     belts run like the phone strips: chips enter from OUTSIDE the window and
+     leave the same way. The side belts run the full height and render BEHIND
+     the horizontal belts, so a side chip emerges from behind the top row and
+     slides down behind the bottom one. Every wrap between belts happens fully
+     off-screen — nothing ever pops in view. The chip size is solved so the 23
+     cells pack the loop tight; a bigger screen just means bigger faces. */
 
-    if (isPhone()) {
-      /* the sketch read vertically: 3 faces, the playground, then rows of 3 */
-      var artW = (W - 2 * GAP) / 3;
-      var stripH = Math.round(artW / ASPECT + NAME_H);
-      top.style.height = stripH + "px";
-      left.style.width = right.style.width = "";
-      for (var i = 0; i < 3; i++) {
-        var s = makeSlot(i, false);
-        top.appendChild(s); slots.push(s);
-      }
-      var wideH = Math.round(((W - GAP) / 2) / ASPECT + NAME_H);
-      var rows = [];
-      for (var r = 0; r < 6; r++) rows.push(stripH + "px");
-      rows.push(wideH + "px");
-      bottom.style.gridTemplateRows = rows.join(" ");
-      for (var j = 0; j < 20; j++) {
-        var wide = j >= 18;
-        var b = makeSlot(3 + j, wide);
-        bottom.appendChild(b); slots.push(b);
-      }
-    } else {
-      var H = frame.clientHeight || Math.max(480, window.innerHeight - 52);
-      var counts = { top: 8, right: 3, bottom: 8, left: 4 };
-      var topArt = ((W - (counts.top - 1) * GAP) / counts.top) / ASPECT;
-      var stripHd = Math.round(topArt + NAME_H);
-      top.style.height = bottom.style.height = stripHd + "px";
-      var hMid = H - 2 * stripHd - 2 * GAP;
-      var leftW = Math.round((((hMid - (counts.left - 1) * GAP) / counts.left) - NAME_H) * ASPECT);
-      var rightW = Math.round((((hMid - (counts.right - 1) * GAP) / counts.right) - NAME_H) * ASPECT);
-      left.style.width = leftW + "px";
-      right.style.width = rightW + "px";
-      bottom.style.gridTemplateRows = "";
-      /* ring order is clockwise: top L>R, right T>B, bottom R>L, left B>T */
-      var k;
-      for (k = 0; k < counts.top; k++) { var t = makeSlot(k, false); top.appendChild(t); slots.push(t); }
-      for (k = 0; k < counts.right; k++) { var rr = makeSlot(counts.top + k, false); right.appendChild(rr); slots.push(rr); }
-      for (k = 0; k < counts.bottom; k++) {
-        var bb = makeSlot(counts.top + counts.right + (counts.bottom - 1 - k), false);
-        bottom.appendChild(bb); slots.push(bb);
-      }
-      for (k = 0; k < counts.left; k++) {
-        var ll = makeSlot(counts.top + counts.right + counts.bottom + (counts.left - 1 - k), false);
-        left.appendChild(ll); slots.push(ll);
-      }
+  function laneCellH(S) { return S / ASPECT + NAME_H; }
+
+  function solveChipSize(W, H) {
+    /* largest S whose 23 vertical-pitch cells still fit the loop, capped so
+       the plate keeps enough height to breathe */
+    var best = 80;
+    for (var s = 80; s <= 640; s += 2) {
+      var cellH = laneCellH(s);
+      if (H - 2 * (cellH + GAP) < 300) break;
+      var L = 2 * (W + s) + 2 * (H + cellH);
+      if (23 * (cellH + GAP) <= L) best = s; else break;
     }
-    renderSlots();
+    return best;
   }
 
-  /* stepped drift, pausable, never under reduced motion */
-  function stopRing() { if (ringTimer) { clearInterval(ringTimer); ringTimer = 0; } }
-  function startRing() {
-    stopRing();
+  function lanePoint(d) {
+    var hw = lane.W + lane.S;      /* horizontal run length */
+    var vv = lane.H + lane.cellH;  /* vertical run length   */
+    if (d < hw) return { x: d - lane.S, y: 0, front: true };                 /* top, left>right */
+    d -= hw;
+    if (d < vv) return { x: lane.W - lane.S, y: d - lane.cellH };            /* right, down, behind */
+    d -= vv;
+    if (d < hw) return { x: lane.W - d, y: lane.H - lane.cellH, front: true }; /* bottom, right>left */
+    d -= hw;
+    return { x: 0, y: lane.H - d };                                          /* left, up, behind */
+  }
+
+  function placeChips() {
+    for (var i = 0; i < chips.length; i++) {
+      var p = lanePoint((i * lane.D + lane.phase) % lane.L);
+      var el = chips[i].el;
+      el.style.zIndex = p.front ? "2" : "1";
+      el.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y) + "px)";
+    }
+  }
+
+  function buildFrame() {
+    var frame = document.getElementById("frame");
+    var laneHost = document.getElementById("lane");
+    var top = document.getElementById("stripTop");
+    var bottom = document.getElementById("stripBottom");
+    if (!chips.length) return;
+
+    if (isPhone()) {
+      if (phoneMounted !== true) {
+        laneHost.innerHTML = ""; top.innerHTML = ""; bottom.innerHTML = "";
+        chips.forEach(function (chip, i) {
+          chip.el.style.transform = "";
+          chip.el.style.visibility = "";
+          (i < 12 ? top : bottom).appendChild(chip.el);
+        });
+        phoneMounted = true;
+      }
+      var W = frame.clientWidth || window.innerWidth;
+      var artW = Math.max(84, Math.min(120, W / 3.4));
+      var stripH = Math.round(artW / ASPECT + NAME_H);
+      document.documentElement.style.setProperty("--chip-w", Math.round(artW) + "px");
+      document.documentElement.style.setProperty("--strip-h", stripH + "px");
+      paintChips(artW);
+    } else {
+      if (phoneMounted !== false) {
+        laneHost.innerHTML = ""; top.innerHTML = ""; bottom.innerHTML = "";
+        chips.forEach(function (chip) { laneHost.appendChild(chip.el); });
+        phoneMounted = false;
+      }
+      var fw = frame.clientWidth || window.innerWidth;
+      var fh = frame.clientHeight || Math.max(480, window.innerHeight - 52);
+      var frac = lane.L ? lane.phase / lane.L : 0;
+      lane.S = solveChipSize(fw, fh);
+      lane.cellH = laneCellH(lane.S);
+      lane.W = fw; lane.H = fh;
+      lane.L = 2 * (fw + lane.S) + 2 * (fh + lane.cellH);
+      lane.D = lane.L / 23;
+      lane.phase = frac * lane.L;
+      document.documentElement.style.setProperty("--band-w", Math.round(lane.S + GAP) + "px");
+      document.documentElement.style.setProperty("--band-h", Math.round(lane.cellH + GAP) + "px");
+      paintChips(lane.S);
+      placeChips();
+    }
+  }
+
+  /* ---------- motion: slow, pausable, off under reduced motion ---------- */
+
+  var laneTimer = 0;
+  var stripHold = 0;
+  var stripDir = { top: 1, bottom: -1 };
+  function stopLane() { if (laneTimer) { clearInterval(laneTimer); laneTimer = 0; } }
+  function startLane() {
+    stopLane();
     if (motionQuery.matches) return;
-    ringTimer = setInterval(function () {
-      if (framePaused || document.hidden) return;
-      ringOffset = (ringOffset + 1) % 23;
-      renderSlots();
-    }, RING_MS);
+    var last = Date.now();
+    laneTimer = setInterval(function () {
+      var now = Date.now();
+      var dt = Math.min(0.5, (now - last) / 1000);
+      last = now;
+      if (document.hidden) return;
+      if (isPhone()) {
+        if (stripHold && now - stripHold < 2500) return;
+        stripHold = 0;
+        ["top", "bottom"].forEach(function (key) {
+          var el = document.getElementById(key === "top" ? "stripTop" : "stripBottom");
+          if (!el || el.scrollWidth <= el.clientWidth) return;
+          el.scrollLeft += stripDir[key] * STRIP_SPEED * dt;
+          var max = el.scrollWidth - el.clientWidth;
+          if (el.scrollLeft >= max - 1) stripDir[key] = -1;
+          if (el.scrollLeft <= 1) stripDir[key] = 1;
+        });
+      } else {
+        if (framePaused) return;
+        lane.phase = (lane.phase + LANE_SPEED * dt) % lane.L;
+        placeChips();
+      }
+    }, TICK_MS);
   }
 
   function drawBarMark(canvas) {
@@ -321,8 +371,14 @@
     var pw = plate.clientWidth || window.innerWidth;
     var ph = plate.clientHeight || 320;
     var cell;
-    if (isPhone()) cell = Math.min(10, Math.floor((pw - 32) / C.w));
-    else cell = Math.floor(Math.min((ph - 24) / C.h, (pw * 0.46) / C.w));
+    if (isPhone()) {
+      /* no scroll on a phone: he shares the plate with his panel, so he fits it */
+      var panel = plate.querySelector(".plate__panel");
+      var free = ph - (panel ? panel.offsetHeight : 210) - 30;
+      cell = Math.min(10, Math.floor((pw - 32) / C.w), Math.floor(free / C.h));
+    } else {
+      cell = Math.floor(Math.min((ph - 24) / C.h, (pw * 0.46) / C.w));
+    }
     stage.setCell(Math.max(4, cell));
   }
 
@@ -332,20 +388,23 @@
     document.getElementById("ctlPink").setAttribute("aria-pressed", String(party));
   }
 
-  function relayout(rebuild) {
+  function relayout() {
     [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawBarMark);
-    if (rebuild) buildFrame();
-    else renderSlots();
+    buildFrame();
     fitStage();
     if (stage) stage.paint();
   }
 
+  /* picking a colour is a room change: same QR cascade as walking through a door */
   function setColor(which) {
     var mode = which === "pink" || which === "party" ? "party" : "day";
-    document.documentElement.setAttribute("data-mode", mode);
-    writeModePreference(mode);
-    syncColorControls();
-    relayout(false);
+    if (document.documentElement.getAttribute("data-mode") === mode) return;
+    window.QevrCascade.through(function () {
+      document.documentElement.setAttribute("data-mode", mode);
+      writeModePreference(mode);
+      syncColorControls();
+      relayout();
+    });
   }
 
   syncColorControls();
@@ -361,9 +420,18 @@
       document.getElementById("faceLabel").textContent = studioCopy.faceLabel;
       document.getElementById("codeLabel").textContent = studioCopy.codeLabel;
       document.getElementById("moveLabel").textContent = studioCopy.moveLabel;
+      document.getElementById("moveLabelShort").textContent = studioCopy.moveLabelShort || studioCopy.moveLabel;
       document.getElementById("colorLabel").textContent = studioCopy.colorLabel;
+      document.getElementById("colorLabelShort").textContent = studioCopy.colorLabelShort || studioCopy.colorLabel;
       document.getElementById("glitchLabel").textContent = studioCopy.glitchLabel;
-      document.getElementById("stageMeta").textContent = studioCopy.metaLines.join(" / ");
+      document.getElementById("glitchLabelShort").textContent = studioCopy.glitchLabel;
+      document.getElementById("stageMetaTitle").textContent = studioCopy.metaTitle || "";
+      document.getElementById("stageMetaLines").textContent = studioCopy.metaLines.join(" / ");
+    }
+    if (copy && copy.doors) {
+      [].forEach.call(document.querySelectorAll(".bar__nav a"), function (a, i) {
+        a.textContent = i === 0 ? copy.doors.manifesto.label : copy.doors.studio.label;
+      });
     }
 
     stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
@@ -402,10 +470,19 @@
     document.getElementById("ctlGreen").addEventListener("click", function () { setColor("green"); });
     document.getElementById("ctlPink").addEventListener("click", function () { setColor("pink"); });
 
-    relayout(true);
-    startRing();
-    setTimeout(function () { relayout(true); }, 250);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { relayout(true); });
+    makeChips();
+    relayout();
+    startLane();
+    setTimeout(relayout, 250);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+
+    /* a finger on a strip owns it; the crawl resumes a beat after it lets go */
+    ["stripTop", "stripBottom"].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.addEventListener("pointerdown", function () { stripHold = Date.now(); }, { passive: true });
+      el.addEventListener("wheel", function () { stripHold = Date.now(); }, { passive: true });
+      el.addEventListener("touchmove", function () { stripHold = Date.now(); }, { passive: true });
+    });
 
     setInterval(function () {
       if (live && stage && stage.face && stage.face.name !== current) setCurrent(stage.face.name);
@@ -414,13 +491,13 @@
     var resizeTimer;
     window.addEventListener("resize", function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { relayout(true); }, 150);
+      resizeTimer = setTimeout(relayout, 150);
     });
   }).catch(function (error) { console.error("[studio] boot failed", error); });
 
   function syncMotionPreference() {
-    if (motionQuery.matches) stopRing();
-    else startRing();
+    if (motionQuery.matches) stopLane();
+    else startLane();
   }
   if (motionQuery.addEventListener) motionQuery.addEventListener("change", syncMotionPreference);
   else if (motionQuery.addListener) motionQuery.addListener(syncMotionPreference);
