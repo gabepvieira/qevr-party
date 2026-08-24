@@ -313,6 +313,9 @@
   var laneTimer = 0;
   var stripHold = 0;
   var stripDir = { top: 1, bottom: -1 };
+  /* float accumulators: iOS truncates fractional scrollLeft, so a sub-pixel
+     drift never sticks unless we do the bookkeeping ourselves */
+  var stripAcc = { top: null, bottom: null };
   function stopLane() { if (laneTimer) { clearInterval(laneTimer); laneTimer = 0; } }
   function startLane() {
     stopLane();
@@ -329,10 +332,17 @@
         ["top", "bottom"].forEach(function (key) {
           var el = document.getElementById(key === "top" ? "stripTop" : "stripBottom");
           if (!el || el.scrollWidth <= el.clientWidth) return;
-          el.scrollLeft += stripDir[key] * STRIP_SPEED * dt;
+          var cur = el.scrollLeft;
+          var acc = stripAcc[key];
+          /* a swipe (or first run) moved it: adopt the real position */
+          if (acc === null || Math.abs(acc - cur) > 2) acc = cur;
+          acc += stripDir[key] * STRIP_SPEED * dt;
           var max = el.scrollWidth - el.clientWidth;
-          if (el.scrollLeft >= max - 1) stripDir[key] = -1;
-          if (el.scrollLeft <= 1) stripDir[key] = 1;
+          if (acc >= max - 1) { acc = max - 1; stripDir[key] = -1; }
+          if (acc <= 1) { acc = 1; stripDir[key] = 1; }
+          stripAcc[key] = acc;
+          var next = Math.round(acc);
+          if (next !== cur) el.scrollLeft = next;
         });
       } else {
         if (framePaused) return;
