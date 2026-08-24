@@ -1,0 +1,129 @@
+{
+  "lang": "pt-BR",
+  "brand": "QEVR",
+  "city": "SÃO PAULO",
+  "note": "COPY DECK. Regras: CAIXA ALTA sempre. Nunca travessão. Nunca ponto de exclamação. Nunca emoji. Editar aqui, não no HTML.",
+
+  "world": {
+    "title": "O MUNDO",
+    "face": "Content",
+    "paragraphs": [
+      "QEVR NASCEU DAS NOITES DE UMA PESSOA E PERTENCE A TODO MUNDO QUE TEM NOITES ASSIM.",
+      "FESTIVAIS GIGANTES. FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE ACID ONDE TODO MUNDO PARECE FODA, PORQUE ACID TECHNO É FODA. ÀS VEZES VOCÊ ESTÁ LÁ COM A SUA TURMA INTEIRA. MUITAS VEZES VOCÊ ESTÁ LÁ SOZINHO, PENSANDO NO FUTURO DE UM MUNDO QUE NÃO OFERECE NENHUM, ENQUANTO O BUMBO SEGUE FIRME LÁ DENTRO.",
+      "TECHNO É SOLITÁRIO ÀS VEZES. A SOLIDÃO FAZ PARTE. NÃO É UM PROBLEMA QUE ESTE APP RESOLVE.",
+      "E AS PESSOAS. O AMIGO QUE VOCÊ VÊ TODO DIA HOJE POR CAUSA DE UMA FESTA SÓ. A PESSOA COM QUEM VOCÊ FOI ÍNTIMO POR VINTE MINUTOS NA FILA DO BANHEIRO E NUNCA MAIS FALOU. O CRUSH CUJO NOME NUM FLYER MUDA A NOITE INTEIRA. O AMOR DE UMA VIDA, ENCONTRADO ÀS 7 DA MANHÃ NUMA PISTA DE SÃO PAULO.",
+      "O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO. O QEVR NUNCA VAI TRAZER ELE DE VOLTA, E NUNCA VAI DEIXAR VOCÊ FINGIR QUE ELE NÃO ACONTECEU."
+    ],
+    "closingFace": "Sad"
+  },
+
+  "stances": {
+    "title": "COMO ELE FALA",
+    "items": [
+      {
+        "head": "ELE CONSTATA. ELE NUNCA COMEMORA.",
+        "face": "Unamused",
+        "body": [
+          "ELE DIZ \"ELA CHEGOU.\" ELE NÃO DIZ \"SEU CRUSH ACABOU DE CHEGAR.\"",
+          "O APP TRAZ O FATO. VOCÊ TRAZ O SENTIMENTO."
+        ]
+      },
+      {
+        "head": "ELE É O FLYER, NUNCA O PROMOTER.",
+        "face": "Default",
+        "body": [
+          "LINE UP, LUGAR, HORA, TEMPERATURA. NADA QUE VENDE.",
+          "SEM \"NÃO PERCA.\" SEM \"ÚLTIMOS INGRESSOS.\" LOTAÇÃO É UM NÚMERO, DITO UMA VEZ, SECO."
+        ]
+      },
+      {
+        "head": "ELE NÃO QUER NADA DE VOCÊ.",
+        "face": "Bored",
+        "body": [
+          "ELE SÓ FALA PORQUE O MUNDO SE MEXEU. UMA PORTA ABRIU. UM ENDEREÇO CAIU. UMA SALA PEGOU FOGO.",
+          "ELE NUNCA VAI TE MANDAR MENSAGEM PRA TE TRAZER DE VOLTA."
+        ]
+      },
+      {
+        "head": "OS ÚNICOS NÚMEROS SÃO OS DA NOITE.",
+        "face": "Content",
+        "body": [
+          "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. DISTÂNCIA. A FÍSICA DE SAIR.",
+          "NENHUM NÚMERO AQUI VAI MEDIR VOCÊ NEM NINGUÉM QUE VOCÊ CONHECE. VOCÊ VÊ QUEM. VOCÊ NUNCA VÊ QUANTOS."
+        ]
+      },
+      {
+        "head": "O ESCURO É O CHÃO. A COR É A LUZ CHEGANDO.",
+        "face": "Blissful",
+        "body": [
+          "UMA NOITE MORTA É UMA TELA ESCURA, E ISSO É HONESTO.",
+          "QUANDO A COR APARECE, ALGUMA COISA ESTÁ VIVA. UM AMIGO. UM FOGO. UMA PORTA."
+        ]
+      },
+      {
+        "head": "TODA INTERAÇÃO TERMINA.",
+        "face": "Eyes Closed",
+        "body": [
+          "UMA OLHADA, UMA RESPOSTA, TELA APAGADA. NADA AQUI PREMIA FICAR OLHANDO.",
+          "DENTRO DA PISTA, SUCESSO É O CELULAR NO BOLSO."
+        ]
+      },
+      {
+        "head": "MEMÓRIAS SÃO CICATRIZES, NÃO CONTEÚDO.",
+        "face": "Sad",
+        "body": [
+          "UMA MEMÓRIA É PÚBLICA, PERMANENTE, E NÃO DÁ PARA PERFORMAR. ELA MARCA QUE O MOMENTO ACONTECEU E PASSOU.",
+          "A DOR TEM NOME. SAUDADE. ESTE APP FOI FEITO PRA SEGURAR ELA, NÃO PRA CURAR."
+        ]
+      },
+      {
+        "head": "A GENTE GUARDA OS SEGREDOS DA CENA.",
+        "face": "Naughty",
+        "body": [
+          "ENDEREÇO CAI TARDE. PORTA FICA QUIETA. NADA MARCA UM LUGAR SOZINHO. NENHUMA IMAGEM LEVA GPS PRA FORA.",
+          "ONDE AS PESSOAS SE JUNTAM NÃO É BASE DE DADOS DE NINGUÉM."
+        ]
+      },
+      {
+        "head": "VOLTAR PRA CASA FAZ PARTE DA NOITE.",
+        "face": "Surprised",
+        "body": [
+          "ESTE É O ÚNICO LUGAR ONDE O APP FALA CLARO E POR EXTENSO.",
+          "VOLTAR PRA CASA, PEDIR AJUDA E DENUNCIAR ABUSO NÃO PRECISAM SER BONITOS. PLACA DE SAÍDA NUNCA É DIFÍCIL DE LER."
+        ]
+      }
+    ]
+  },
+
+  "nevers": {
+    "title": "O QUE ELE NUNCA VAI FAZER",
+    "face": "Angry",
+    "lines": [
+      ["NUNCA CONTAR UMA PESSOA.", "SEM SEGUIDORES, SEM CURTIDAS, SEM NOTA EM GENTE."],
+      ["NUNCA PARABENIZAR.", "SEM OFENSIVA, SEM MEDALHA, SEM RETROSPECTIVA."],
+      ["NUNCA FABRICAR URGÊNCIA.", "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO."],
+      ["NUNCA RECOMENDAR GOSTO.", "SEM PARA VOCÊ, SEM EM ALTA. A CIDADE E O RELÓGIO ORDENAM O MUNDO."],
+      ["NUNCA ROLAR PRA SEMPRE.", "SEM AUTOPLAY. SEM TELA FEITA PRA SER ASSISTIDA."],
+      ["NUNCA VENDER VOCÊ.", "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."],
+      ["NUNCA TE ENSINAR A USAR.", "SEM TOUR, SEM QUIZ. SALA SE APRENDE ESTANDO DENTRO."],
+      ["NUNCA AMACIAR.", "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."]
+    ]
+  },
+
+  "gift": {
+    "title": "O PRESENTE",
+    "face": "Stars",
+    "paragraphs": [
+      "É UM PRESENTE PRA ESSAS PESSOAS. AS QUE JÁ SÃO CONHECIDAS, E AS QUE NUNCA VÃO SER ENCONTRADAS.",
+      "INCLUINDO QUEM ESTÁ LENDO ISSO SOZINHO, QUE NUNCA FOI A UMA NOITE DE TECHNO, E ESTÁ PRESTES A IR NA PRIMEIRA."
+    ]
+  },
+
+  "door": {
+    "label": "O ESTÚDIO",
+    "sub": "23 CARAS. UMA SÓ SILHUETA.",
+    "href": "studio/"
+  },
+
+  "stamp": "QEVR É O APP QUE QUEM É FODA USA. NUNCA O APP QUE TENTA PARECER FODA."
+}

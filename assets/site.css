@@ -1,0 +1,274 @@
+/* QEVR / qevr.party
+   VENOM only. Square corners, hard offset shadows, uppercase SpaceMono.
+   Four brand colors, locked. The one licensed glow is ON FIRE. */
+
+:root {
+  --qevr-ink: #09090B;
+  --qevr-body: #CCFF00;
+  --qevr-pink: #FF007F;
+  --qevr-light: #FFFFFF;
+  --qevr-muted: #9A9AA5;
+  --qevr-surface: #141416;
+  --qevr-hair: #27272A;
+  --qevr-fire: #FF2A6D;
+
+  --ground: var(--qevr-ink);
+  --brand: var(--qevr-body);
+  --accent: var(--qevr-body);
+
+  --gut: clamp(20px, 5vw, 72px);
+  --rule: 1px;
+}
+
+/* after 23:00 and before 07:00 the room is open. nothing explains this. */
+html[data-mode="party"] {
+  --brand: var(--qevr-pink);
+  --accent: var(--qevr-pink);
+}
+/* 07:00. the one hour QEVR is allowed tenderness. quiet, never soft. */
+html[data-mode="dawn"] {
+  --ground: #0C0C0E;
+  --brand: var(--qevr-body);
+  --accent: var(--qevr-pink);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+
+html { background: var(--ground); }
+
+body {
+  background: var(--ground);
+  color: var(--qevr-light);
+  font-family: "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--brand); color: var(--qevr-ink); }
+
+/* ---------- the thermometer, doing the scrollbar's job ---------- */
+
+.thermo {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 10px;
+  background: var(--qevr-hair);
+  z-index: 40;
+}
+.thermo__fill {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 0;
+  background: var(--brand);
+}
+.thermo.is-fire .thermo__fill {
+  background: var(--qevr-fire);
+  box-shadow: 0 0 18px 2px var(--qevr-fire); /* the only glow in the system */
+}
+.thermo__mark {
+  position: absolute; left: 0; width: 10px; height: var(--rule);
+  background: var(--ground);
+}
+
+/* ---------- sections ---------- */
+
+main { padding-left: 10px; }
+
+section {
+  padding: clamp(56px, 12vh, 128px) var(--gut);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  position: relative;
+}
+
+.heading { display: block; margin-bottom: clamp(28px, 5vh, 56px); }
+.heading canvas { display: block; image-rendering: pixelated; }
+
+/* body copy. accented caps need the extra leading or the tilde clips. */
+.copy p {
+  font-size: clamp(15px, 1.55vw, 21px);
+  line-height: 1.85;
+  letter-spacing: 0.05em;
+  max-width: 62ch;
+  color: var(--qevr-light);
+}
+.copy p + p { margin-top: 1.5em; }
+.copy p.dim { color: var(--qevr-muted); }
+.copy p.mark { color: var(--brand); }
+
+/* ---------- arrival ---------- */
+
+.arrival {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(28px, 6vw, 96px);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+}
+.arrival__left { display: flex; flex-direction: column; gap: clamp(18px, 4vh, 40px); }
+.arrival__mascot { display: grid; place-items: center; }
+@media (max-width: 860px) {
+  .arrival { grid-template-columns: 1fr; align-content: center; }
+  .arrival__mascot { justify-self: start; margin-top: clamp(24px, 6vh, 56px); }
+}
+.arrival__word canvas, .arrival__city canvas { display: block; image-rendering: pixelated; }
+.arrival__rule {
+  width: clamp(40px, 8vw, 96px);
+  height: 6px;
+  background: var(--brand);
+  box-shadow: 4px 4px 0 var(--qevr-hair);
+}
+
+/* ---------- stances: nine headlines, one screen ---------- */
+
+.stances__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: var(--rule) solid var(--qevr-hair);
+  border-left: var(--rule) solid var(--qevr-hair);
+}
+.stance {
+  border-right: var(--rule) solid var(--qevr-hair);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  padding: clamp(18px, 2.4vw, 28px);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: clamp(112px, 13vh, 150px);
+  width: 100%;
+}
+.stance:hover, .stance:focus-visible { background: var(--qevr-surface); outline: none; }
+.stance[aria-expanded="true"] { background: var(--qevr-surface); }
+.stance__idx {
+  font-size: 11px;
+  color: var(--qevr-muted);
+  display: block;
+  margin-bottom: 10px;
+}
+.stance[aria-expanded="true"] .stance__idx { color: var(--brand); }
+.stance__head {
+  font-size: clamp(14px, 1.15vw, 17px);
+  line-height: 1.55;
+  font-weight: 700;
+}
+/* signage, not a tooltip: the bar states that the tile opens */
+.stance::after {
+  content: "";
+  display: block;
+  margin-top: auto;
+  width: 14px;
+  height: 6px;
+  background: var(--qevr-hair);
+}
+.stance:hover::after, .stance:focus-visible::after { background: var(--qevr-muted); }
+.stance[aria-expanded="true"]::after { width: 38px; background: var(--brand); }
+
+.stance__body {
+  display: none;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: var(--rule) solid var(--qevr-hair);
+}
+.stance[aria-expanded="true"] .stance__body { display: block; }
+.stance__body p {
+  font-size: clamp(12.5px, 1vw, 14.5px);
+  line-height: 1.8;
+  color: var(--qevr-muted);
+}
+.stance__body p + p { margin-top: 0.9em; }
+.stance__body { order: 2; }
+.stance::after { order: 3; }
+.stance__cells { display: block; margin-bottom: 14px; }
+.stance__cells canvas { display: block; image-rendering: pixelated; }
+
+/* ---------- nevers ---------- */
+
+.never {
+  display: grid;
+  grid-template-columns: minmax(0, 26ch) minmax(0, 1fr);
+  gap: clamp(10px, 2vw, 32px);
+  padding: clamp(13px, 1.6vh, 20px) 0;
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  align-items: baseline;
+}
+.never:first-child { border-top: var(--rule) solid var(--qevr-hair); }
+.never__key { color: var(--brand); font-size: clamp(13px, 1.05vw, 16px); line-height: 1.6; font-weight: 700; }
+.never__val { color: var(--qevr-muted); font-size: clamp(12.5px, 1vw, 15px); line-height: 1.7; }
+
+/* ---------- gift, door, stamp ---------- */
+
+.gift .copy p { font-size: clamp(17px, 2vw, 27px); line-height: 1.72; max-width: 34ch; }
+.gift .copy p:last-child { color: var(--accent); }
+
+.door {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: clamp(36px, 6vh, 64px);
+  padding: clamp(22px, 2.6vw, 30px) clamp(26px, 3vw, 40px);
+  background: var(--brand);
+  color: var(--qevr-ink);
+  text-decoration: none;
+  box-shadow: 6px 6px 0 var(--qevr-hair);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.door:hover { box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); }
+.door strong { font-size: clamp(15px, 1.5vw, 20px); }
+.door span { font-size: clamp(10px, 1vw, 12px); font-weight: 400; opacity: .85; letter-spacing: .1em; }
+
+.stamp {
+  padding: clamp(40px, 7vh, 80px) var(--gut) clamp(60px, 10vh, 110px);
+  font-size: clamp(11px, 1.05vw, 14px);
+  line-height: 1.9;
+  color: var(--qevr-muted);
+  max-width: 52ch;
+  border-bottom: 0;
+}
+.stamp b { color: var(--qevr-light); font-weight: 400; }
+
+/* ---------- the companion ---------- */
+
+.companion {
+  position: fixed;
+  right: clamp(14px, 3vw, 44px);
+  bottom: clamp(14px, 3vh, 44px);
+  z-index: 50;
+  width: 200px; height: 200px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.companion .mascot { pointer-events: auto; }
+.mascot {
+  background: transparent; border: 0; padding: 0;
+  cursor: pointer; display: block; will-change: transform;
+}
+.mascot canvas { display: block; image-rendering: pixelated; }
+.mascot:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
+
+@media (max-width: 1100px) { .stances__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+@media (max-width: 720px) {
+  .stances__grid { grid-template-columns: minmax(0, 1fr); }
+  .companion { width: 132px; height: 132px; right: 6px; bottom: 6px; }
+  .never { grid-template-columns: 1fr; gap: 4px; }
+  .thermo { width: 6px; }
+  main { padding-left: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  .thermo.is-fire .thermo__fill { box-shadow: none; }
+}

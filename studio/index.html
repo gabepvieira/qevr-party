@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QEVR / O ESTÚDIO</title>
+<meta name="description" content="AS 23 CARAS DO QEVR. UMA SÓ SILHUETA.">
+<meta name="theme-color" content="#09090B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+
+<header class="studio-head">
+  <div>
+    <h1>O ESTÚDIO</h1>
+    <p>UM QR CODE QUE GANHOU VIDA</p>
+  </div>
+  <a class="back" href="../">VOLTAR</a>
+</header>
+
+<section class="stage">
+  <div class="stage__art">
+    <button class="mascot" id="stageBtn" aria-label="QEVR"><canvas id="stageCanvas"></canvas></button>
+  </div>
+  <div class="stage__read">
+    <div class="stage__label">CARA ATUAL</div>
+    <div class="stage__name" id="stageName">PADRÃO</div>
+    <div class="stage__code">NOME CANÔNICO <b id="stageCode">DEFAULT</b></div>
+    <div class="stage__meta">
+      GRADE <b>34 X 34</b><br>
+      CARAS <b id="metaCount">23</b><br>
+      MUDA <b id="metaDiff">0</b> CÉLULAS<br>
+      CONSTANTE <b>CORPO, 3 QUADRADOS, SOMBRA</b>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="ctlFree" aria-pressed="true">SOLTA ELE</button>
+      <button class="ctl" id="ctlHold" aria-pressed="false">SEGURA</button>
+      <button class="ctl" id="ctlGlitch">RUÍDO</button>
+    </div>
+  </div>
+</section>
+
+<section class="faces">
+  <div class="faces__title">AS CARAS. SÓ A FAIXA DO ROSTO MUDA.</div>
+  <div class="faces__grid" id="facesGrid"></div>
+</section>
+
+<script src="../assets/qevr.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var TIME_AWARE = false;
+  var h = new Date().getHours();
+  var mode = TIME_AWARE ? ((h >= 23 || h < 7) ? "party" : (h === 7 ? "dawn" : "day")) : "day";
+  var forced = (location.search.match(/[?&]mode=(day|party|dawn)/) || [])[1];
+  document.documentElement.setAttribute("data-mode", forced || mode);
+
+  var stage, free = true, current = "Default";
+
+  /* Portuguese display labels. The canonical names in qevr-expressions.json never
+     change, because the app maps behaviours to them. This is a label, not a rename. */
+  var PT = {
+    "Default": "PADRÃO", "Happy": "FELIZ", "Eyes Closed": "OLHOS FECHADOS",
+    "Dead": "MORTO", "Joy": "ALEGRIA", "Anime": "ANIME", "Adoring": "ENCANTADO",
+    "Laughing": "RINDO", "Content": "CONTENTE", "Blissful": "EM PAZ", "Love": "AMOR",
+    "Love Kissing": "BEIJO DE AMOR", "Lovely": "AMOROSO", "Naughty": "SAFADO",
+    "Kissing": "BEIJANDO", "Death": "MORTE", "Stars": "ESTRELAS",
+    "Surprised": "SURPRESO", "Shocked": "CHOCADO", "Sad": "TRISTE",
+    "Unamused": "SEM GRAÇA", "Angry": "BRAVO", "Bored": "ENTEDIADO"
+  };
+  function label(n) { return PT[n] || n.toUpperCase(); }
+
+  function isSmall() { return window.matchMedia("(max-width: 760px)").matches; }
+
+  function diffCount(a, b) {
+    var A = window.Qevr.matrix(a), B = window.Qevr.matrix(b);
+    if (!A || !B) return 0;
+    var n = 0;
+    for (var i = 0; i < A.cells.length; i++) if (A.cells[i] !== B.cells[i]) n++;
+    return n;
+  }
+
+  function setCurrent(name) {
+    current = name;
+    document.getElementById("stageName").textContent = label(name);
+    document.getElementById("stageCode").textContent = name.toUpperCase();
+    document.getElementById("metaDiff").textContent = diffCount("Default", name);
+    [].forEach.call(document.querySelectorAll(".face"), function (f) {
+      f.setAttribute("aria-pressed", String(f.getAttribute("data-name") === name));
+    });
+  }
+
+  function setFree(on) {
+    free = on;
+    document.getElementById("ctlFree").setAttribute("aria-pressed", String(on));
+    document.getElementById("ctlHold").setAttribute("aria-pressed", String(!on));
+    if (!stage) return;
+    if (on) stage.start({ x: isSmall() ? 12 : 22, y: isSmall() ? 10 : 18 });
+    else { stage._running = false; stage.pos.x = 0; stage.pos.y = 0; stage.squash = 1; stage.applyTransform(); }
+  }
+
+  /* one static chip per face, so only the stage is live */
+  function chip(canvas, name, cell) {
+    var m = window.Qevr.matrix(name);
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var px = m.n * cell;
+    canvas.width = px * dpr; canvas.height = px * dpr;
+    canvas.style.width = px + "px"; canvas.style.height = px + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var css = getComputedStyle(document.documentElement);
+    var body = css.getPropertyValue("--brand").trim() || "#CCFF00";
+    var ink = css.getPropertyValue("--qevr-ink").trim() || "#09090B";
+    ctx.clearRect(0, 0, px, px);
+    for (var y = 0; y < m.n; y++) {
+      for (var x = 0; x < m.n; x++) {
+        var v = m.cells[y * m.n + x];
+        if (!v) continue;
+        ctx.fillStyle = v === 2 ? ink : body;
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+  }
+
+  window.Qevr.load("../assets/qevr-expressions.json").then(function (names) {
+    document.getElementById("metaCount").textContent = names.length;
+
+    stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
+      host: document.getElementById("stageBtn"),
+      cell: isSmall() ? 5 : 8,
+      face: "Default"
+    });
+    setCurrent("Default");
+    setFree(true);
+
+    document.getElementById("stageBtn").addEventListener("click", function () {
+      stage.poke().then(function () { setCurrent(stage.face.name); });
+    });
+
+    var grid = document.getElementById("facesGrid");
+    names.forEach(function (name) {
+      var b = document.createElement("button");
+      b.className = "face";
+      b.type = "button";
+      b.setAttribute("data-name", name);
+      b.setAttribute("aria-pressed", String(name === "Default"));
+      var c = document.createElement("canvas");
+      b.appendChild(c);
+      var t = document.createElement("span");
+      t.className = "face__name";
+      t.textContent = label(name);
+      b.appendChild(t);
+      b.addEventListener("click", function () {
+        setFree(false);
+        stage.setFace(name);
+        setCurrent(name);
+      });
+      grid.appendChild(b);
+      chip(c, name, isSmall() ? 2 : 3);
+    });
+
+    document.getElementById("ctlFree").addEventListener("click", function () { setFree(true); });
+    document.getElementById("ctlHold").addEventListener("click", function () { setFree(false); });
+    document.getElementById("ctlGlitch").addEventListener("click", function () { stage.glitch(); });
+
+    /* he keeps living: reflect whatever face he lands on */
+    setInterval(function () {
+      if (free && stage && stage.face && stage.face.name !== current) setCurrent(stage.face.name);
+    }, 400);
+  }).catch(function (e) { console.error("[studio] boot failed", e); });
+})();
+</script>
+</body>
+</html>

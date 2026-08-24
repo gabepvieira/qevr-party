@@ -1,0 +1,92 @@
+/* O ESTÚDIO. Same laws as the manifesto page: square, hard, uppercase. */
+
+.studio-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(22px, 4vh, 40px) var(--gut);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  flex-wrap: wrap;
+}
+.studio-head h1 { font-size: clamp(18px, 2.4vw, 30px); letter-spacing: .18em; color: var(--brand); font-weight: 700; }
+.studio-head p { font-size: 11px; color: var(--qevr-muted); margin-top: 8px; letter-spacing: .16em; }
+.back {
+  color: var(--qevr-muted);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .16em;
+  border: var(--rule) solid var(--qevr-hair);
+  padding: 10px 16px;
+}
+.back:hover { color: var(--qevr-light); border-color: var(--brand); }
+
+.stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  padding: clamp(32px, 7vh, 76px) var(--gut);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+}
+.stage__art { display: grid; place-items: center; }
+.stage__art canvas { display: block; image-rendering: pixelated; }
+.stage__read { min-width: 0; }
+.stage__label { font-size: 10px; color: var(--qevr-muted); letter-spacing: .22em; }
+.stage__name {
+  font-size: clamp(26px, 5vw, 62px);
+  color: var(--brand);
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.15;
+  margin: 10px 0 6px;
+  word-break: break-word;
+}
+.stage__code { font-size: 10px; color: var(--qevr-muted); letter-spacing: .18em; margin-bottom: 22px; }
+.stage__code b { color: var(--qevr-muted); font-weight: 700; }
+.stage__meta { font-size: 12px; color: var(--qevr-muted); line-height: 2; }
+.stage__meta b { color: var(--qevr-light); font-weight: 400; }
+
+.controls { display: flex; gap: 0; flex-wrap: wrap; margin-top: 24px; }
+.ctl {
+  font: inherit; text-transform: uppercase; letter-spacing: .14em;
+  font-size: 12px; padding: 14px 20px; cursor: pointer;
+  background: transparent; color: var(--qevr-light);
+  border: var(--rule) solid var(--qevr-hair);
+  margin: 0 -1px -1px 0;
+}
+.ctl:hover { background: var(--qevr-surface); }
+.ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); font-weight: 700; }
+
+.faces { padding: clamp(32px, 6vh, 64px) var(--gut) clamp(56px, 10vh, 110px); }
+.faces__title { font-size: 11px; color: var(--qevr-muted); letter-spacing: .22em; margin-bottom: 22px; }
+.faces__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  border-top: var(--rule) solid var(--qevr-hair);
+  border-left: var(--rule) solid var(--qevr-hair);
+}
+.face {
+  border-right: var(--rule) solid var(--qevr-hair);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+  padding: 16px 10px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.face:hover { background: var(--qevr-surface); }
+/* status has shape, not colour: selection is a bar, never a fill that eats him */
+.face[aria-pressed="true"] { background: var(--qevr-surface); }
+.face::after { content: ""; display: block; width: 100%; height: 6px; background: transparent; margin-top: 2px; }
+.face[aria-pressed="true"]::after { background: var(--brand); }
+.face canvas { display: block; image-rendering: pixelated; }
+.face__name {
+  font-size: 10.5px; letter-spacing: .12em; color: var(--qevr-muted);
+  text-align: center; line-height: 1.5;
+}
+.face[aria-pressed="true"] .face__name { color: var(--qevr-light); font-weight: 700; }
+
+@media (max-width: 760px) {
+  .stage { grid-template-columns: 1fr; }
+  .stage__art { justify-self: start; }
+  .faces__grid { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+}
