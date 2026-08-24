@@ -21,7 +21,7 @@
       "O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
       "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
       "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
-      "TEM NOITES QUE VC TÁ NA PISTA SOZINHO. FAZ PARTE. O QEVR NÃO VEIO RESOLVER ISSO."
+      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QEVR NÃO VEIO RESOLVER ISSO."
     ]
   },
   "people": {
@@ -95,11 +95,10 @@
         ]
       },
       {
-        "head": "MEMÓRIAS COMO TATUAGENS, NÃO CONTEÚDO.",
+        "head": "MEMÓRIAS SÃO TIPO TATUAGENS, NUNCA CONTEÚDO.",
         "face": "Sad",
         "body": [
-          "FICAM PRA SEMPRE, TODO MUNDO VÊ, NÃO DÁ PRA POSAR. MARCAM QUE ACONTECEU E QUE PASSOU.",
-          "ISSO TEM NOME. SAUDADE. O APP SEGURA, NÃO CURA."
+          "FICAM NO APP PRA SEMPRE, TODO MUNDO VÊ."
         ]
       },
       {
