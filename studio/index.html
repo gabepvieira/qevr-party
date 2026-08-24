@@ -109,7 +109,7 @@
   var LANE_SPEED = 12;      /* px per second, desktop loop */
   var STRIP_SPEED = 10;     /* px per second, phone strips */
   var TICK_MS = 80;
-  var lane = { L: 0, D: 0, S: 0, cellH: 0, W: 0, H: 0, phase: 0 };
+  var lane = { S: 0, cellH: 0, W: 0, H: 0, phase: 0, count: 23, slotSec: 1, runs: [] };
   var phoneMounted = null;  /* which layout the chips are mounted in */
   var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
 
@@ -224,39 +224,55 @@
      leave the same way. The side belts run the full height and render BEHIND
      the horizontal belts, so a side chip emerges from behind the top row and
      slides down behind the bottom one. Every wrap between belts happens fully
-     off-screen — nothing ever pops in view. The chip size is solved so the 23
-     cells pack the loop tight; a bigger screen just means bigger faces. */
+     off-screen — nothing ever pops in view.
+
+     Each belt keeps its OWN pitch — horizontal runs pack chip-width apart,
+     vertical runs cell-height apart — so the rows read as near-solid walls,
+     like the phone strips. One circulation with different local pitches means
+     the parameter is SLOT TIME, not arc length: each run contributes
+     runLength / pitch slots, a chip lives at τ = (i + phase) mod count, and
+     walking τ through the runs yields the position. Pixel speed is therefore
+     piecewise (pitch / slotSec per run); every speed change happens at a
+     belt-to-belt jump, fully outside the viewport. The chip size is solved so
+     the slots total exactly the 23 faces; a bigger screen just means bigger
+     faces. If the plate-height cap binds first, the leftover slots are
+     absorbed as a small uniform pitch scale, so gaps grow evenly instead of
+     holes appearing. */
 
   function laneCellH(S) { return S / ASPECT + NAME_H; }
 
-  function solveChipSize(W, H) {
-    /* largest S whose 23 vertical-pitch cells still fit the loop, capped so
+  function laneSlots(W, H, S) {
+    var cellH = laneCellH(S);
+    return 2 * (W + S) / (S + GAP) + 2 * (H + cellH) / (cellH + GAP);
+  }
+
+  function solveChipSize(W, H, count) {
+    /* largest S whose per-belt pitches still yield >= count slots, capped so
        the plate keeps enough height to breathe */
-    var best = 80;
-    for (var s = 80; s <= 640; s += 2) {
-      var cellH = laneCellH(s);
-      if (H - 2 * (cellH + GAP) < 300) break;
-      var L = 2 * (W + s) + 2 * (H + cellH);
-      if (23 * (cellH + GAP) <= L) best = s; else break;
+    var lo = 80, hi = 700, best = 80;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      var fits = H - 2 * (laneCellH(mid) + GAP) >= 300 && laneSlots(W, H, mid) >= count;
+      if (fits) { best = mid; lo = mid + 1; } else { hi = mid - 1; }
     }
     return best;
   }
 
-  function lanePoint(d) {
-    var hw = lane.W + lane.S;      /* horizontal run length */
-    var vv = lane.H + lane.cellH;  /* vertical run length   */
-    if (d < hw) return { x: d - lane.S, y: 0, front: true };                 /* top, left>right */
-    d -= hw;
-    if (d < vv) return { x: lane.W - lane.S, y: d - lane.cellH };            /* right, down, behind */
-    d -= vv;
-    if (d < hw) return { x: lane.W - d, y: lane.H - lane.cellH, front: true }; /* bottom, right>left */
-    d -= hw;
-    return { x: 0, y: lane.H - d };                                          /* left, up, behind */
+  function lanePoint(tau) {
+    var runs = lane.runs;
+    for (var r = 0; r < runs.length - 1; r++) {
+      if (tau < runs[r].slots) break;
+      tau -= runs[r].slots;
+    }
+    var run = runs[r];
+    var p = run.point(tau * run.pitch);
+    p.front = run.front;
+    return p;
   }
 
   function placeChips() {
     for (var i = 0; i < chips.length; i++) {
-      var p = lanePoint((i * lane.D + lane.phase) % lane.L);
+      var p = lanePoint((i + lane.phase) % lane.count);
       var el = chips[i].el;
       el.style.zIndex = p.front ? "2" : "1";
       el.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y) + "px)";
@@ -290,17 +306,33 @@
       if (phoneMounted !== false) {
         laneHost.innerHTML = ""; top.innerHTML = ""; bottom.innerHTML = "";
         chips.forEach(function (chip) { laneHost.appendChild(chip.el); });
+        /* after the chips, so same z-index paints over the columns */
+        ["top", "bottom"].forEach(function (pos) {
+          var cover = document.createElement("div");
+          cover.className = "lane__cover lane__cover--" + pos;
+          laneHost.appendChild(cover);
+        });
         phoneMounted = false;
       }
       var fw = frame.clientWidth || window.innerWidth;
       var fh = frame.clientHeight || Math.max(480, window.innerHeight - 52);
-      var frac = lane.L ? lane.phase / lane.L : 0;
-      lane.S = solveChipSize(fw, fh);
+      lane.count = chips.length;
+      lane.S = solveChipSize(fw, fh, lane.count);
       lane.cellH = laneCellH(lane.S);
       lane.W = fw; lane.H = fh;
-      lane.L = 2 * (fw + lane.S) + 2 * (fh + lane.cellH);
-      lane.D = lane.L / 23;
-      lane.phase = frac * lane.L;
+      /* absorb any slot deficit (plate cap bound first) as an even stretch */
+      var scale = laneSlots(fw, fh, lane.S) / lane.count;
+      var pitchH = (lane.S + GAP) * scale;
+      var pitchV = (lane.cellH + GAP) * scale;
+      var hw = fw + lane.S, vv = fh + lane.cellH;
+      lane.runs = [
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: d - lane.S, y: 0 }; } },                 /* top, left>right */
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: lane.W - lane.S, y: d - lane.cellH }; } }, /* right, down, behind */
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: lane.W - d, y: lane.H - lane.cellH }; } }, /* bottom, right>left */
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: 0, y: lane.H - d }; } }                  /* left, up, behind */
+      ];
+      lane.runs.forEach(function (run) { run.slots = run.len / run.pitch; });
+      lane.slotSec = pitchH / LANE_SPEED;  /* rows crawl at LANE_SPEED px/s */
       document.documentElement.style.setProperty("--band-w", Math.round(lane.S + GAP) + "px");
       document.documentElement.style.setProperty("--band-h", Math.round(lane.cellH + GAP) + "px");
       paintChips(lane.S);
@@ -346,7 +378,7 @@
         });
       } else {
         if (framePaused) return;
-        lane.phase = (lane.phase + LANE_SPEED * dt) % lane.L;
+        lane.phase = (lane.phase + dt / lane.slotSec) % lane.count;
         placeChips();
       }
     }, TICK_MS);

@@ -21,6 +21,11 @@
 /* ---------- desktop: the conveyor lane and the plate it frames ---------- */
 
 .lane { position: absolute; inset: 0; }
+/* opaque backing for each horizontal band: the side columns pass BEHIND it,
+   so they never peek through the row gaps — only in the open middle bands */
+.lane__cover { position: absolute; left: 0; right: 0; height: var(--band-h); z-index: 1; background: var(--ground); pointer-events: none; }
+.lane__cover--top { top: 0; }
+.lane__cover--bottom { bottom: 0; }
 .strip { display: none; }
 
 .face {
