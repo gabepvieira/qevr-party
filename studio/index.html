@@ -54,16 +54,9 @@
           <div class="ctlrow"><button class="ctl" id="ctlGlitch">GLITCH</button></div>
         </div>
       </div>
-      <div class="stage__meta">
-        GRADE <b>34 X 34</b><br>
-        CARAS <b id="metaCount">23</b><br>
-        MUDA <b id="metaDiff">0</b> CÉLULAS<br>
-        NUNCA MUDA <b>CORPO, 3 QUADRADOS, SOMBRA</b>
-      </div>
     </section>
 
     <section class="faces">
-      <div class="faces__title" id="gridHint">TOCA NUMA CARA. SÓ A FAIXA DO ROSTO MUDA.</div>
       <div class="faces__grid" id="facesGrid"></div>
     </section>
 
@@ -72,6 +65,7 @@
 
 <script src="../assets/pixelfont.js"></script>
 <script src="../assets/qevr.js"></script>
+<script src="../assets/cascade.js"></script>
 <script>
 (function () {
   "use strict";
@@ -111,7 +105,6 @@
     current = name;
     document.getElementById("stageName").textContent = label(name);
     document.getElementById("stageCode").textContent = name.toUpperCase();
-    document.getElementById("metaDiff").textContent = diffCount("Default", name);
     [].forEach.call(document.querySelectorAll(".face"), function (f) {
       f.setAttribute("aria-pressed", String(f.getAttribute("data-name") === name));
     });
@@ -145,35 +138,49 @@
     }
   }
 
-  /* the last chip stretches so the grid never ends ragged */
-  function fillLastCell() {
+  /* 24 cells exactly: 23 faces plus the rule tile. 24 divides by 3, 4, 6 and 8,
+     so the grid always closes. Pick the column count that makes him biggest,
+     then set the row height to his size plus the name strip: no slack. */
+  var COLS = [3, 4, 6, 8];
+  function layoutFaces() {
     var grid = document.getElementById("facesGrid");
-    var cols = getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length;
-    var n = grid.children.length;
-    if (!cols || !n) return;
-    var last = grid.children[n - 1];
-    last.style.gridColumn = "";
-    var rem = n % cols;
-    if (rem !== 0) last.style.gridColumn = "span " + (cols - rem + 1);
-  }
+    var panel = grid.parentElement;
+    var pw = panel.clientWidth, ph = panel.clientHeight;
+    if (!pw || !ph) return;
+    var nameH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--faceName")) || 18;
+    var phone = window.matchMedia("(max-width: 860px)").matches;
 
-  /* he fills his cell. no decorative padding around him. */
-  function fitChips() {
-    var art = document.querySelector(".face__art");
-    if (!art) return;
-    var r = art.getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    var cell = Math.max(1, Math.floor(Math.min(r.width, r.height) * 0.9 / 34));
+    var best = null;
+    COLS.forEach(function (c) {
+      var rows = Math.ceil(24 / c);
+      var cellW = Math.floor(pw / c) - 1;
+      var rowH = phone ? 0 : Math.floor(ph / rows);
+      /* the art box is what is left of the row after the name strip and its rule */
+      var artAvail = phone ? cellW : (rowH - nameH - 2);
+      var unit = Math.floor(Math.min(cellW - 2, artAvail) / 34);
+      if (unit < 1) return;
+      var artPx = unit * 34;
+      if (!best || artPx > best.artPx) best = { c: c, unit: unit, artPx: artPx, rowH: phone ? artPx + nameH + 1 : rowH };
+    });
+    if (!best) best = { c: phone ? 3 : 6, unit: 2, artPx: 68, rowH: 68 + nameH + 1 };
+
+    grid.style.gridTemplateColumns = "repeat(" + best.c + ", minmax(0, 1fr))";
+    grid.style.gridAutoRows = best.rowH + "px";
     [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      paintChip(f.querySelector("canvas"), f.getAttribute("data-name"), cell);
+      paintChip(f.querySelector("canvas"), f.getAttribute("data-name"), best.unit);
     });
   }
 
   function fitStage() {
     if (!stage) return;
-    var r = document.querySelector(".stage__art").getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    var cell = Math.max(2, Math.floor(Math.min(r.width, r.height) * 0.94 / 34));
+    var st = document.querySelector(".stage");
+    var cs = getComputedStyle(st);
+    var availW = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    /* measure the column, never the art box: the art box is sized by him, so
+       measuring it would feed back on itself and shrink him every relayout */
+    var phone = window.matchMedia("(max-width: 860px)").matches;
+    var availH = phone ? document.querySelector(".stage__art").clientHeight : availW;
+    var cell = Math.max(2, Math.floor(Math.min(availW, availH) * 0.99 / 34));
     stage.setCell(cell);
   }
 
@@ -195,8 +202,7 @@
 
   function relayout() {
     [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawBarMark);
-    fillLastCell();
-    fitChips();
+    layoutFaces();
     fitStage();
     if (stage) stage.paint();
   }
@@ -220,9 +226,7 @@
       document.getElementById("moveLabel").textContent = s.moveLabel;
       document.getElementById("colorLabel").textContent = s.colorLabel;
       document.getElementById("glitchLabel").textContent = s.glitchLabel;
-      document.getElementById("gridHint").textContent = s.gridHint;
     }
-    document.getElementById("metaCount").textContent = names.length;
 
     stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
       host: document.getElementById("stageBtn"), cell: 6, face: "Default"
@@ -254,6 +258,23 @@
       });
       grid.appendChild(b);
     });
+
+    var meta = document.createElement("div");
+    meta.className = "facemeta";
+    var mt = document.createElement("div");
+    mt.className = "facemeta__t";
+    mt.textContent = (COPY && COPY.studio && COPY.studio.metaTitle) || "A REGRA DELE";
+    meta.appendChild(mt);
+    var lines = (COPY && COPY.studio && COPY.studio.metaLines) || ["GRADE 34 X 34", "23 CARAS", "SÓ O ROSTO MUDA"];
+    lines.forEach(function (t) {
+      var l = document.createElement("div");
+      l.className = "facemeta__l";
+      l.textContent = t;
+      meta.appendChild(l);
+    });
+    grid.appendChild(meta);
+
+    window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
 
     document.getElementById("ctlLive").addEventListener("click", function () { setLive(true); });
     document.getElementById("ctlHold").addEventListener("click", function () { setLive(false); });

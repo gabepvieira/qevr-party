@@ -1,31 +1,27 @@
-/* O ESTÚDIO. One screen, and every box is filled. Nothing floats in black.
-   The stage never scrolls away; the face grid stretches to fill its panel. */
+/* O ESTÚDIO. One screen. Every cell filled, and he owns his cell: no decorative
+   padding, a rule, then his name. The 24th cell carries the rule he lives by,
+   so nothing is ever stretched to hide a gap.
+   --faceName is the exact name-strip height; the layout maths depends on it. */
+
+:root { --faceName: 18px; }
 
 .studio { height: 100svh; padding-top: var(--bar); display: grid; grid-template-rows: 1fr; overflow: hidden; }
-.studio__body { display: grid; grid-template-columns: minmax(260px, 26%) minmax(0, 1fr); min-height: 0; }
-
-/* ---------- stage: fills its column, top to bottom ---------- */
+.studio__body { display: grid; grid-template-columns: minmax(250px, 25%) minmax(0, 1fr); min-height: 0; }
 
 .stage {
   min-height: 0; min-width: 0;
-  padding: clamp(14px, 2.2vh, 26px) clamp(14px, 1.6vw, 26px);
+  padding: clamp(12px, 2vh, 24px) clamp(13px, 1.5vw, 24px);
   border-right: var(--rule) solid var(--qevr-hair);
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto auto;
-  gap: clamp(10px, 1.6vh, 18px);
+  display: grid; grid-template-rows: auto auto auto;
+  align-content: center;
+  gap: clamp(12px, 2.4vh, 26px);
   overflow: hidden;
 }
-.stage__art { display: grid; place-items: center; min-height: 0; }
+.stage__art { display: grid; place-items: center; min-height: 0; width: 100%; }
 .stage__label { font-size: 9px; color: var(--qevr-muted); letter-spacing: .2em; }
-.stage__name {
-  font-size: clamp(19px, 2.3vw, 36px);
-  color: var(--brand); font-weight: 700; letter-spacing: .04em;
-  line-height: 1.08; word-break: break-word; margin-top: 5px;
-}
+.stage__name { font-size: clamp(19px, 2.2vw, 34px); color: var(--brand); font-weight: 700; letter-spacing: .04em; line-height: 1.08; word-break: break-word; margin-top: 5px; }
 .stage__code { font-size: 9px; color: var(--qevr-muted); letter-spacing: .14em; margin-top: 5px; }
 .stage__code b { color: var(--qevr-light); font-weight: 700; }
-.stage__meta { font-size: 9.5px; color: var(--qevr-muted); line-height: 1.85; }
-.stage__meta b { color: var(--qevr-light); font-weight: 400; }
 
 .stage__controls { display: flex; flex-direction: column; gap: clamp(8px, 1.2vh, 14px); }
 .ctlset { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
@@ -36,8 +32,7 @@
   font: inherit; text-transform: uppercase; letter-spacing: .12em;
   font-size: 10.5px; padding: 9px 13px; cursor: pointer;
   background: transparent; color: var(--qevr-light);
-  border: var(--rule) solid var(--qevr-hair);
-  margin: 0 -1px -1px 0;
+  border: var(--rule) solid var(--qevr-hair); margin: 0 -1px -1px 0;
 }
 .ctl:hover { background: var(--qevr-surface); }
 .ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); font-weight: 700; }
@@ -46,56 +41,54 @@
 .ctl--green i { background: #CCFF00; }
 .ctl--pink i { background: #FF007F; }
 
-/* ---------- faces: stretches to fill the panel, no dead space ---------- */
+/* ---------- faces: the grid owns the whole panel ---------- */
 
-.faces { min-height: 0; min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); }
-.faces__title {
-  font-size: 9px; color: var(--qevr-muted); letter-spacing: .18em;
-  padding: clamp(11px, 1.6vh, 18px) clamp(14px, 1.6vw, 24px) clamp(9px, 1.2vh, 13px);
-}
+.faces { min-height: 0; min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
 .faces__grid {
-  min-height: 0;
+  min-height: 0; align-content: start;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 1fr);
   border-top: var(--rule) solid var(--qevr-hair);
   border-left: var(--rule) solid var(--qevr-hair);
 }
-/* no padding around him. the cell is his. a rule, then his name. */
-.face {
+.face, .facemeta {
   min-width: 0; min-height: 0;
   border-right: var(--rule) solid var(--qevr-hair);
   border-bottom: var(--rule) solid var(--qevr-hair);
+}
+.face {
   background: transparent; color: inherit; font: inherit; cursor: pointer;
-  padding: 0;
-  display: grid; grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto;
 }
 .face__art { display: grid; place-items: center; min-height: 0; overflow: hidden; }
 .face canvas { display: block; image-rendering: pixelated; }
 .face__name {
-  font-size: 9px; letter-spacing: .09em; color: var(--qevr-muted);
-  text-align: center; line-height: 1.4;
-  padding: 6px 4px; border-top: var(--rule) solid var(--qevr-hair);
+  font-size: 8px; letter-spacing: .08em; color: var(--qevr-muted);
+  text-align: center; padding: 0 4px;
+  height: var(--faceName); line-height: var(--faceName);
+  border-top: var(--rule) solid var(--qevr-hair);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .face:hover { background: var(--qevr-surface); }
 .face[aria-pressed="true"] { background: var(--qevr-surface); }
 .face[aria-pressed="true"] .face__name { color: var(--qevr-ink); background: var(--brand); font-weight: 700; border-top-color: var(--brand); }
 
-@media (max-width: 1240px) { .faces__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-@media (max-width: 1000px) { .faces__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* the 24th cell: real content, never a stretched chip */
+.facemeta { display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 10px 12px; background: var(--qevr-surface); }
+.facemeta__t { font-size: 8.5px; letter-spacing: .18em; color: var(--brand); font-weight: 700; }
+.facemeta__l { font-size: 8.5px; letter-spacing: .1em; color: var(--qevr-muted); line-height: 1.55; }
 
-/* ---------- phone: he owns the middle, controls on one line ---------- */
+/* ---------- phone ---------- */
 
 @media (max-width: 860px) {
   .studio__body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
   .stage {
     border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair);
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto auto; align-content: start;
     justify-items: center; text-align: center;
     gap: 8px; padding: 10px clamp(10px, 3vw, 18px) 12px;
   }
-  .stage__meta { display: none; }
-  .stage__art { height: min(23vh, 172px); width: 100%; }
+  .stage__art { height: min(23vh, 170px); width: 100%; }
   .stage__name { font-size: clamp(20px, 6.5vw, 30px); margin-top: 3px; }
   .stage__controls { flex-direction: row; align-items: flex-end; justify-content: center; gap: 12px; flex-wrap: nowrap; }
   .ctlset { align-items: center; }
@@ -106,9 +99,6 @@
   .ctl--swatch { gap: 0; padding: 8px 11px; }
   .ctl--swatch span { display: none; }
   .ctl--swatch i { width: 13px; height: 13px; }
-  .faces__title { padding: 9px clamp(10px, 3vw, 16px) 7px; font-size: 8px; }
-  /* 23 faces on a phone cannot all fit legibly, so give the rows a real
-     minimum and let this panel scroll. the stage above it never moves. */
-  .faces__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(104px, auto); overflow-y: auto; }
-  .face__name { font-size: 8px; padding: 5px 3px; }
+  .faces { grid-template-rows: minmax(0, 1fr); }
+  .faces__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow-y: auto; }
 }

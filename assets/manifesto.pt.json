@@ -2,7 +2,7 @@
   "lang": "pt-BR",
   "brand": "QEVR",
   "city": "SÃO PAULO",
-  "note": "COPY DECK. Regras: CAIXA ALTA sempre. Nunca travessão. Nunca ponto de exclamação. Nunca emoji. Escrever em português de verdade, nunca traduzir do inglês. Ler em voz alta antes de commitar. Editar aqui, não no HTML.",
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Escrever em português de verdade: ler em voz alta antes de commitar. Se soar como tradução do inglês, está errado.",
 
   "doors": {
     "manifesto": { "label": "O MANIFESTO", "sub": "O QUE ESTE APP É" },
@@ -34,7 +34,7 @@
   },
 
   "stances": {
-    "title": "COMO ELE FALA",
+    "title": "O JEITO DELE",
     "items": [
       {
         "head": "ELE AVISA. NUNCA COMEMORA.",
@@ -49,14 +49,14 @@
         "face": "Default",
         "body": [
           "LINE UP, LUGAR, HORA, TEMPERATURA. E ACABOU.",
-          "SEM \"NÃO PERCA\". SEM \"ÚLTIMOS INGRESSOS\". LOTAÇÃO É UM NÚMERO, DITO UMA VEZ, SECO."
+          "SEM \"NÃO PERCA\". SEM \"ÚLTIMOS INGRESSOS\". A LOTAÇÃO É UM NÚMERO, FALADO UMA VEZ, SEM DRAMA."
         ]
       },
       {
         "head": "ELE NÃO QUER NADA DE VC.",
         "face": "Bored",
         "body": [
-          "ELE SÓ ABRE A BOCA PORQUE ALGUMA COISA ACONTECEU. UMA PORTA ABRIU. UM ENDEREÇO CAIU. UMA SALA PEGOU FOGO.",
+          "ELE SÓ FALA PORQUE ACONTECEU ALGUMA COISA. ABRIRAM A PORTA. SOLTARAM O ENDEREÇO. A PISTA PEGOU FOGO.",
           "ELE NUNCA VAI TE CHAMAR DE VOLTA PORQUE SENTIU SUA FALTA."
         ]
       },
@@ -64,7 +64,7 @@
         "head": "OS ÚNICOS NÚMEROS SÃO OS DA NOITE.",
         "face": "Content",
         "body": [
-          "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. QUANTOS QUARTEIRÕES.",
+          "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. QUANTOS QUARTEIRÕES ATÉ LÁ.",
           "NENHUM NÚMERO AQUI MEDE VC NEM NINGUÉM. VC VÊ QUEM TÁ INDO. NUNCA QUANTOS."
         ]
       },
@@ -73,7 +73,7 @@
         "face": "Blissful",
         "body": [
           "NOITE MORTA É TELA PRETA, E TUDO BEM. É A VERDADE.",
-          "QUANDO APARECE COR, TEM COISA VIVA. UM AMIGO. UM FOGO. UMA PORTA."
+          "QUANDO APARECE COR, TEM COISA VIVA. UM AMIGO. UMA PISTA PEGANDO FOGO. UMA PORTA ABRINDO."
         ]
       },
       {
@@ -89,14 +89,14 @@
         "face": "Sad",
         "body": [
           "É PÚBLICA, É PRA SEMPRE, E NÃO DÁ PRA POSAR. ELA MARCA QUE ACONTECEU E QUE PASSOU.",
-          "ISSO TEM NOME. SAUDADE. O APP FOI FEITO PRA AGUENTAR, NÃO PRA CURAR."
+          "ISSO TEM NOME. SAUDADE. O APP FOI FEITO PRA SEGURAR ISSO, NÃO PRA CURAR."
         ]
       },
       {
         "head": "A GENTE GUARDA O SEGREDO DA CENA.",
         "face": "Naughty",
         "body": [
-          "ENDEREÇO CAI TARDE. PORTA FICA QUIETA. NADA MARCA LUGAR SOZINHO. NENHUMA FOTO LEVA GPS PRA FORA.",
+          "O ENDEREÇO SÓ SAI EM CIMA DA HORA. A PORTA FICA QUIETA. NADA MARCA O LOCAL SOZINHO. NENHUMA FOTO SAI DAQUI COM GPS.",
           "ONDE O POVO SE JUNTA NÃO É BANCO DE DADOS DE NINGUÉM."
         ]
       },
@@ -112,22 +112,22 @@
   },
 
   "nevers": {
-    "title": "O QUE ELE NUNCA VAI FAZER",
+    "title": "REGRAS",
     "face": "Angry",
     "lines": [
-      ["NUNCA CONTAR UMA PESSOA.", "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA EM GENTE."],
+      ["NUNCA TRANSFORMAR GENTE EM NÚMERO.", "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA EM PESSOA."],
       ["NUNCA PARABENIZAR.", "SEM OFENSIVA, SEM MEDALHA, SEM RETROSPECTIVA."],
       ["NUNCA INVENTAR PRESSA.", "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO."],
-      ["NUNCA MANDAR NO SEU GOSTO.", "SEM PARA VOCÊ, SEM EM ALTA. QUEM MANDA É A CIDADE E O RELÓGIO."],
+      ["NUNCA MANDAR NO SEU GOSTO.", "SEM FEED DE RECOMENDAÇÃO, SEM EM ALTA. QUEM MANDA É A CIDADE E O RELÓGIO."],
       ["NUNCA ROLAR PRA SEMPRE.", "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."],
       ["NUNCA VENDER VC.", "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."],
       ["NUNCA TE ENSINAR A USAR.", "SEM TOUR, SEM QUIZ. PISTA SE APRENDE PISANDO NELA."],
-      ["NUNCA AMACIAR.", "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."]
+      ["NUNCA FICAR BONITINHO.", "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."]
     ]
   },
 
   "gift": {
-    "title": "O PRESENTE",
+    "title": "UM PRESENTE",
     "face": "Stars",
     "paragraphs": [
       "É UM PRESENTE PRA QUEM VC JÁ CONHECE. E PRA QUEM VC NUNCA VAI CONHECER.",
@@ -143,6 +143,8 @@
     "moveLabel": "ELE SE MEXE SOZINHO?",
     "colorLabel": "MUDE A COR DO QEVR",
     "glitchLabel": "CLIQUE AQUI",
-    "gridHint": "TOCA NUMA CARA. SÓ A FAIXA DO ROSTO MUDA."
+    "gridHint": "AS 23 CARAS DELE",
+    "metaTitle": "A REGRA DELE",
+    "metaLines": ["GRADE 34 X 34", "23 CARAS", "SÓ O ROSTO MUDA"]
   }
 }
