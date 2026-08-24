@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>QEVR</title>
-<meta name="description" content="O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.">
+<meta name="description" content="O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
 <meta name="theme-color" content="#09090B">
 <meta property="og:title" content="QEVR">
 <meta property="og:description" content="O APP TRAZ O FATO. O RESTO É COM VC.">
@@ -50,7 +50,7 @@
     <div class="block" id="manifesto" data-open="true">
       <button class="heading heading--toggle" aria-expanded="true" aria-controls="mundoBody">
         <span class="heading__text">
-          <canvas data-cells="A CENA" data-fit="470"></canvas>
+          <canvas data-cells="A PISTA" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="world"></span>
         </span>
         <span class="heading__mark"></span>
@@ -69,6 +69,7 @@
         <span class="heading__mark"></span>
       </button>
       <div class="block__body" id="peopleBody">
+        <div class="copy" id="peopleIntro"></div>
         <div class="people__grid" id="peopleList"></div>
         <div class="world__close" id="worldClose"></div>
       </div>
@@ -77,7 +78,7 @@
     <div class="block" id="stances" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="stancesGrid">
         <span class="heading__text">
-          <canvas data-cells="O JEITO DELE" data-fit="470"></canvas>
+          <canvas data-cells="O QEVR" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="stances"></span>
         </span>
         <span class="heading__mark"></span>
@@ -88,7 +89,7 @@
     <div class="block" id="regras" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="neversList">
         <span class="heading__text">
-          <canvas data-cells="REGRAS" data-fit="470"></canvas>
+          <canvas data-cells="AS REGRAS" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="nevers"></span>
         </span>
         <span class="heading__mark"></span>
@@ -297,18 +298,23 @@
     var exit = document.getElementById("studioDoor");
     exit.innerHTML = "";
     var s = document.createElement("strong"); s.textContent = COPY.doors.studio.label; exit.appendChild(s);
-    var t = document.createElement("span"); t.textContent = COPY.doors.studio.sub; exit.appendChild(t);
+    /* the door can stand on its label alone: no sub, no empty span */
+    if (COPY.doors.studio.sub) {
+      var t = document.createElement("span"); t.textContent = COPY.doors.studio.sub; exit.appendChild(t);
+    }
   }
 
   function buildWorld() {
     var w = COPY.world;
     var host = document.getElementById("worldCopy");
-    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i >= w.paragraphs.length - 2 ? "dim" : "")); });
+    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i >= w.paragraphs.length - 1 ? "dim" : "")); });
   }
 
   function buildPeople() {
     /* the people are a deck like any other list on this page: numbered tiles,
        same borders, same paddings. these stay open, they are the heart. */
+    var intro = document.getElementById("peopleIntro");
+    if (intro && COPY.people.intro) intro.appendChild(para(COPY.people.intro));
     var list = document.getElementById("peopleList");
     COPY.people.items.forEach(function (pair, i) {
       var row = document.createElement("div"); row.className = "stance stance--still";
@@ -372,11 +378,9 @@
     COPY.gift.paragraphs.forEach(function (t) { host.appendChild(para(t)); });
     /* the closing line is the last thing UM PRESENTE says, not a footer */
     var stamp = document.getElementById("stamp");
-    var parts = COPY.stamp.split(". ");
     stamp.innerHTML = "";
-    var b = document.createElement("b"); b.textContent = parts[0] + ".";
+    var b = document.createElement("b"); b.textContent = COPY.stamp;
     stamp.appendChild(b);
-    stamp.appendChild(document.createTextNode(" " + parts.slice(1).join(". ")));
     var hint = document.getElementById("mascotHint");
     if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
     var question = document.getElementById("arrivalColorQuestion");
@@ -473,9 +477,19 @@
     mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
       host: btn, cell: cellFor(), face: "Default"
     });
-    mascot.start(boundsFor());
     btn.addEventListener("click", function () { mascot.poke(); });
     placeMascot();
+    /* his entrance is scripted, always the same three: DEFAULT, then ANIME,
+       then TE AMO (Kissing). only after that the brain takes over. reduced
+       motion skips the show and goes straight to the still. */
+    var reduceEntrance = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceEntrance) {
+      mascot.start(boundsFor());
+    } else {
+      setTimeout(function () { mascot.setFace("Anime"); }, 1300);
+      setTimeout(function () { mascot.setFace("Kissing"); }, 2800);
+      setTimeout(function () { mascot.start(boundsFor()); }, 4200);
+    }
 
     /* he notices you. 60 percent of the time it was nothing. */
     window.addEventListener("pointermove", function (e) {

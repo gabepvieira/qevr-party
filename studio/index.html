@@ -38,9 +38,7 @@
       </div>
       <div class="plate__panel">
         <div class="stage__read">
-          <div class="stage__label" id="faceLabel">OLHA A CARINHA DELE</div>
           <div class="stage__name" id="stageName">NORMAL</div>
-          <div class="stage__code"><span id="codeLabel">NO CÓDIGO</span> <b id="stageCode">DEFAULT</b></div>
         </div>
         <div class="stage__controls">
           <div class="ctlset">
@@ -51,14 +49,14 @@
             </div>
           </div>
           <div class="ctlset">
-            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">MUDE A COR DO QEVR</span><span class="lbl-short" id="colorLabelShort">COR</span></div>
+            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">COR</span><span class="lbl-short" id="colorLabelShort">COR</span></div>
             <div class="ctlrow">
               <button class="ctl ctl--swatch ctl--green" id="ctlGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
               <button class="ctl ctl--swatch ctl--pink" id="ctlPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
             </div>
           </div>
           <div class="ctlset ctlset--glitch">
-            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">CLIQUE AQUI</span><span class="lbl-short" id="glitchLabelShort">CLIQUE AQUI</span></div>
+            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">QUER VER UMA COISA?</span><span class="lbl-short" id="glitchLabelShort">QUER VER UMA COISA?</span></div>
             <div class="ctlrow"><button class="ctl" id="ctlGlitch" type="button">GLITCH</button></div>
           </div>
         </div>
@@ -116,7 +114,7 @@
   /* Canonical codes stay untouched; these are display labels only. */
   var PT = {
     "Default": "NORMAL", "Happy": "FELIZ", "Eyes Closed": "DORMINDO",
-    "Dead": "MORRI", "Joy": "ALEGRIA", "Anime": "ANIME", "Adoring": "ENCANTADO",
+    "Dead": "MORRI", "Joy": "FELIZ DA VIDA", "Anime": "ANIME", "Adoring": "ENCANTADO",
     "Laughing": "RISONHO", "Content": "CONTENTE", "Blissful": "EM PAZ", "Love": "IN LOVE",
     "Love Kissing": "BEIJINHOS", "Lovely": "SIMPÁTICO", "Naughty": "DANADINHO",
     "Kissing": "TE AMO", "Death": "MORTO (AGR DE VERDADE)", "Stars": "ESTRELINHAS",
@@ -135,7 +133,6 @@
   function setCurrent(name) {
     current = name;
     document.getElementById("stageName").textContent = label(name);
-    document.getElementById("stageCode").textContent = name.toUpperCase();
     [].forEach.call(document.querySelectorAll(".face"), function (face) {
       face.setAttribute("aria-pressed", String(face.getAttribute("data-name") === name));
     });
@@ -459,8 +456,6 @@
     names = result[1];
     if (copy && copy.studio) {
       var studioCopy = copy.studio;
-      document.getElementById("faceLabel").textContent = studioCopy.faceLabel;
-      document.getElementById("codeLabel").textContent = studioCopy.codeLabel;
       document.getElementById("moveLabel").textContent = studioCopy.moveLabel;
       document.getElementById("moveLabelShort").textContent = studioCopy.moveLabelShort || studioCopy.moveLabel;
       document.getElementById("colorLabel").textContent = studioCopy.colorLabel;

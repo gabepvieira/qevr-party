@@ -35,7 +35,7 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 
 * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
 
-html { background: var(--ground); scroll-behavior: smooth; }
+html { background: var(--ground); scroll-behavior: smooth; scroll-padding-top: var(--bar); }
 
 body {
   background: var(--ground);
@@ -169,6 +169,10 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .copy p.dim { color: var(--qevr-muted); }
 .copy p.mark { color: var(--brand); }
 
+/* the intro line reads before the tiles; an absent intro leaves no gap */
+#peopleIntro:empty { display: none; }
+#peopleIntro { margin-bottom: clamp(14px, 2.2vh, 26px); }
+
 /* the people are a deck like every other list: numbered tiles, same borders */
 .people__grid {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
@@ -188,7 +192,9 @@ main { padding-left: 10px; padding-top: var(--bar); }
   border-top: var(--rule) solid var(--qevr-hair);
   border-left: var(--rule) solid var(--qevr-hair);
 }
-#neversList { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* a deck always ends on a full row: when the last tile opens a new row alone,
+   it takes the whole row — a wide closing tile, never a hole */
+.stances__grid > .stance:nth-child(3n+1):last-child { grid-column: 1 / -1; }
 .stance {
   border-right: var(--rule) solid var(--qevr-hair);
   border-bottom: var(--rule) solid var(--qevr-hair);
@@ -239,14 +245,24 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .mascot:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
 
 @media (max-width: 1100px) {
-  .stances__grid, #neversList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stances__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stances__grid > .stance:nth-child(2n+1):last-child { grid-column: 1 / -1; }
 }
 
 @media (max-width: 720px) {
+  /* the landing is two pages, not a scroll with half-states: a swipe settles
+     on him or on the read, never between. inside the read (an area taller
+     than the screen) scrolling stays free — snap only guards the two doors.
+     (body carries overflow-x: hidden, so it is the propagated scroller:
+     the snap-type must sit on BOTH roots or chromium ignores it) */
+  html, body { scroll-snap-type: y mandatory; }
+  .arrival { scroll-snap-align: start; }
+  .blocks { scroll-snap-align: start; }
+
   .stances__grid, #neversList, .people__grid { grid-template-columns: minmax(0, 1fr); }
-  /* on a phone there is no free corner: he never covers content (soul rule),
-     so once the arrival scrolls away he steps offstage instead of sitting on the copy */
-  .companion { display: none; }
+  /* GP's ruling: on the read he takes the bottom-right corner, same as the
+     app. small zone, small cell, and only he himself takes the tap */
+  .companion { width: 92px; height: 92px; right: 10px; bottom: 12px; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
   .arrival { padding-inline: 16px; gap: 14px; }

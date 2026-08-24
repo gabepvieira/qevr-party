@@ -3,7 +3,9 @@
 First contact. A partier who has never heard of QEVR lands here. The landing is two
 screens: the first is ONLY him — QEVR huge and centered, `VAI, CLICA EM MIM` above,
 `EU TBM MUDO DE COR :3` and the VERDE/ROSA choice below, nothing else. Scrolling past
-the fold starts the read (A CENA onward). The bar keeps O MANIFESTO and O ESTÚDIO one
+the fold starts the read (A PISTA onward). On a phone the two screens are two PAGES:
+scroll snaps to him or to the read, never between them (GP's ruling — "no half pages");
+inside the read, scrolling is free. The bar keeps O MANIFESTO and O ESTÚDIO one
 tap away from anywhere; the one door on the page is the studio exit after the stamp.
 
 **Live at https://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
@@ -40,8 +42,10 @@ errors: accents, agreement, actual typos. Read every line out loud; if it would 
 said at a party, rewrite it. Write Portuguese, never translate English.
 
 A punchline has to mean something. "O ESCURO É O CHÃO. A COR É A LUZ CHEGANDO." sounded
-impactful and said nothing; it is now "SÓ TEM COR QUANDO TEM COISA VIVA.", which says the
-actual mechanic. If a head only works after you read the body, the head is wrong.
+impactful and said nothing; its rewrite ("SÓ TEM COR QUANDO TEM COISA VIVA.") later died
+too, for insider-ness — it described a mechanic no visitor had ever seen. If a head only
+works after you read the body, or only after you have used the app, the head is wrong.
+The scene's own law (Mamba Negra): describe what the night DOES, never what it MEANS.
 
 Everything else about the copy: CAIXA ALTA always, no em dashes, no exclamation points,
 no emoji, and it all lives in `assets/manifesto.pt.json` — never in markup.
@@ -62,19 +66,21 @@ One rule, both pages, both breakpoints:
 
 ## The section grammar
 
-The manifesto is an accordion of five blocks — A CENA (open on arrival), AS PESSOAS,
-O JEITO DELE, REGRAS, UM PRESENTE — one open at a time, all headings drawn at one
+The manifesto is an accordion of five blocks — A PISTA (open on arrival), AS PESSOAS,
+ELE É ASSIM, AS REGRAS, UM PRESENTE — one open at a time, all headings drawn at one
 shared cell size, each heading carrying a small descriptor that says what sits behind
 it (`sub` in the copy deck). A label that needs the click to explain itself is a bad
-label.
+label. (One sanctioned exception: the studio exit door carries no sub — GP's ruling;
+O ESTÚDIO stands alone.)
 
 Inside a block there are exactly two kinds of content:
 
 - **Prose** — narrative paragraphs, max 64ch, left column.
 - **Deck** — any enumeration is numbered tiles: index, head, body, same borders, same
-  paddings, everywhere. The nine stances, the eight nevers and the four people are the
-  same component. A deck always ends on a full row (9 = 3×3, 8 = 4×2, people 2×2);
-  a deck with a hole in it is a bug.
+  paddings, everywhere. The seven stances, the seven regras and the four people are the
+  same component. A deck always ends on a full row (7 = 3+3+1 with the last tile taking
+  the whole row, people 2×2); a deck with a hole in it is a bug. When the last tile
+  opens a row alone it spans the row — a wide closing tile, never a hole.
 
 Interactive tiles open on tap (one at a time). The people tiles stay open — they are
 the heart of AS PESSOAS, not a disclosure.
@@ -125,7 +131,9 @@ and the crawl resumes a beat after it lets go.
 - Fill the box. A layout that sizes to its content and leaves the remainder black reads
   as broken, not as breathing room.
 - Hierarchy follows importance. The closing stamp is the loudest type on the page.
-- Never hijack the scroll. No scroll-snap, no scrolljacking. The reader drives.
+- Never hijack the scroll inside the read. The reader drives. One sanctioned exception
+  (GP's ruling): on a phone the landing snaps between its two pages — him, then the
+  read; nothing else ever snaps.
 
 ## The time of day mechanic (built, currently off)
 

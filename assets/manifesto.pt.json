@@ -10,20 +10,18 @@
     },
     "studio": {
       "label": "O ESTÚDIO",
-      "sub": "MEXE COM ELE"
+      "sub": ""
     }
   },
   "world": {
-    "title": "A CENA",
+    "title": "A PISTA",
     "sub": "DE ONDE O QEVR VEIO",
     "face": "Content",
     "paragraphs": [
-      "O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. E HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.",
-      "FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE TECHNO ONDE TODO MUNDO PARECE FODA, PORQUE TECHNO É FODA.",
-      "ÀS VEZES VC TÁ LÁ COM AMIGOS. ÀS VEZES VC TÁ SOZINHO, PENSANDO NO SEU FUTURO NUM MUNDO QUE NÃO TE OFERECE NENHUM.",
-      "OU NÃO PENSANDO EM NADA.",
-      "A PISTA PODE SER SOLITÁRIA ÀS VEZES. E A SOLIDÃO FAZ PARTE.",
-      "E É POR ISSO QUE NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
+      "O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
+      "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
+      "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
+      "TEM NOITES QUE VC TÁ NA PISTA SOZINHO. FAZ PARTE. O QEVR NÃO VEIO RESOLVER ISSO."
     ]
   },
   "people": {
@@ -37,11 +35,11 @@
       ],
       [
         "DESCONHECIDOS",
-        "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
+        "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU."
       ],
       [
-        "FICANTES E EX-FICANTES",
-        "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SABE QUEM ELAS SÃO."
+        "CRUSHES",
+        "VC SABE QUEM SÃO."
       ],
       [
         "O AMOR DA SUA VIDA",
@@ -49,33 +47,32 @@
       ]
     ],
     "close": [
-      "FESTAS, SOLIDÃO, PESSOAS, TODAS PARTE DE UM MOMENTO.",
+      "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
       "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
     ]
   },
   "stances": {
-    "title": "O JEITO DELE",
+    "title": "O QEVR",
     "sub": "COMO ELE FUNCIONA",
     "items": [
       {
         "head": "ELE AVISA. NUNCA COMEMORA.",
         "face": "Unamused",
         "body": [
-          "ELE DIZ \"ELA CHEGOU\". ELE NÃO DIZ \"SEU CRUSH ACABOU DE CHEGAR\".",
-          "O APP TRAZ O FATO. O RESTO É COM VC."
+          "COMEÇOU O ROLÊ, ELE AVISA. COMEÇOU O SOM, ELE AVISA. E SÓ ISSO."
         ]
       },
       {
-        "head": "ELE É O FLYER, NUNCA O PROMOTER.",
+        "head": "LINE UP, LUGAR, HORA. E É ISSO.",
         "face": "Default",
         "body": [
-          "LINE UP, LUGAR, HORA, TEMPERATURA. E ACABOU.",
-          "SEM \"NÃO PERCA\". SEM \"ÚLTIMOS INGRESSOS\". A LOTAÇÃO É UM NÚMERO, FALADO UMA VEZ, SEM DRAMA."
+          "NUNCA \"NÃO PERCA\", NUNCA \"ÚLTIMOS INGRESSOS\".",
+          "LOTAÇÃO É SÓ UM NÚMERO, FALADO UMA VEZ."
         ]
       },
       {
-        "head": "ELE NÃO QUER NADA DE VC.",
+        "head": "ELE NÃO FICA TE CHAMANDO.",
         "face": "Bored",
         "body": [
           "ELE SÓ FALA PORQUE ACONTECEU ALGUMA COISA. ABRIRAM A PORTA. SOLTARAM O ENDEREÇO. A PISTA PEGOU FOGO.",
@@ -83,90 +80,69 @@
         ]
       },
       {
-        "head": "OS ÚNICOS NÚMEROS SÃO OS DA NOITE.",
+        "head": "VC VÊ QUEM VAI, NUNCA QUANTOS.",
         "face": "Content",
         "body": [
-          "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. QUANTOS QUARTEIRÕES ATÉ LÁ.",
-          "NENHUM NÚMERO AQUI MEDE VC NEM NINGUÉM. VC VÊ QUEM TÁ INDO. NUNCA QUANTOS."
-        ]
-      },
-      {
-        "head": "SÓ TEM COR QUANDO TEM COISA VIVA.",
-        "face": "Blissful",
-        "body": [
-          "NOITE MORTA É TELA PRETA, E TUDO BEM. É A VERDADE.",
-          "QUANDO ACENDE, TEM COISA ROLANDO. UM AMIGO. UMA PISTA PEGANDO FOGO. UMA PORTA ABRINDO."
+          "NÚMERO AQUI É COISA DA NOITE. HORA, PREÇO, TEMPERATURA, QUANTOS QUARTEIRÕES ATÉ LÁ.",
+          "GENTE NÃO ENTRA NA CONTA."
         ]
       },
       {
         "head": "O CELULAR VOLTA PRO BOLSO.",
         "face": "Eyes Closed",
         "body": [
-          "UMA OLHADA, UMA RESPOSTA, TELA APAGADA. AQUI NADA TE PRENDE.",
           "SE VC PASSOU A NOITE OLHANDO PRO APP, O APP FALHOU."
         ]
       },
       {
-        "head": "MEMÓRIA É CICATRIZ, NÃO CONTEÚDO.",
+        "head": "MEMÓRIAS COMO TATUAGENS, NÃO CONTEÚDO.",
         "face": "Sad",
         "body": [
-          "É PÚBLICA, É PRA SEMPRE, E NÃO DÁ PRA POSAR. ELA MARCA QUE ACONTECEU E QUE PASSOU.",
-          "ISSO TEM NOME. SAUDADE. O APP FOI FEITO PRA SEGURAR ISSO, NÃO PRA CURAR."
+          "FICAM PRA SEMPRE, TODO MUNDO VÊ, NÃO DÁ PRA POSAR. MARCAM QUE ACONTECEU E QUE PASSOU.",
+          "ISSO TEM NOME. SAUDADE. O APP SEGURA, NÃO CURA."
         ]
       },
       {
-        "head": "A GENTE GUARDA O SEGREDO DA CENA.",
-        "face": "Naughty",
-        "body": [
-          "O ENDEREÇO SÓ SAI EM CIMA DA HORA. A PORTA FICA QUIETA. NADA MARCA O LOCAL SOZINHO. NENHUMA FOTO SAI DAQUI COM GPS.",
-          "ONDE O POVO SE JUNTA NÃO É BANCO DE DADOS DE NINGUÉM."
-        ]
-      },
-      {
-        "head": "VOLTAR PRA CASA FAZ PARTE DA NOITE.",
+        "head": "ME AVISA QUANDO CHEGAR.",
         "face": "Surprised",
         "body": [
-          "ESSE É O ÚNICO LUGAR ONDE O APP FALA CLARO E POR EXTENSO.",
-          "VOLTAR PRA CASA, PEDIR AJUDA E DENUNCIAR ABUSO NÃO PRECISAM SER BONITOS. PLACA DE SAÍDA NUNCA É DIFÍCIL DE LER."
+          "A ÚNICA PARTE DO APP SEM ESTILO NENHUM. VOLTAR PRA CASA, PEDIR AJUDA, TUDO POR EXTENSO.",
+          "PLACA DE SAÍDA SE LÊ DE LONGE."
         ]
       }
     ]
   },
   "nevers": {
-    "title": "REGRAS",
+    "title": "AS REGRAS",
     "sub": "O QUE ELE NUNCA VAI FAZER",
     "face": "Angry",
     "lines": [
       [
-        "NUNCA TRANSFORMAR GENTE EM NÚMERO.",
+        "AQUI NINGUÉM VIRA NÚMERO.",
         "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA PRA NINGUÉM."
       ],
       [
-        "NUNCA PARABENIZAR.",
-        "SEM OFENSIVA, SEM MEDALHA, SEM RETROSPECTIVA."
-      ],
-      [
-        "NUNCA INVENTAR PRESSA.",
+        "ELE NÃO TE APRESSA.",
         "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO."
       ],
       [
-        "NUNCA MANDAR NO SEU GOSTO.",
+        "ELE NÃO ESCOLHE POR VC.",
         "SEM FEED DE RECOMENDAÇÃO, SEM \"EM ALTA\". QUEM MANDA É A CIDADE E O RELÓGIO."
       ],
       [
-        "NUNCA ROLAR PRA SEMPRE.",
+        "TUDO AQUI TEM FIM. INCLUSIVE O FEED.",
         "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."
       ],
       [
-        "NUNCA TE VENDER.",
+        "ELE NÃO TE VENDE.",
         "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."
       ],
       [
-        "NUNCA TE ENSINAR A USAR.",
-        "SEM TOUR, SEM QUIZ. PISTA SE APRENDE PISANDO NELA."
+        "NINGUÉM TE ENSINA A DANÇAR.",
+        "SEM TOUR, SEM QUIZ. VC APRENDE USANDO."
       ],
       [
-        "NUNCA FICAR BONITINHO.",
+        "ELE NÃO SE FAZ DE FOFO.",
         "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO."
       ]
     ]
@@ -176,19 +152,17 @@
     "sub": "PRA QUEM ELE É",
     "face": "Stars",
     "paragraphs": [
-      "QEVR É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. PRA TODOS QUE NUNCA VOU CONHECER.",
-      "UM APP PRA SER USADO ENTRE AMIGOS, OU SOZINHO."
+      "QEVR É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+      "UM APP PRA USAR COM OS AMIGOS. OU SOZINHO."
     ]
   },
-  "stamp": "QEVR É O APP QUE QUEM É FODA USA. NUNCA O APP QUE TENTA PARECER FODA.",
+  "stamp": "NOS VEMOS NA PISTA.",
   "studio": {
-    "faceLabel": "OLHA A CARINHA DELE",
-    "codeLabel": "NO CÓDIGO",
     "moveLabel": "ELE SE MEXE SOZINHO?",
     "moveLabelShort": "SE MEXE?",
-    "colorLabel": "MUDE A COR DO QEVR",
+    "colorLabel": "COR",
     "colorLabelShort": "COR",
-    "glitchLabel": "CLIQUE AQUI",
+    "glitchLabel": "QUER VER UMA COISA?",
     "metaTitle": "A REGRA DELE",
     "metaLines": [
       "GRADE 34 X 34",
