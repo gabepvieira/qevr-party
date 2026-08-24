@@ -7,7 +7,7 @@
 <meta name="description" content="QEVR. NASCEU DAS NOITES DE UMA PESSOA E PERTENCE A TODO MUNDO QUE TEM NOITES ASSIM.">
 <meta name="theme-color" content="#09090B">
 <meta property="og:title" content="QEVR">
-<meta property="og:description" content="O APP TRAZ O FATO. VOCÊ TRAZ O SENTIMENTO.">
+<meta property="og:description" content="O APP TRAZ O FATO. O RESTO É COM VOCÊ.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,43 +18,48 @@
 
 <div class="thermo" id="thermo" aria-hidden="true"><div class="thermo__fill" id="thermoFill"></div></div>
 
+<header class="bar">
+  <a class="bar__mark" href="#topo" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
+  <nav class="bar__nav">
+    <a href="#manifesto" aria-current="page">MANIFESTO</a>
+    <a href="studio/">O ESTÚDIO</a>
+  </nav>
+</header>
+
 <main>
-  <section class="arrival">
+  <section class="arrival" id="topo">
     <div class="arrival__left">
-      <div class="arrival__word"><canvas data-cells="QEVR" data-fit="620"></canvas></div>
-      <div class="arrival__city"><canvas data-cells="SÃO PAULO" data-fit="300" data-dim="1"></canvas></div>
+      <div class="arrival__word"><canvas data-cells="QEVR" data-fit="560"></canvas></div>
+      <div class="arrival__city"><canvas data-cells="SÃO PAULO" data-fit="280" data-dim="1"></canvas></div>
       <div class="arrival__rule"></div>
+      <div class="doors" id="doors"></div>
     </div>
     <div class="arrival__mascot" id="arrivalSlot">
       <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
     </div>
   </section>
 
-  <section id="world">
-    <div class="heading"><canvas data-cells="O MUNDO" data-fit="440"></canvas></div>
-    <div class="copy" id="worldCopy"></div>
+  <section id="manifesto">
+    <div class="heading"><canvas data-cells="O MUNDO" data-fit="420"></canvas></div>
+    <div class="copy copy--cols" id="worldCopy"></div>
   </section>
 
   <section id="stances">
-    <div class="heading"><canvas data-cells="COMO ELE FALA" data-fit="560"></canvas></div>
+    <div class="heading"><canvas data-cells="COMO ELE FALA" data-fit="540"></canvas></div>
     <div class="stances__grid" id="stancesGrid"></div>
   </section>
 
-  <section id="nevers">
-    <div class="heading"><canvas data-cells="O QUE ELE NUNCA VAI FAZER" data-fit="760"></canvas></div>
-    <div id="neversList"></div>
+  <section class="closing" id="fim">
+    <div class="closing__col">
+      <div class="heading"><canvas data-cells="O QUE ELE NUNCA VAI FAZER" data-fit="700"></canvas></div>
+      <div id="neversList"></div>
+    </div>
+    <div class="closing__col gift">
+      <div class="heading"><canvas data-cells="O PRESENTE" data-fit="380"></canvas></div>
+      <div class="copy" id="giftCopy"></div>
+      <div class="stamp" id="stamp"></div>
+    </div>
   </section>
-
-  <section id="gift" class="gift">
-    <div class="heading"><canvas data-cells="O PRESENTE" data-fit="500"></canvas></div>
-    <div class="copy" id="giftCopy"></div>
-    <a class="door" id="door" href="studio/">
-      <strong id="doorLabel">O ESTÚDIO</strong>
-      <span id="doorSub"></span>
-    </a>
-  </section>
-
-  <footer class="stamp" id="stamp"></footer>
 </main>
 
 <div class="companion" id="companionSlot" aria-hidden="true"></div>
@@ -65,37 +70,27 @@
 (function () {
   "use strict";
 
-  /* ---------- the page knows what time it is where you are ---------- */
-  /* lime only for now. the time-of-day flip is built and waiting in site.css:
-     set TIME_AWARE to true to bring it back. */
+  /* lime only for now. the time-of-day flip is built and waiting in site.css. */
   var TIME_AWARE = false;
   var h = new Date().getHours();
   var mode = TIME_AWARE ? ((h >= 23 || h < 7) ? "party" : (h === 7 ? "dawn" : "day")) : "day";
-  /* ?mode=day|party|dawn forces a state. for looking at it, not for the reader. */
   var forced = (location.search.match(/[?&]mode=(day|party|dawn)/) || [])[1];
   document.documentElement.setAttribute("data-mode", forced || mode);
 
-  function mutedColor() {
-    return getComputedStyle(document.documentElement).getPropertyValue("--qevr-muted").trim() || "#9A9AA5";
+  function cssVar(n, fb) {
+    return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb;
   }
-  function brandColor() {
-    return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00";
-  }
+  function brandColor() { return cssVar("--brand", "#CCFF00"); }
+  function mutedColor() { return cssVar("--qevr-muted", "#9A9AA5"); }
 
   /* ---------- headings drawn from the mascot's own cells ---------- */
   function drawCells(canvas) {
     var text = canvas.getAttribute("data-cells");
     var m = window.QevrType.textMatrix(text);
-    var cell;
     var fitMax = parseFloat(canvas.getAttribute("data-fit"));
-    if (fitMax) {
-      /* integer cell size, so the grid never blurs or shears */
-      var host = canvas.parentElement;
-      var avail = Math.min(host.clientWidth || window.innerWidth, fitMax);
-      cell = Math.max(2, Math.floor(avail / m.w));
-    } else {
-      cell = parseInt(canvas.getAttribute("data-cell"), 10) || 4;
-    }
+    var host = canvas.parentElement;
+    var avail = Math.min(host.clientWidth || window.innerWidth, fitMax || 400);
+    var cell = Math.max(2, Math.floor(avail / m.w));
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
     canvas.width = m.w * cell * dpr;
     canvas.height = m.h * cell * dpr;
@@ -113,12 +108,8 @@
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", text);
   }
+  function drawAllCells() { [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawCells); }
 
-  function drawAllCells() {
-    [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawCells);
-  }
-
-  /* ---------- content ---------- */
   var COPY = null, mascot = null;
 
   function para(text, cls) {
@@ -128,10 +119,25 @@
     return p;
   }
 
+  function buildDoors() {
+    var host = document.getElementById("doors");
+    var d = COPY.doors;
+    [["manifesto", "#manifesto", true], ["studio", "studio/", false]].forEach(function (spec) {
+      var cfg = d[spec[0]];
+      var a = document.createElement("a");
+      a.className = "door" + (spec[2] ? " door--lead" : "");
+      a.href = spec[1];
+      var s = document.createElement("strong"); s.textContent = cfg.label; a.appendChild(s);
+      var t = document.createElement("span"); t.textContent = cfg.sub; a.appendChild(t);
+      host.appendChild(a);
+    });
+  }
+
   function buildWorld() {
     var host = document.getElementById("worldCopy");
+    var n = COPY.world.paragraphs.length;
     COPY.world.paragraphs.forEach(function (t, i) {
-      host.appendChild(para(t, i === COPY.world.paragraphs.length - 1 ? "mark" : (i === 2 ? "dim" : "")));
+      host.appendChild(para(t, i === n - 1 ? "mark" : (i === 2 ? "dim" : "")));
     });
   }
 
@@ -139,30 +145,23 @@
     var grid = document.getElementById("stancesGrid");
     COPY.stances.items.forEach(function (item, i) {
       var b = document.createElement("button");
-      b.className = "stance";
-      b.type = "button";
+      b.className = "stance"; b.type = "button";
       b.setAttribute("aria-expanded", "false");
-
       var idx = document.createElement("span");
       idx.className = "stance__idx";
       idx.textContent = (i + 1 < 10 ? "0" : "") + (i + 1);
       b.appendChild(idx);
-
       var head = document.createElement("span");
-      head.className = "stance__head";
-      head.textContent = item.head;
+      head.className = "stance__head"; head.textContent = item.head;
       b.appendChild(head);
-
       var body = document.createElement("span");
       body.className = "stance__body";
       item.body.forEach(function (t) { body.appendChild(para(t)); });
       b.appendChild(body);
-
       b.addEventListener("click", function () {
         var open = b.getAttribute("aria-expanded") === "true";
         [].forEach.call(grid.children, function (c) { c.setAttribute("aria-expanded", "false"); });
         b.setAttribute("aria-expanded", open ? "false" : "true");
-        /* no fade, no ease. it is there or it is not. */
         if (!open && mascot) {
           mascot.ignoredSince = Date.now();
           mascot.setFace(item.face);
@@ -176,20 +175,16 @@
   function buildNevers() {
     var host = document.getElementById("neversList");
     COPY.nevers.lines.forEach(function (pair) {
-      var row = document.createElement("div");
-      row.className = "never";
+      var row = document.createElement("div"); row.className = "never";
       var k = document.createElement("div"); k.className = "never__key"; k.textContent = pair[0];
       var v = document.createElement("div"); v.className = "never__val"; v.textContent = pair[1];
-      row.appendChild(k); row.appendChild(v);
-      host.appendChild(row);
+      row.appendChild(k); row.appendChild(v); host.appendChild(row);
     });
   }
 
   function buildGift() {
     var host = document.getElementById("giftCopy");
     COPY.gift.paragraphs.forEach(function (t) { host.appendChild(para(t)); });
-    document.getElementById("doorLabel").textContent = COPY.door.label;
-    document.getElementById("doorSub").textContent = COPY.door.sub;
     var stamp = document.getElementById("stamp");
     var parts = COPY.stamp.split(". ");
     stamp.innerHTML = "";
@@ -201,20 +196,15 @@
   /* ---------- he starts life size, then takes his corner ---------- */
   var inCorner = false;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
-  function cellFor() {
-    if (inCorner) return isSmall() ? 2 : 3;
-    return isSmall() ? 5 : 8;
-  }
+  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : (isSmall() ? 6 : 10); }
   function boundsFor() {
-    if (inCorner) return { x: isSmall() ? 16 : 30, y: isSmall() ? 12 : 24 };
-    return { x: isSmall() ? 10 : 22, y: isSmall() ? 10 : 18 };
+    return inCorner ? { x: isSmall() ? 14 : 26, y: isSmall() ? 10 : 20 }
+                    : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
   }
   function placeMascot() {
     if (!mascot) return;
     var btn = document.getElementById("mascotBtn");
-    var target = inCorner
-      ? document.getElementById("companionSlot")
-      : document.getElementById("arrivalSlot");
+    var target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
     if (btn.parentElement !== target) target.appendChild(btn);
     mascot.pos.x = 0; mascot.pos.y = 0; mascot.squash = 1;
     mascot.applyTransform();
@@ -222,48 +212,45 @@
     mascot._bounds = boundsFor();
   }
   function checkCorner() {
-    var arrival = document.querySelector(".arrival");
+    var arrival = document.getElementById("topo");
     if (!arrival) return;
-    /* hysteresis so he never flickers on the boundary */
     var b = arrival.getBoundingClientRect().bottom;
-    var next = inCorner ? b > 160 ? false : true : b < 60 ? true : false;
+    var next = inCorner ? (b > 200 ? false : true) : (b < 90 ? true : false);
     if (next !== inCorner) { inCorner = next; placeMascot(); }
   }
 
   /* ---------- the thermometer replaces the scrollbar ---------- */
   var fill = document.getElementById("thermoFill");
   var thermo = document.getElementById("thermo");
+  var wasFire = false;
   function onScroll() {
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
     fill.style.height = (p * 100) + "%";
-    thermo.classList.toggle("is-fire", p > 0.92);
+    var fire = p > 0.92;
+    thermo.classList.toggle("is-fire", fire);
+    if (fire && !wasFire && mascot) mascot.setFace(COPY ? COPY.gift.face : "Stars");
+    wasFire = fire;
     checkCorner();
   }
 
   /* ---------- he reads it with you ---------- */
   function watchSections() {
-    var map = {
-      world: COPY.world.face,
-      stances: "Default",
-      nevers: COPY.nevers.face,
-      gift: COPY.gift.face
-    };
     if (!("IntersectionObserver" in window)) return;
+    var map = { manifesto: COPY.world.face, stances: "Default", fim: COPY.nevers.face };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (!e.isIntersecting || !mascot) return;
+        if (!e.isIntersecting || !mascot || wasFire) return;
         var f = map[e.target.id];
         if (f) mascot.setFace(f);
       });
-    }, { threshold: 0.45 });
-    ["world", "stances", "nevers", "gift"].forEach(function (id) {
+    }, { threshold: 0.4 });
+    Object.keys(map).forEach(function (id) {
       var el = document.getElementById(id);
       if (el) io.observe(el);
     });
   }
 
-  /* ---------- boot ---------- */
   drawAllCells();
 
   Promise.all([
@@ -271,7 +258,8 @@
     window.Qevr.load("assets/qevr-expressions.json")
   ]).then(function (res) {
     COPY = res[0];
-    buildWorld(); buildStances(); buildNevers(); buildGift();
+    buildDoors(); buildWorld(); buildStances(); buildNevers(); buildGift();
+    drawAllCells();
     onScroll();
 
     var btn = document.getElementById("mascotBtn");
@@ -279,7 +267,6 @@
       host: btn, cell: cellFor(), face: "Default"
     });
     mascot.start(boundsFor());
-
     btn.addEventListener("click", function () { mascot.poke(); });
     placeMascot();
 
@@ -291,19 +278,13 @@
     }, { passive: true });
 
     watchSections();
-  }).catch(function (err) {
-    console.error("[qevr] boot failed", err);
-  });
+  }).catch(function (err) { console.error("[qevr] boot failed", err); });
 
   window.addEventListener("scroll", onScroll, { passive: true });
   var rt;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () {
-      drawAllCells();
-      onScroll();
-      if (mascot) placeMascot();
-    }, 150);
+    rt = setTimeout(function () { drawAllCells(); onScroll(); placeMascot(); }, 150);
   });
 })();
 </script>
