@@ -179,15 +179,12 @@ main > section {
 
 /* ---------- closing: the nevers and the gift share one screen ---------- */
 
-.closing { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(24px, 3.4vw, 64px); align-items: start; }
+.closing { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(20px, 3vh, 40px); align-content: center; }
+#neversList { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) { #neversList { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .closing__col { min-width: 0; }
 
-.never { display: grid; grid-template-columns: minmax(0, 25ch) minmax(0, 1fr); gap: clamp(8px, 1.6vw, 26px); padding: clamp(9px, 1.15vh, 15px) 0; border-bottom: var(--rule) solid var(--qevr-hair); align-items: baseline; }
-.never:first-child { border-top: var(--rule) solid var(--qevr-hair); }
-.never__key { color: var(--brand); font-size: clamp(11.5px, .95vw, 14px); line-height: 1.55; font-weight: 700; }
-.never__val { color: var(--qevr-muted); font-size: clamp(11px, .9vw, 13px); line-height: 1.6; }
-
-.gift .copy p { font-size: clamp(15px, 1.5vw, 22px); line-height: 1.65; max-width: 32ch; }
+.gift .copy p { font-size: clamp(14px, 1.3vw, 19px); line-height: 1.65; max-width: 46ch; }
 .gift .copy p:last-child { color: var(--accent); }
 .stamp {
   grid-column: 1 / -1;
@@ -217,8 +214,6 @@ main > section {
   .world__grid { grid-template-columns: 1fr; gap: clamp(20px, 3vh, 32px); }
   .arrival { grid-template-columns: 1fr; align-content: center; }
   .arrival__mascot { justify-self: start; }
-  .closing { grid-template-columns: 1fr; }
-  .never { grid-template-columns: 1fr; gap: 3px; }
 }
 
 @media (max-width: 720px) {
@@ -234,9 +229,19 @@ main > section {
     display: block; width: 14px; height: 6px; background: var(--qevr-hair); flex: none;
   }
   [data-open="true"] > .heading--toggle .heading__mark { width: 28px; background: var(--brand); }
-  [data-open="false"] .stances__grid, [data-open="false"] #neversList { display: none; }
-  [data-open="true"] .stances__grid, [data-open="true"] #neversList { margin-top: 14px; }
-  .closing { gap: 26px; }
+  [data-open="false"] .stances__grid,
+  [data-open="false"] #neversList,
+  [data-open="false"] #giftBody { display: none; }
+  [data-open="true"] .stances__grid,
+  [data-open="true"] #neversList,
+  [data-open="true"] #giftBody { margin-top: 14px; }
+  /* the three headings read as one stack: shared borders, no section rule between */
+  .heading--toggle { margin-bottom: -1px; }
+  #stances { border-bottom: 0; padding-bottom: 0; }
+  #fim { padding-top: 0; }
+  .closing { gap: 0; }
+  [data-open="true"] + .closing__col .heading--toggle,
+  [data-open="true"] .stances__grid { margin-bottom: 14px; }
 
   /* the world reads as a phone page, not a shrunken desktop one */
   .copy p { font-size: 14px; line-height: 1.7; }
@@ -255,9 +260,6 @@ main > section {
   .stance__head { font-size: 12.5px; line-height: 1.45; }
   .stance::after { margin-top: 9px; }
   .stance[aria-expanded="true"] .stance__body { margin-top: 10px; padding-top: 10px; }
-  .never { padding: 7px 0; }
-  .never__key { font-size: 12px; }
-  .never__val { font-size: 11.5px; }
   .heading { margin-bottom: 16px; }
   .person { padding: 7px 0; }
   .stamp { font-size: 15px; max-width: none; }

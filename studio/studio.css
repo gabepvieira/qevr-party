@@ -3,7 +3,7 @@
    so nothing is ever stretched to hide a gap.
    --faceName is the exact name-strip height; the layout maths depends on it. */
 
-:root { --faceName: 18px; }
+:root { --faceName: 15px; }
 
 .studio { height: 100svh; padding-top: var(--bar); display: grid; grid-template-rows: 1fr; overflow: hidden; }
 .studio__body { display: grid; grid-template-columns: minmax(250px, 25%) minmax(0, 1fr); min-height: 0; }

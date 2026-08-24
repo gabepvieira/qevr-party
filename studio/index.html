@@ -119,28 +119,35 @@
     else { stage._running = false; stage.pos.x = 0; stage.pos.y = 0; stage.squash = 1; stage.applyTransform(); }
   }
 
-  function paintChip(canvas, name, cell) {
+  /* Paint him at an exact pixel size instead of a whole multiple of 34. Cell
+     boundaries are rounded so runs never gap or overlap, and the scale is
+     uniform on both axes, so there is no shear. This is what kills the padding:
+     he is exactly as wide as the box, not the nearest multiple that fits. */
+  function paintChipBox(canvas, name, boxW, boxH) {
     var m = window.Qevr.matrix(name);
-    var dpr = Math.min(window.devicePixelRatio || 1, 3), px = m.n * cell;
-    canvas.width = px * dpr; canvas.height = px * dpr;
-    canvas.style.width = px + "px"; canvas.style.height = px + "px";
+    if (!m) return;
+    var size = Math.max(8, Math.floor(Math.min(boxW, boxH)));
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
+    canvas.style.width = size + "px";
+    canvas.style.height = size + "px";
     var ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var body = brandColor(), ink = inkColor();
-    ctx.clearRect(0, 0, px, px);
-    for (var y = 0; y < m.n; y++) {
-      for (var x = 0; x < m.n; x++) {
-        var v = m.cells[y * m.n + x];
+    ctx.clearRect(0, 0, size, size);
+    var n = m.n, body = brandColor(), ink = inkColor();
+    for (var y = 0; y < n; y++) {
+      var y0 = Math.round(y * size / n), y1 = Math.round((y + 1) * size / n);
+      for (var x = 0; x < n; x++) {
+        var v = m.cells[y * n + x];
         if (!v) continue;
+        var x0 = Math.round(x * size / n), x1 = Math.round((x + 1) * size / n);
         ctx.fillStyle = v === 2 ? ink : body;
-        ctx.fillRect(x * cell, y * cell, cell, cell);
+        ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
       }
     }
   }
 
-  /* 24 cells exactly: 23 faces plus the rule tile. 24 divides by 3, 4, 6 and 8,
-     so the grid always closes. Pick the column count that makes him biggest,
-     then set the row height to his size plus the name strip: no slack. */
   var COLS = [3, 4, 6, 8];
   function layoutFaces() {
     var grid = document.getElementById("facesGrid");
@@ -150,24 +157,30 @@
     var nameH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--faceName")) || 18;
     var phone = window.matchMedia("(max-width: 860px)").matches;
 
-    var best = null;
+    var pick = null;
     COLS.forEach(function (c) {
       var rows = Math.ceil(24 / c);
       var cellW = Math.floor(pw / c) - 1;
-      var rowH = phone ? 0 : Math.floor(ph / rows);
-      /* the art box is what is left of the row after the name strip and its rule */
-      var artAvail = phone ? cellW : (rowH - nameH - 2);
-      var unit = Math.floor(Math.min(cellW - 2, artAvail) / 34);
-      if (unit < 1) return;
-      var artPx = unit * 34;
-      if (!best || artPx > best.artPx) best = { c: c, unit: unit, artPx: artPx, rowH: phone ? artPx + nameH + 1 : rowH };
+      if (cellW < 60) return;
+      /* on a phone the cell is square and the panel scrolls; on a desktop the
+         rows stretch so the grid ends exactly at the bottom of the panel */
+      var rowH = phone ? (cellW + nameH + 1) : Math.floor(ph / rows);
+      var art = Math.min(cellW, rowH - nameH - 1);
+      if (art < 40) return;
+      if (!pick || art > pick.art) pick = { c: c, rows: rows, rowH: rowH, art: art };
     });
-    if (!best) best = { c: phone ? 3 : 6, unit: 2, artPx: 68, rowH: 68 + nameH + 1 };
+    if (!pick) pick = { c: phone ? 3 : 6, rows: 8, rowH: 120, art: 100 };
 
-    grid.style.gridTemplateColumns = "repeat(" + best.c + ", minmax(0, 1fr))";
-    grid.style.gridAutoRows = best.rowH + "px";
+    grid.style.gridTemplateColumns = "repeat(" + pick.c + ", minmax(0, 1fr))";
+    grid.style.gridAutoRows = pick.rowH + "px";
+
+    /* measure the real art box after layout, then fill it exactly */
+    var probe = document.querySelector(".face__art");
+    if (!probe) return;
+    var r = probe.getBoundingClientRect();
+    var boxW = r.width || pick.art, boxH = r.height || pick.art;
     [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      paintChip(f.querySelector("canvas"), f.getAttribute("data-name"), best.unit);
+      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), boxW, boxH);
     });
   }
 
