@@ -1,6 +1,14 @@
 /* QEVR / qevr.party
    VENOM only. Square corners, hard offset shadows, uppercase SpaceMono.
-   Four brand colors, locked. The one licensed glow is ON FIRE. */
+   Four brand colors, locked. The one licensed glow is ON FIRE.
+
+   ALIGNMENT STANDARD (applies to every page, every width):
+   - Everything is LEFT-ALIGNED inside one shared container. Desktop and phone
+     agree; columns collapse, alignment never changes.
+   - Two exceptions only: the mascot centers inside his own frame, and a label
+     that names a piece of art (CLICA EM MIM, a chip name) centers under that art.
+   - Lime fill = where you are, or the primary door. White fill = hover. Never
+     the same treatment for both. */
 
 :root {
   --qevr-ink: #09090B;
@@ -18,6 +26,7 @@
 
   --gut: clamp(16px, 4vw, 64px);
   --rule: 1px;
+  --wrap: 1560px;
   --bar: calc(52px + env(safe-area-inset-top, 0px));
 }
 
@@ -45,10 +54,13 @@ body {
 
 .bar {
   position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 60;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; padding: env(safe-area-inset-top, 0px) var(--gut) 0 calc(var(--gut) + 10px);
+  padding: env(safe-area-inset-top, 0px) var(--gut) 0 calc(var(--gut) + 10px);
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
+}
+.bar__in {
+  height: 100%; max-width: var(--wrap); margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .bar__mark canvas { display: block; image-rendering: pixelated; }
 .bar__nav { display: flex; gap: 0; }
@@ -57,8 +69,10 @@ body {
   font-size: clamp(10px, 1.05vw, 12px); letter-spacing: .16em;
   padding: 9px 14px; border: var(--rule) solid var(--qevr-hair); margin-left: -1px;
 }
-.bar__nav a:hover, .bar__nav a:focus-visible { color: var(--qevr-ink); background: var(--brand); outline: none; }
-.bar__nav a[aria-current="page"] { color: var(--qevr-light); border-color: var(--qevr-muted); }
+/* lime marks where you are; hover is white, never lime */
+.bar__nav a[aria-current="page"] { color: var(--qevr-ink); background: var(--brand); border-color: var(--brand); font-weight: 700; }
+.bar__nav a:not([aria-current="page"]):hover,
+.bar__nav a:not([aria-current="page"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
 
 /* ---------- thermometer ---------- */
 
@@ -68,20 +82,22 @@ body {
 
 main { padding-left: 10px; padding-top: var(--bar); }
 
-/* ---------- arrival ---------- */
+/* ---------- arrival: sized to what it holds, never to the viewport ---------- */
 
 .arrival {
-  min-height: calc(100svh - var(--bar));
-  padding: clamp(24px, 4vh, 56px) var(--gut);
+  min-height: min(86svh, 880px);
+  max-width: var(--wrap); margin-inline: auto;
+  padding: clamp(24px, 5vh, 64px) var(--gut);
   border-bottom: var(--rule) solid var(--qevr-hair);
   display: grid; grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center; gap: clamp(24px, 5vw, 88px);
+  align-items: center; gap: clamp(24px, 4vw, 72px);
 }
 .arrival__left { display: flex; flex-direction: column; gap: clamp(14px, 2.6vh, 30px); }
 .arrival__word canvas, .arrival__city canvas { display: block; image-rendering: pixelated; }
 .arrival__rule { width: clamp(40px, 8vw, 96px); height: 6px; background: var(--brand); box-shadow: 4px 4px 0 var(--qevr-hair); }
-.arrival__mascot { display: grid; place-items: center; gap: 14px; }
-.arrival__hint { font-size: clamp(10px, 1.05vw, 12px); letter-spacing: .2em; color: var(--qevr-muted); text-align: center; }
+/* him and his one instruction are a lockup: the label centers under the art */
+.arrival__mascot { display: grid; justify-items: center; gap: 16px; }
+.arrival__hint { font-size: clamp(11px, 1.1vw, 13px); letter-spacing: .24em; color: var(--brand); text-align: center; }
 
 .doors { display: flex; flex-wrap: wrap; gap: 0; margin-top: clamp(10px, 2vh, 22px); }
 .door {
@@ -89,53 +105,64 @@ main { padding-left: 10px; padding-top: var(--bar); }
   padding: clamp(16px, 2vw, 24px) clamp(20px, 2.6vw, 34px);
   text-decoration: none; border: var(--rule) solid var(--qevr-hair);
   margin: 0 -1px -1px 0; color: var(--qevr-light); min-width: min(100%, 230px);
+  flex: 1 1 0;
 }
 .door strong { font-size: clamp(14px, 1.5vw, 19px); font-weight: 700; letter-spacing: .1em; }
 .door span { font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .12em; }
 .door--lead { background: var(--brand); color: var(--qevr-ink); box-shadow: 6px 6px 0 var(--qevr-hair); }
 .door--lead span { color: var(--qevr-ink); opacity: .85; }
-.door:hover, .door:focus-visible { background: var(--qevr-surface); color: var(--qevr-light); outline: none; }
-.door--lead:hover, .door--lead:focus-visible { background: var(--brand); color: var(--qevr-ink); box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); }
+/* same grammar as the bar: hover is white */
+.door:not(.door--lead):hover, .door:not(.door--lead):focus-visible { background: var(--qevr-light); border-color: var(--qevr-light); color: var(--qevr-ink); outline: none; }
+.door:not(.door--lead):hover span, .door:not(.door--lead):focus-visible span { color: var(--qevr-ink); opacity: .7; }
+.door--lead:hover, .door--lead:focus-visible { box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); outline: none; }
 
 /* ---------- the four blocks: one stack, identical at every width ---------- */
 
-.blocks { padding: clamp(24px, 5vh, 64px) var(--gut) clamp(48px, 9vh, 110px); }
+.blocks {
+  max-width: var(--wrap); margin-inline: auto;
+  padding: clamp(20px, 3.5vh, 40px) var(--gut) clamp(40px, 7vh, 84px);
+}
 .block { border: var(--rule) solid var(--qevr-hair); margin-bottom: -1px; }
 .heading--toggle {
   background: transparent; border: 0; width: 100%;
-  padding: clamp(15px, 2vh, 22px) clamp(15px, 1.8vw, 24px);
+  padding: clamp(14px, 1.8vh, 20px) clamp(15px, 1.8vw, 24px);
   font: inherit; color: inherit; text-align: left; cursor: pointer;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   overflow: hidden;
 }
 .heading--toggle:hover { background: var(--qevr-surface); }
 .heading--toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: -4px; }
+.heading__text { display: flex; flex-direction: column; gap: 9px; flex: 1; min-width: 0; }
 .heading--toggle canvas { display: block; image-rendering: pixelated; }
-.heading__mark { display: block; width: 14px; height: 6px; background: var(--qevr-hair); flex: none; }
+/* the label says what sits behind it */
+.heading__sub { font-size: clamp(10px, .95vw, 11.5px); letter-spacing: .18em; color: var(--qevr-muted); }
+.heading__mark { display: block; width: 14px; height: 6px; background: var(--qevr-muted); flex: none; }
 [data-open="true"] > .heading--toggle .heading__mark { width: 30px; background: var(--brand); }
 .block__body { padding: 0 clamp(15px, 1.8vw, 24px) clamp(20px, 3vh, 32px); }
 [data-open="false"] .block__body { display: none; }
 
-/* ---------- world ---------- */
+/* ---------- a cena ---------- */
 
-.copy p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.75; letter-spacing: .045em; max-width: 64ch; }
-.copy p + p { margin-top: 1.3em; }
+.copy p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; letter-spacing: .045em; max-width: 64ch; }
+.copy p + p { margin-top: 1.2em; }
 .copy p.dim { color: var(--qevr-muted); }
 .copy p.mark { color: var(--brand); }
 
 .world__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 64px); align-items: start; }
 .world__col { min-width: 0; }
 .people__lead { font-size: clamp(12.5px, 1.05vw, 15px); color: var(--brand); font-weight: 700; line-height: 1.6; margin-bottom: clamp(10px, 1.8vh, 18px); }
-.person { display: grid; gap: 4px; padding: clamp(8px, 1.1vh, 13px) 0; border-bottom: var(--rule) solid var(--qevr-hair); }
-.person:first-of-type { border-top: var(--rule) solid var(--qevr-hair); }
-.person__term { font-size: clamp(11.5px, .95vw, 14px); color: var(--brand); font-weight: 700; letter-spacing: .1em; }
-.person__def { font-size: clamp(11.5px, .92vw, 13px); color: var(--qevr-muted); line-height: 1.6; }
+/* the people are a deck like every other list: numbered tiles, same borders */
+.people__grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
+  border-top: var(--rule) solid var(--qevr-hair);
+  border-left: var(--rule) solid var(--qevr-hair);
+}
 .world__close { margin-top: clamp(14px, 2.2vh, 26px); padding-top: clamp(12px, 1.8vh, 20px); border-top: var(--rule) solid var(--qevr-hair); }
 .world__close p { font-size: clamp(12px, 1vw, 14px); line-height: 1.65; color: var(--qevr-muted); }
 .world__close p + p { margin-top: .85em; }
 .world__close p:last-child { color: var(--brand); }
 
-/* ---------- tiles: O JEITO DELE and REGRAS use the same component ---------- */
+/* ---------- tiles: every deck on this page is this one component ---------- */
 
 .stances__grid {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
@@ -166,6 +193,12 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .stance:hover::after, .stance:focus-visible::after { background: var(--qevr-muted); }
 .stance[aria-expanded="true"]::after { width: 36px; background: var(--brand); }
 
+/* still tiles: same skin, nothing to press, body always out */
+.stance--still { cursor: default; min-height: 0; }
+.stance--still:hover { background: transparent; }
+.stance--still .stance__body { display: block; }
+.stance--still::after { content: none; }
+
 /* ---------- gift ---------- */
 
 .gift p { font-size: clamp(14px, 1.3vw, 19px); line-height: 1.7; max-width: 52ch; }
@@ -193,21 +226,22 @@ main { padding-left: 10px; padding-top: var(--bar); }
   .world__grid { grid-template-columns: 1fr; gap: clamp(18px, 3vh, 30px); }
   .arrival { grid-template-columns: 1fr; align-content: center; }
   .arrival__mascot { justify-self: start; }
-  .arrival__hint { text-align: left; }
 }
 
 @media (max-width: 720px) {
-  .stances__grid, #neversList { grid-template-columns: minmax(0, 1fr); }
+  .stances__grid, #neversList, .people__grid { grid-template-columns: minmax(0, 1fr); }
   /* on a phone there is no free corner: he never covers content (soul rule),
      so once the arrival scrolls away he steps offstage instead of sitting on the copy */
   .companion { display: none; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
   .door { min-width: 100%; }
-  .copy p { font-size: 14px; line-height: 1.7; }
+  .copy p { font-size: 13px; line-height: 1.62; }
+  .world__close p { font-size: 12px; }
   .stance { min-height: 0; padding: 12px 14px; }
   .stance__head { font-size: 12.5px; line-height: 1.45; }
   .stance::after { margin-top: 9px; }
+  .heading__sub { letter-spacing: .14em; }
   .stamp { font-size: 15px; max-width: none; }
 }
 

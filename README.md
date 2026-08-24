@@ -17,6 +17,9 @@ assets/qevr.js                 mascot renderer + brain (behaviours, blinks, casc
 assets/pixelfont.js            5x7 cell type, so headings are made of mascot cells
 assets/site.css                VENOM. square, hard shadows, uppercase
 studio/studio.css              studio-only layout
+assets/favicon.svg             the mascot himself (Default face), generated from
+                               qevr-expressions.json. favicon-32 / apple-touch-icon
+                               are renders of the same SVG. never hand-draw an icon.
 ```
 
 ## Run it locally
@@ -25,36 +28,87 @@ studio/studio.css              studio-only layout
 npm run site          # from the repo root, serves http://localhost:4599
 ```
 
+## The voice (get this right before anything else)
+
+Copy is written the way a partier types to a friend. **VC, TÁ, TÃO, TBM, TÔ, CÊ stay.**
+Never "correct" them to VOCÊ / ESTÁ / ESTÃO / TAMBÉM — the register is the product, and
+expanding a contraction for correctness is how the site died once already. Fix only real
+errors: accents, agreement, actual typos. Read every line out loud; if it would not be
+said at a party, rewrite it. Write Portuguese, never translate English.
+
+A punchline has to mean something. "O ESCURO É O CHÃO. A COR É A LUZ CHEGANDO." sounded
+impactful and said nothing; it is now "SÓ TEM COR QUANDO TEM COISA VIVA.", which says the
+actual mechanic. If a head only works after you read the body, the head is wrong.
+
+Everything else about the copy: CAIXA ALTA always, no em dashes, no exclamation points,
+no emoji, and it all lives in `assets/manifesto.pt.json` — never in markup.
+
+## The alignment standard
+
+One rule, both pages, both breakpoints:
+
+- Everything is **left-aligned** inside one shared container (`--wrap`), and the bar
+  mark, the wordmark, the doors and the block stack all sit on the same left edge.
+  Desktop and phone agree; columns collapse, alignment never changes.
+- Two exceptions only: the mascot centers inside his own frame, and a label that names
+  a piece of art (CLICA EM MIM, a chip name) centers under that art.
+- **Lime fill = where you are** (bar current page, the lead door). **White fill =
+  hover.** Never the same treatment for both — a hover that looks like the active
+  state is a lie.
+
+## The section grammar
+
+The manifesto is an accordion of four blocks — A CENA (open on arrival), O JEITO DELE,
+REGRAS, UM PRESENTE — one open at a time, all four headings drawn at one shared cell
+size, each heading carrying a small descriptor that says what sits behind it
+(`sub` in the copy deck). A label that needs the click to explain itself is a bad label.
+
+Inside a block there are exactly two kinds of content:
+
+- **Prose** — narrative paragraphs, max 64ch, left column.
+- **Deck** — any enumeration is numbered tiles: index, head, body, same borders, same
+  paddings, everywhere. The nine stances, the eight nevers and the four people are the
+  same component. A deck always ends on a full row (9 = 3×3, 8 = 4×2, people 2×2);
+  a deck with a hole in it is a bug.
+
+Interactive tiles open on tap (one at a time). The people tiles stay open — they are
+the heart of A CENA, not a disclosure.
+
 ## Screen budget
 
-Scrolling is the enemy. The manifesto is four sections, each sized to about one screen:
-the arrival, then four matching toggle blocks: O MUNDO (open by default), O JEITO DELE, REGRAS and UM PRESENTE.
-That lands near 3.8 screens on a desktop and 4.5 on a phone. The long passage runs in two
-columns above 1000px, and the nine stances are headline tiles that open in place rather
-than nine stacked paragraphs. The studio does not scroll at all: the stage holding Qevr is
-a fixed row, and only the face grid moves, so you never lose sight of him while picking a
-face. If you add content, keep the budget.
+Scrolling is the enemy. With A CENA open the whole manifesto is ~2 screens on a desktop
+and ~2.9 on a phone. The accordion is what keeps it there: opening a block closes the
+others. The studio does not scroll at all on desktop; on a phone only the face grid
+scrolls, under a pinned stage. If you add content, keep the budget.
+
+## The studio grid (why there is no 24th cell)
+
+23 faces, 23 cells, nothing else in the grid. 23 is prime, so the rectangle closes by
+stretching the last row: desktop runs rows of 6 with a final row of 5 slightly larger
+chips, a phone runs rows of 3 with a final row of 2. The panel width is **solved** so
+the grid fills the height exactly (see `planFor` in `studio/index.html`) and the stage
+takes whatever width is left. Every cell keeps the mascot's exact aspect (23:25 of the
+cropped 34×34 grid), so every cell is entirely QEVR — then a divider, then the name.
+
+- Dividers are **3px of ground** between chips (`--chipgap`), not hairlines: a 1px dark
+  line between two bright chips is invisible.
+- Hover is an inset 2px white frame plus a lit name — it has to survive a cell that is
+  100% mascot. Selected is the brand frame plus the brand name strip.
+- "A REGRA DELE" (grade, 23 caras, só o rosto muda) lives at the bottom of the stage
+  column. It is never a grid cell.
 
 ## Rules this site keeps
 
-- Copy is 100% uppercase, SpaceMono, no em dashes, no exclamation points, no emoji.
-- No chat abbreviations, ever: VOCÊ never VC, TAMBÉM never TBM, ESTÁ/ESTÃO never TÁ/TÃO.
-  A draft typed fast in a chat message is input, not publishable copy.
+- Copy rules and voice: see **The voice** above. That section wins over any older note.
 - Square corners everywhere (`border-radius: 0` is forced globally).
 - Hard offset shadows only. The single glow is the thermometer at ON FIRE.
 - Four brand colours, locked. Nothing else.
 - Headings are drawn cell by cell from the same 5x7 grid the mascot is made of.
 - Face names in `qevr-expressions.json` are canonical and never renamed. The studio
   shows a Portuguese label next to the canonical name.
-- Copy is written in the register of O MUNDO. Nothing careta: no UX vocabulary, no
-  corporate softening. If a line would not be said out loud at a party, rewrite it.
-- Write Portuguese, never translate English. "DAR UM DEFEITO NELE" was a word-for-word
-  rendering of "give him a defect" and means nothing. Read every string aloud first.
 - Fill the box. A layout that sizes to its content and leaves the remainder black reads
-  as broken, not as breathing room. Grids stretch; the last cell spans the gap.
-- Hierarchy follows importance. The closing stamp is the loudest type on the page, not
-  a footnote.
-- Padding is structure, not decoration. A mascot fills its cell, then a rule, then a name.
+  as broken, not as breathing room.
+- Hierarchy follows importance. The closing stamp is the loudest type on the page.
 - Never hijack the scroll. No scroll-snap, no scrolljacking. The reader drives.
 
 ## The time of day mechanic (built, currently off)
@@ -68,93 +122,17 @@ When enabled, the page reads the visitor's local clock and nothing explains it:
 | 08:00 to 22:59  | `day`   | Lime.                                    |
 
 Force a state while working on it: `?mode=day`, `?mode=party`, `?mode=dawn`.
-
-## Editing the copy
-
-Everything a reader sees lives in `assets/manifesto.pt.json`. Nine stances, eight nevers,
-the world passage, the gift passage, the closing stamp. Change a word there and reload.
-Keep the rules above or the page stops being QEVR.
-
-## Colour
-
-Lime only for now. The time-of-day flip (pink after 23:00, quiet at 07:00) is built and
-sitting in `site.css`, switched off by `TIME_AWARE = false` at the top of the page script
-in both `index.html` and `studio/index.html`. Flip that to `true` to bring it back.
-`?mode=party` and `?mode=dawn` still preview those palettes at any hour.
+Lime only for now: `TIME_AWARE = false` at the top of the page script in both
+`index.html` and `studio/index.html`.
 
 ## Deploying to qevr.party
 
-Two facts shape this. The GitHub account `gabepvieira` has no paid plan, and GitHub Pages
-from a private repo requires one, so the site needs its own **public** repo. Separately,
-`gabepvieira` has push but not admin on `PalomoLH/mvp-qevr-monorepo`, so Pages could not be
-enabled there in any case.
-
-### GitHub Pages
-
-```bash
-# from the repo root
-DEPLOY=$(mktemp -d)
-cp -R apps/web-site/. "$DEPLOY"/
-printf 'qevr.party\n' > "$DEPLOY/CNAME"
-touch "$DEPLOY/.nojekyll"
-
-gh repo create gabepvieira/qevr-party --public -d "qevr.party public site"
-
-cd "$DEPLOY"
-git init -b main && git add -A
-git commit -m "qevr.party: manifesto page and mascot studio"
-git remote add origin https://github.com/gabepvieira/qevr-party.git
-git push -u origin main
-
-gh api -X POST repos/gabepvieira/qevr-party/pages \
-  -f 'source[branch]=main' -f 'source[path]=/'
-```
-
-### Porkbun DNS
-
-The domain currently holds Porkbun's parking records. Delete the `ALIAS` on the root and the
-wildcard `CNAME`, both pointing at `pixie.porkbun.com`, then add:
-
-| Type  | Host  | Answer                    |
-| ----- | ----- | ------------------------- |
-| A     | (blank, root) | `185.199.108.153` |
-| A     | (blank, root) | `185.199.109.153` |
-| A     | (blank, root) | `185.199.110.153` |
-| A     | (blank, root) | `185.199.111.153` |
-| CNAME | `www` | `gabepvieira.github.io`   |
-
-The Porkbun MCP server is already registered locally and connected, so this can be done
-from a Claude Code session rather than by hand.
-
-### Cloudflare Pages instead
-
-Also fine, and it avoids the public repo, but it needs a browser login to your Cloudflare
-account. Connect the repo there, leave the build command empty, set the output directory to
-`apps/web-site`, then point the domain at the `pages.dev` hostname.
-
-## Porkbun MCP (already registered on this machine)
-
-1. Go to porkbun.com/account/api and create a key pair (public `pk1_...`, secret `sk1_...`).
-2. On that page, turn on **Opt In All Domains**, or enable API access on `qevr.party`
-   individually under Domain Management. Without this the API refuses the domain.
-3. Register the server locally, so the keys stay out of the repo:
-
-```bash
-claude mcp add porkbun -s local \
-  -e PORKBUN_API_KEY=pk1_xxx \
-  -e PORKBUN_SECRET_API_KEY=sk1_xxx \
-  -- npx -y @porkbunllc/mcp-server
-```
-
-`-s local` writes to your machine's Claude config, not to `.mcp.json`. Never commit the keys.
-
-## Studio controls
-
-Every control is written in Portuguese a person would actually say, never a translation
-of an English label. "ELE SE MEXE SOZINHO?" with SIM and NÃO runs or freezes the behaviour
-loop. "MUDE A COR DO QEVR" with VERDE and ROSA repaints him and all 23 chips. "CLIQUE
-AQUI" fires one GLITCH burst. All six strings live in `assets/manifesto.pt.json` under
-`studio`, so copy never hides in the markup.
+The GitHub account `gabepvieira` has no paid plan and GitHub Pages from a private repo
+requires one, so the site deploys from its own **public** repo, `gabepvieira/qevr-party`.
+Copy this folder over that repo's contents (keep its `CNAME` and `.nojekyll`), commit,
+push to `main`. Pages serves it; DNS at Porkbun already points the apex at GitHub Pages
+and `www` at `gabepvieira.github.io` (the Porkbun MCP server is registered locally if
+records ever need touching).
 
 ## Not built yet
 

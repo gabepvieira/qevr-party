@@ -7,7 +7,7 @@
 <meta name="description" content="O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.">
 <meta name="theme-color" content="#09090B">
 <meta property="og:title" content="QEVR">
-<meta property="og:description" content="O APP TRAZ O FATO. O RESTO É COM VOCÊ.">
+<meta property="og:description" content="O APP TRAZ O FATO. O RESTO É COM VC.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,18 +22,20 @@
 <div class="thermo" id="thermo" aria-hidden="true"><div class="thermo__fill" id="thermoFill"></div></div>
 
 <header class="bar">
-  <a class="bar__mark" href="#topo" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
-  <nav class="bar__nav">
-    <a href="#manifesto" aria-current="page">MANIFESTO</a>
-    <a href="studio/">O ESTÚDIO</a>
-  </nav>
+  <div class="bar__in">
+    <a class="bar__mark" href="#topo" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="#manifesto" aria-current="page">O MANIFESTO</a>
+      <a href="studio/">O ESTÚDIO</a>
+    </nav>
+  </div>
 </header>
 
 <main>
   <section class="arrival" id="topo">
     <div class="arrival__left">
-      <div class="arrival__word"><canvas data-cells="QEVR" data-fit="560"></canvas></div>
-      <div class="arrival__city"><canvas data-cells="SÃO PAULO" data-fit="280" data-dim="1"></canvas></div>
+      <div class="arrival__word"><canvas data-cells="QEVR" data-fit="680"></canvas></div>
+      <div class="arrival__city"><canvas data-cells="SÃO PAULO" data-fit="320" data-dim="1"></canvas></div>
       <div class="arrival__rule"></div>
       <div class="doors" id="doors"></div>
     </div>
@@ -46,14 +48,18 @@
   <section class="blocks">
     <div class="block" id="manifesto" data-open="true">
       <button class="heading heading--toggle" aria-expanded="true" aria-controls="mundoBody">
-        <canvas data-cells="O MUNDO" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+        <span class="heading__text">
+          <canvas data-cells="A CENA" data-fit="470"></canvas>
+          <span class="heading__sub" data-sub="world"></span>
+        </span>
+        <span class="heading__mark"></span>
       </button>
       <div class="block__body" id="mundoBody">
         <div class="world__grid">
           <div class="world__col copy" id="worldCopy"></div>
           <div class="world__col">
             <div class="people__lead" id="peopleLead"></div>
-            <div id="peopleList"></div>
+            <div class="people__grid" id="peopleList"></div>
             <div class="world__close" id="worldClose"></div>
           </div>
         </div>
@@ -62,21 +68,33 @@
 
     <div class="block" id="stances" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="stancesGrid">
-        <canvas data-cells="O JEITO DELE" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+        <span class="heading__text">
+          <canvas data-cells="O JEITO DELE" data-fit="470"></canvas>
+          <span class="heading__sub" data-sub="stances"></span>
+        </span>
+        <span class="heading__mark"></span>
       </button>
       <div class="block__body"><div class="stances__grid" id="stancesGrid"></div></div>
     </div>
 
     <div class="block" id="regras" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="neversList">
-        <canvas data-cells="REGRAS" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+        <span class="heading__text">
+          <canvas data-cells="REGRAS" data-fit="470"></canvas>
+          <span class="heading__sub" data-sub="nevers"></span>
+        </span>
+        <span class="heading__mark"></span>
       </button>
       <div class="block__body"><div class="stances__grid" id="neversList"></div></div>
     </div>
 
     <div class="block" id="presente" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="giftBody">
-        <canvas data-cells="UM PRESENTE" data-fit="470" data-reserve="58"></canvas><span class="heading__mark"></span>
+        <span class="heading__text">
+          <canvas data-cells="UM PRESENTE" data-fit="470"></canvas>
+          <span class="heading__sub" data-sub="gift"></span>
+        </span>
+        <span class="heading__mark"></span>
       </button>
       <div class="block__body">
         <div class="copy gift" id="giftBody"></div>
@@ -114,9 +132,7 @@
     var m = window.QevrType.textMatrix(text);
     var fitMax = parseFloat(canvas.getAttribute("data-fit"));
     var host = canvas.parentElement;
-    /* leave room for anything sitting beside the heading, like a toggle mark */
-    var reserve = parseFloat(canvas.getAttribute("data-reserve")) || 0;
-    var room = (host.clientWidth || window.innerWidth) - reserve;
+    var room = host.clientWidth || window.innerWidth;
     var avail = Math.min(room, fitMax || 400);
     var forced = parseFloat(canvas.getAttribute("data-force-cell"));
     var cell = forced ? forced : Math.max(2, Math.floor(avail / m.w));
@@ -148,16 +164,29 @@
     return p;
   }
 
+  /* titles come from the copy deck, and every label says what sits behind it */
   function syncTitles() {
     var map = [
-      ["#manifesto .heading--toggle canvas", COPY.world.title],
-      ["#stances .heading--toggle canvas", COPY.stances.title],
-      ["#regras .heading--toggle canvas", COPY.nevers.title],
-      ["#presente .heading--toggle canvas", COPY.gift.title]
+      ["#manifesto", COPY.world],
+      ["#stances", COPY.stances],
+      ["#regras", COPY.nevers],
+      ["#presente", COPY.gift]
     ];
     map.forEach(function (pair) {
-      var c = document.querySelector(pair[0]);
-      if (c && pair[1]) c.setAttribute("data-cells", pair[1]);
+      var c = document.querySelector(pair[0] + " .heading--toggle canvas");
+      if (c && pair[1].title) c.setAttribute("data-cells", pair[1].title);
+      var s = document.querySelector(pair[0] + " .heading__sub");
+      if (s && pair[1].sub) s.textContent = pair[1].sub;
+    });
+  }
+
+  /* one block open at a time. opening is not a page change, so no glitch. */
+  function setOpen(box) {
+    [].forEach.call(document.querySelectorAll(".block"), function (b) {
+      var open = box === b;
+      b.setAttribute("data-open", open ? "true" : "false");
+      var btn = b.querySelector(".heading--toggle");
+      if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
     });
   }
 
@@ -171,37 +200,42 @@
         if (!target) return;
         e.preventDefault();
         window.QevrCascade.through(function () {
+          /* landing on a block also opens it */
+          if (target.classList.contains("block")) setOpen(target);
           target.scrollIntoView({ behavior: "auto", block: "start" });
         });
       });
     });
   }
 
-  /* on a phone the two long sections stay shut until you open them */
-  /* four identical blocks. O MUNDO opens by default, the rest wait to be asked,
-     and it behaves the same on a desktop as on a phone. */
   function wireToggles() {
     [].forEach.call(document.querySelectorAll(".block"), function (box) {
       var btn = box.querySelector(".heading--toggle");
       if (!btn) return;
       btn.addEventListener("click", function () {
-        /* opening a block is not a page change, so it does not glitch */
         var open = box.getAttribute("data-open") === "true";
-        box.setAttribute("data-open", open ? "false" : "true");
-        btn.setAttribute("aria-expanded", open ? "false" : "true");
+        if (open) {
+          box.setAttribute("data-open", "false");
+          btn.setAttribute("aria-expanded", "false");
+        } else {
+          setOpen(box);
+          /* keep the heading you tapped where your finger is */
+          var r = box.getBoundingClientRect();
+          var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
+          if (r.top < bar) box.scrollIntoView({ behavior: "auto", block: "start" });
+        }
       });
     });
   }
 
-  /* all three headings render at one shared cell size, so they match */
+  /* all four headings render at one shared cell size, so they match */
   function unifyToggleHeadings() {
     var cs = document.querySelectorAll(".heading--toggle canvas");
     if (!cs.length) return;
     var minCell = Infinity;
     [].forEach.call(cs, function (c) {
       var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
-      var reserve = parseFloat(c.getAttribute("data-reserve")) || 0;
-      var room = (c.parentElement.clientWidth || window.innerWidth) - reserve;
+      var room = c.parentElement.clientWidth || window.innerWidth;
       var fit = parseFloat(c.getAttribute("data-fit")) || 470;
       minCell = Math.min(minCell, Math.max(2, Math.floor(Math.min(room, fit) / m.w)));
     });
@@ -228,11 +262,18 @@
     w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i === 2 ? "dim" : "")); });
 
     document.getElementById("peopleLead").textContent = w.people.lead;
+    /* the people are a deck like any other list on this page: numbered tiles,
+       same borders, same paddings. these stay open, they are the heart. */
     var list = document.getElementById("peopleList");
-    w.people.items.forEach(function (pair) {
-      var row = document.createElement("div"); row.className = "person";
-      var t = document.createElement("div"); t.className = "person__term"; t.textContent = pair[0];
-      var d = document.createElement("div"); d.className = "person__def"; d.textContent = pair[1];
+    w.people.items.forEach(function (pair, i) {
+      var row = document.createElement("div"); row.className = "stance stance--still";
+      var idx = document.createElement("span");
+      idx.className = "stance__idx";
+      idx.textContent = "0" + (i + 1);
+      row.appendChild(idx);
+      var t = document.createElement("span"); t.className = "stance__head"; t.textContent = pair[0];
+      var d = document.createElement("span"); d.className = "stance__body";
+      d.appendChild(para(pair[1]));
       row.appendChild(t); row.appendChild(d); list.appendChild(row);
     });
 
@@ -298,7 +339,7 @@
   /* ---------- he starts life size, then takes his corner ---------- */
   var inCorner = false;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
-  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : (isSmall() ? 6 : 10); }
+  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : (isSmall() ? 8 : 15); }
   function boundsFor() {
     return inCorner ? { x: isSmall() ? 14 : 26, y: isSmall() ? 10 : 20 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
@@ -307,7 +348,7 @@
     if (!mascot) return;
     var btn = document.getElementById("mascotBtn");
     var target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
-    if (btn.parentElement !== target) target.appendChild(btn);
+    if (btn.parentElement !== target) target.insertBefore(btn, target.firstChild);
     mascot.pos.x = 0; mascot.pos.y = 0; mascot.squash = 1;
     mascot.applyTransform();
     mascot.setCell(cellFor());

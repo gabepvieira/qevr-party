@@ -1,104 +1,107 @@
-/* O ESTÚDIO. One screen. Every cell filled, and he owns his cell: no decorative
-   padding, a rule, then his name. The 24th cell carries the rule he lives by,
-   so nothing is ever stretched to hide a gap.
+/* O ESTÚDIO. One screen. 23 faces, 23 cells, nothing else in the grid: the
+   last row stretches to close the rectangle, so there is no filler cell and
+   no hole. Every cell is exactly his aspect, so every cell is entirely QEVR,
+   then a divider, then the name. Dividers are 3px of ground between chips.
    --faceName is the exact name-strip height; the layout maths depends on it. */
 
-:root { --faceName: 15px; }
+:root { --faceName: 20px; --chipgap: 3px; }
 
-.studio { height: 100svh; padding-top: var(--bar); display: grid; grid-template-rows: 1fr; overflow: hidden; }
-.studio__body { display: grid; grid-template-columns: minmax(250px, 25%) minmax(0, 1fr); min-height: 0; }
+/* no thermometer on this page, so nothing reserves room for one */
+.bar { padding-left: var(--gut); }
+
+.studio { height: 100svh; padding-top: var(--bar); display: grid; grid-template-rows: 1fr; overflow: hidden; max-width: var(--wrap); margin-inline: auto; }
+.studio__body { display: grid; grid-template-columns: minmax(300px, 28%) minmax(0, 1fr); min-height: 0; }
+
+/* ---------- stage: one aligned panel, everything flush left ---------- */
 
 .stage {
   min-height: 0; min-width: 0;
-  padding: clamp(12px, 2vh, 24px) clamp(13px, 1.5vw, 24px);
+  padding: clamp(14px, 2.4vh, 28px) clamp(16px, 1.6vw, 28px) clamp(14px, 2.4vh, 28px) var(--gut);
   border-right: var(--rule) solid var(--qevr-hair);
-  display: grid; grid-template-rows: auto auto auto;
-  align-content: center;
-  gap: clamp(12px, 2.4vh, 26px);
+  display: grid; grid-template-rows: minmax(0, 1fr) auto auto auto;
+  gap: clamp(14px, 2.2vh, 24px);
   overflow: hidden;
 }
-.stage__art { display: grid; place-items: center; min-height: 0; width: 100%; }
-.stage__label { font-size: 9px; color: var(--qevr-muted); letter-spacing: .2em; }
-.stage__name { font-size: clamp(19px, 2.2vw, 34px); color: var(--brand); font-weight: 700; letter-spacing: .04em; line-height: 1.08; word-break: break-word; margin-top: 5px; }
-.stage__code { font-size: 9px; color: var(--qevr-muted); letter-spacing: .14em; margin-top: 5px; }
+.stage__art { display: grid; place-items: center; min-height: 0; min-width: 0; }
+.stage__label { font-size: 10px; color: var(--qevr-muted); letter-spacing: .2em; }
+.stage__name { font-size: clamp(19px, 2.2vw, 34px); color: var(--brand); font-weight: 700; letter-spacing: .04em; line-height: 1.08; word-break: break-word; margin-top: 6px; }
+.stage__code { font-size: 10px; color: var(--qevr-muted); letter-spacing: .14em; margin-top: 6px; }
 .stage__code b { color: var(--qevr-light); font-weight: 700; }
 
-.stage__controls { display: flex; flex-direction: column; gap: clamp(8px, 1.2vh, 14px); }
-.ctlset { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.ctlset__label { font-size: 8.5px; color: var(--qevr-muted); letter-spacing: .18em; }
+.stage__controls { display: flex; flex-direction: column; gap: clamp(10px, 1.6vh, 16px); }
+.ctlset { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ctlset__label { font-size: 9px; color: var(--qevr-muted); letter-spacing: .18em; }
 .lbl-short { display: none; }
-.ctlrow { display: flex; flex-wrap: wrap; }
+/* every control row spans the same width: one column, one edge */
+.ctlrow { display: flex; width: 100%; }
 .ctl {
   font: inherit; text-transform: uppercase; letter-spacing: .12em;
-  font-size: 10.5px; padding: 9px 13px; cursor: pointer;
+  font-size: 11px; padding: 10px 13px; cursor: pointer;
   background: transparent; color: var(--qevr-light);
-  border: var(--rule) solid var(--qevr-hair); margin: 0 -1px -1px 0;
+  border: var(--rule) solid var(--qevr-hair); margin: 0 -1px 0 0;
+  flex: 1; text-align: center;
 }
-.ctl:hover { background: var(--qevr-surface); }
-.ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); font-weight: 700; }
-.ctl--swatch { display: flex; align-items: center; gap: 7px; }
+.ctl:hover { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); }
+.ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); border-color: var(--brand); font-weight: 700; }
+.ctl--swatch { display: flex; align-items: center; justify-content: center; gap: 7px; }
 .ctl--swatch i { width: 10px; height: 10px; display: block; flex: none; }
 .ctl--green i { background: #CCFF00; }
 .ctl--pink i { background: #FF007F; }
 
-/* ---------- faces: the grid owns the whole panel ---------- */
+/* the rule he lives by sits with his controls, not inside his grid */
+.stage__meta { border-top: var(--rule) solid var(--qevr-hair); padding-top: clamp(10px, 1.6vh, 16px); display: flex; flex-direction: column; gap: 4px; }
+.stage__meta-t { font-size: 9px; letter-spacing: .18em; color: var(--brand); font-weight: 700; margin-bottom: 2px; }
+.stage__meta-l { font-size: 9px; letter-spacing: .1em; color: var(--qevr-muted); line-height: 1.5; }
+
+/* ---------- faces: 23 chips own the whole panel ---------- */
 
 .faces { min-height: 0; min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
 .faces__grid {
   min-height: 0; align-content: start;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  border-top: var(--rule) solid var(--qevr-hair);
-  border-left: var(--rule) solid var(--qevr-hair);
-}
-.face, .facemeta {
-  min-width: 0; min-height: 0;
-  border-right: var(--rule) solid var(--qevr-hair);
-  border-bottom: var(--rule) solid var(--qevr-hair);
+  display: grid; gap: var(--chipgap);
+  background: var(--ground);
 }
 .face {
+  min-width: 0; min-height: 0;
   background: transparent; color: inherit; font: inherit; cursor: pointer;
-  padding: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto;
+  border: 0; padding: 0; display: grid; grid-template-rows: minmax(0, 1fr) var(--faceName);
 }
 .face__art { display: grid; place-items: center; min-height: 0; overflow: hidden; }
 .face canvas { display: block; image-rendering: pixelated; }
 .face__name {
-  font-size: 8px; letter-spacing: .08em; color: var(--qevr-muted);
+  font-size: 9.5px; letter-spacing: .12em; color: var(--qevr-muted);
   text-align: center; padding: 0 4px;
   height: var(--faceName); line-height: var(--faceName);
-  border-top: var(--rule) solid var(--qevr-hair);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.face:hover { background: var(--qevr-surface); }
-.face[aria-pressed="true"] { background: var(--qevr-surface); }
-.face[aria-pressed="true"] .face__name { color: var(--qevr-ink); background: var(--brand); font-weight: 700; border-top-color: var(--brand); }
+/* hover has to survive a cell that is 100% mascot: hard inset frame, lit name */
+.face:hover, .face:focus-visible { outline: 2px solid var(--qevr-light); outline-offset: -2px; }
+.face:hover .face__name, .face:focus-visible .face__name { color: var(--qevr-light); }
+.face[aria-pressed="true"] .face__name { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
+.face[aria-pressed="true"] { outline: 2px solid var(--brand); outline-offset: -2px; }
 
-/* the 24th cell: real content, never a stretched chip */
-.facemeta { display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 10px 12px; background: var(--qevr-surface); }
-.facemeta__t { font-size: 8.5px; letter-spacing: .18em; color: var(--brand); font-weight: 700; }
-.facemeta__l { font-size: 8.5px; letter-spacing: .1em; color: var(--qevr-muted); line-height: 1.55; }
+/* ---------- phone: stage pinned, grid scrolls ---------- */
 
-/* ---------- phone ---------- */
-
-@media (max-width: 860px) {
+@media (max-width: 999px) {
+  .bar { padding-left: var(--gut); }
   .studio__body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
   .stage {
     border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair);
-    grid-template-rows: auto auto auto; align-content: start;
-    justify-items: center; text-align: center;
-    gap: 8px; padding: 10px clamp(10px, 3vw, 18px) 12px;
+    grid-template-rows: auto auto auto; gap: 10px;
+    padding: 12px var(--gut) 14px;
   }
-  .stage__art { height: min(23vh, 170px); width: 100%; }
-  .stage__name { font-size: clamp(20px, 6.5vw, 30px); margin-top: 3px; }
-  .stage__controls { flex-direction: row; align-items: flex-end; justify-content: center; gap: 12px; flex-wrap: nowrap; }
-  .ctlset { align-items: center; }
-  .ctlset__label { font-size: 7.5px; letter-spacing: .12em; white-space: nowrap; }
+  .stage__art { height: min(26vh, 200px); width: 100%; }
+  .stage__name { font-size: clamp(20px, 6.5vw, 30px); margin-top: 4px; }
+  .stage__controls { flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 10px; flex-wrap: nowrap; }
+  .ctlset { flex: none; }
+  .ctlset__label { font-size: 8px; letter-spacing: .12em; white-space: nowrap; }
   .lbl-long { display: none; }
   .lbl-short { display: inline; }
-  .ctl { font-size: 10px; padding: 8px 10px; }
+  .ctl { font-size: 10px; padding: 8px 10px; flex: none; }
   .ctl--swatch { gap: 0; padding: 8px 11px; }
   .ctl--swatch span { display: none; }
   .ctl--swatch i { width: 13px; height: 13px; }
+  .stage__meta { display: none; }
   .faces { grid-template-rows: minmax(0, 1fr); }
-  .faces__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow-y: auto; }
+  .faces__grid { overflow-y: auto; }
 }

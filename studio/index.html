@@ -18,11 +18,13 @@
 <body>
 
 <header class="bar">
-  <a class="bar__mark" href="../" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
-  <nav class="bar__nav">
-    <a href="../#manifesto">MANIFESTO</a>
-    <a href="./" aria-current="page">O ESTÚDIO</a>
-  </nav>
+  <div class="bar__in">
+    <a class="bar__mark" href="../" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="../#manifesto">O MANIFESTO</a>
+      <a href="./" aria-current="page">O ESTÚDIO</a>
+    </nav>
+  </div>
 </header>
 
 <div class="studio">
@@ -57,6 +59,7 @@
           <div class="ctlrow"><button class="ctl" id="ctlGlitch">GLITCH</button></div>
         </div>
       </div>
+      <div class="stage__meta" id="stageMeta"></div>
     </section>
 
     <section class="faces">
@@ -95,14 +98,6 @@
   function label(n) { return PT[n] || n.toUpperCase(); }
   function inkColor() { return getComputedStyle(document.documentElement).getPropertyValue("--qevr-ink").trim() || "#09090B"; }
   function brandColor() { return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00"; }
-
-  function diffCount(a, b) {
-    var A = window.Qevr.matrix(a), B = window.Qevr.matrix(b);
-    if (!A || !B) return 0;
-    var n = 0;
-    for (var i = 0; i < A.cells.length; i++) if (A.cells[i] !== B.cells[i]) n++;
-    return n;
-  }
 
   function setCurrent(name) {
     current = name;
@@ -152,68 +147,78 @@
     }
   }
 
-  /* 24 cells exactly. The cell is sized to him, and the stage column takes
-     whatever width is left, so there is no black inside any cell. */
-  var COLS = [4, 6, 8];
+  /* 23 chips, no filler, no hole: full rows of c, then a last row of rem
+     chips stretched to close the rectangle. Every cell keeps his exact
+     aspect, so every cell is entirely him. On a desktop the panel width is
+     solved so the grid also fills the height exactly; the stage takes
+     whatever is left. */
+  var GAP = 3, NAME_H = 20;
+  function planFor(c, H, g, n) {
+    var r = Math.ceil(23 / c), rem = 23 - c * (r - 1);
+    var S = (r - 1) * rem + c;
+    var G = (r - 1) * (rem - 1) + (c - 1);
+    var t = (ASPECT * (H - r * n - (r - 1) * g) - g * G) / S;
+    if (t <= 0) return null;
+    var P = c * rem * t + (c * rem - 1) * g;
+    var wN = rem * t + (rem - 1) * g;
+    var wR = c * t + (c - 1) * g;
+    return { c: c, r: r, rem: rem, P: P, wN: wN, wR: wR,
+             hN: wN / ASPECT + n, hR: wR / ASPECT + n };
+  }
+
+  function applyGrid(grid, plan) {
+    grid.style.gridTemplateColumns = "repeat(" + (plan.c * plan.rem) + ", minmax(0, 1fr))";
+    var rows = [];
+    for (var i = 0; i < plan.r - 1; i++) rows.push(Math.round(plan.hN) + "px");
+    rows.push(Math.round(plan.hR) + "px");
+    grid.style.gridTemplateRows = rows.join(" ");
+    var faces = document.querySelectorAll(".face");
+    [].forEach.call(faces, function (f, i) {
+      f.style.gridColumn = "span " + (i < plan.c * (plan.r - 1) ? plan.rem : plan.c);
+    });
+  }
+
+  function paintAllChips() {
+    [].forEach.call(document.querySelectorAll(".face"), function (f) {
+      var art = f.querySelector(".face__art");
+      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), art.clientWidth, art.clientHeight);
+    });
+  }
+
   function layoutFaces() {
     var bodyEl = document.querySelector(".studio__body");
     var grid = document.getElementById("facesGrid");
-    var totalW = bodyEl.clientWidth, ph = bodyEl.clientHeight;
-    if (!totalW || !ph) return;
-    var nameH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--faceName")) || 15;
-    var phone = window.matchMedia("(max-width: 860px)").matches;
-    var mw, mh, cols;
+    var totalW = bodyEl.clientWidth, H = bodyEl.clientHeight;
+    if (!totalW || !H) return;
+    var phone = window.matchMedia("(max-width: 999px)").matches;
 
     if (phone) {
-      cols = 3;
-      var panel = grid.parentElement.clientWidth || totalW;
-      mw = Math.floor(panel / cols) - 1;
-      mh = Math.round(mw / ASPECT);
       bodyEl.style.gridTemplateColumns = "";
+      var P = grid.clientWidth || totalW;
+      var c = 3, rem = 2, r = 8;
+      var t = (P - (c * rem - 1) * GAP) / (c * rem);
+      var wN = rem * t + (rem - 1) * GAP, wR = c * t + (c - 1) * GAP;
+      applyGrid(grid, { c: c, r: r, rem: rem, hN: wN / ASPECT + NAME_H, hR: wR / ASPECT + NAME_H });
     } else {
       var best = null;
-      COLS.forEach(function (c) {
-        var rows = Math.ceil(24 / c);
-        var rowH = Math.floor(ph / rows);
-        var hh = rowH - nameH - 3;
-        if (hh < 50) return;
-        var ww = Math.round(hh * ASPECT);
-        var panelW = c * (ww + 1) + 2;
-        var stageW = totalW - panelW;
-        if (stageW < 250 || stageW > totalW * 0.45) return;
-        if (!best || ww > best.ww) best = { c: c, ww: ww, hh: hh, stageW: stageW };
+      [5, 6, 7, 8].forEach(function (c) {
+        var p = planFor(c, H, GAP, NAME_H);
+        if (!p) return;
+        var stageW = totalW - p.P - 1;
+        if (stageW < 300 || stageW > totalW * 0.55) return;
+        if (!best || p.wN > best.wN) { best = p; best.stageW = stageW; }
       });
-      if (best) {
-        cols = best.c; mw = best.ww; mh = best.hh;
-        bodyEl.style.gridTemplateColumns = best.stageW + "px minmax(0, 1fr)";
-      } else {
-        cols = 6;
-        bodyEl.style.gridTemplateColumns = "";
-        var pw = grid.parentElement.clientWidth || totalW;
-        var rowH2 = Math.floor(ph / 4);
-        mh = rowH2 - nameH - 3;
-        mw = Math.min(Math.floor(pw / cols) - 1, Math.round(mh * ASPECT));
-        mh = Math.round(mw / ASPECT);
-      }
+      if (!best) { best = planFor(6, H, GAP, NAME_H); best.stageW = Math.max(300, totalW - best.P - 1); }
+      bodyEl.style.gridTemplateColumns = best.stageW + "px minmax(0, 1fr)";
+      applyGrid(grid, best);
     }
-
-    grid.style.gridTemplateColumns = "repeat(" + cols + ", minmax(0, 1fr))";
-    grid.style.gridAutoRows = (mh + nameH + 3) + "px";
-    [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), mw, mh);
-    });
+    paintAllChips();
   }
 
   function fitStage() {
     if (!stage) return;
-    var st = document.querySelector(".stage");
-    var cs = getComputedStyle(st);
-    var availW = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    /* measure the column, never the art box: the art box is sized by him, so
-       measuring it would feed back on itself and shrink him every relayout */
-    var phone = window.matchMedia("(max-width: 860px)").matches;
-    var availH = phone ? document.querySelector(".stage__art").clientHeight : (availW / ASPECT);
-    var cell = Math.max(2, Math.floor(Math.min(availW / C.w, availH / C.h)));
+    var art = document.querySelector(".stage__art");
+    var cell = Math.max(2, Math.floor(Math.min(art.clientWidth / C.w, art.clientHeight / C.h)));
     stage.setCell(cell);
   }
 
@@ -259,6 +264,17 @@
       document.getElementById("moveLabel").textContent = s.moveLabel;
       document.getElementById("colorLabel").textContent = s.colorLabel;
       document.getElementById("glitchLabel").textContent = s.glitchLabel;
+      var meta = document.getElementById("stageMeta");
+      var mt = document.createElement("div");
+      mt.className = "stage__meta-t";
+      mt.textContent = s.metaTitle;
+      meta.appendChild(mt);
+      s.metaLines.forEach(function (t) {
+        var l = document.createElement("div");
+        l.className = "stage__meta-l";
+        l.textContent = t;
+        meta.appendChild(l);
+      });
     }
 
     stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
@@ -291,21 +307,6 @@
       });
       grid.appendChild(b);
     });
-
-    var meta = document.createElement("div");
-    meta.className = "facemeta";
-    var mt = document.createElement("div");
-    mt.className = "facemeta__t";
-    mt.textContent = (COPY && COPY.studio && COPY.studio.metaTitle) || "A REGRA DELE";
-    meta.appendChild(mt);
-    var lines = (COPY && COPY.studio && COPY.studio.metaLines) || ["GRADE 34 X 34", "23 CARAS", "SÓ O ROSTO MUDA"];
-    lines.forEach(function (t) {
-      var l = document.createElement("div");
-      l.className = "facemeta__l";
-      l.textContent = t;
-      meta.appendChild(l);
-    });
-    grid.appendChild(meta);
 
     window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
 

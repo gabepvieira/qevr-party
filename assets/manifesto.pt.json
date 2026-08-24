@@ -2,61 +2,63 @@
   "lang": "pt-BR",
   "brand": "QEVR",
   "city": "SÃO PAULO",
-  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Sem abreviação de chat: VOCÊ, nunca VC; TAMBÉM, nunca TBM; ESTÁ e ESTÃO, nunca TÁ e TÃO. Escrever em português de verdade: ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. O REGISTRO É FALADO: VC, TÁ, TÃO, TBM, TÔ, CÊ ficam. NUNCA 'corrigir' para VOCÊ, ESTÁ, ESTÃO, TAMBÉM: a voz é o produto. Consertar só erro real: acento, concordância, typo. Ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
   "doors": {
     "manifesto": {
       "label": "O MANIFESTO",
-      "sub": "O QUE ESTE APP É"
+      "sub": "O QUE ELE É E POR QUE EXISTE"
     },
     "studio": {
       "label": "O ESTÚDIO",
-      "sub": "AS 23 CARAS DELE"
+      "sub": "MEXE COM ELE"
     }
   },
   "world": {
-    "title": "O MUNDO",
+    "title": "A CENA",
+    "sub": "DE ONDE O QEVR VEIO",
     "face": "Content",
     "paragraphs": [
       "O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.",
-      "FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE ACID ONDE TODO MUNDO PARECE FODA, PORQUE ACID TECHNO É FODA. ÀS VEZES VOCÊ ESTÁ LÁ COM A SUA TRIBO. MUITAS VEZES VOCÊ ESTÁ SOZINHO, PENSANDO NO SEU FUTURO NUM MUNDO QUE NÃO TE OFERECE NENHUM. OU NÃO PENSANDO EM NADA.",
-      "O TECHNO PODE SER SOLITÁRIO ÀS VEZES. E A SOLIDÃO FAZ PARTE. POR ISSO NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
+      "FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE ACID ONDE TODO MUNDO PARECE FODA, PORQUE ACID TECHNO É FODA. ÀS VEZES VC TÁ LÁ COM A SUA TRIBO. MUITAS VEZES VC TÁ SOZINHO, PENSANDO NO SEU FUTURO NUM MUNDO QUE NÃO TE OFERECE NENHUM. OU NÃO PENSANDO EM NADA.",
+      "O TECHNO PODE SER SOLITÁRIO ÀS VEZES. E A SOLIDÃO FAZ PARTE. POR ISSO QUE NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
     ],
     "people": {
-      "lead": "E TAMBÉM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
+      "lead": "E TBM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
       "items": [
         [
           "AMIGOS",
-          "PESSOAS QUE VOCÊ CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
+          "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
         ],
         [
           "DESCONHECIDOS",
-          "PESSOAS QUE VOCÊ VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
+          "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
         ],
         [
           "FICANTES E EX-FICANTES",
-          "PESSOAS QUE MUDAM O MAPA DA PISTA. VOCÊ SEMPRE SABE ONDE ELAS ESTÃO."
+          "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SEMPRE SABE ONDE ELAS TÃO."
         ],
         [
           "O AMOR DA SUA VIDA",
-          "UMA PESSOA QUE VOCÊ ENCONTROU ÀS 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
+          "UMA PESSOA QUE VC ENCONTROU ÀS 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
         ]
       ]
     },
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS, TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
-      "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TAMBÉM NUNCA VAI DEIXAR VOCÊ FINGIR QUE ELE NÃO ACONTECEU."
+      "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
     ]
   },
   "stances": {
     "title": "O JEITO DELE",
+    "sub": "COMO ELE FUNCIONA",
     "items": [
       {
         "head": "ELE AVISA. NUNCA COMEMORA.",
         "face": "Unamused",
         "body": [
           "ELE DIZ \"ELA CHEGOU\". ELE NÃO DIZ \"SEU CRUSH ACABOU DE CHEGAR\".",
-          "O APP TRAZ O FATO. O RESTO É COM VOCÊ."
+          "O APP TRAZ O FATO. O RESTO É COM VC."
         ]
       },
       {
@@ -68,7 +70,7 @@
         ]
       },
       {
-        "head": "ELE NÃO QUER NADA DE VOCÊ.",
+        "head": "ELE NÃO QUER NADA DE VC.",
         "face": "Bored",
         "body": [
           "ELE SÓ FALA PORQUE ACONTECEU ALGUMA COISA. ABRIRAM A PORTA. SOLTARAM O ENDEREÇO. A PISTA PEGOU FOGO.",
@@ -80,23 +82,23 @@
         "face": "Content",
         "body": [
           "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. QUANTOS QUARTEIRÕES ATÉ LÁ.",
-          "NENHUM NÚMERO AQUI MEDE VOCÊ NEM NINGUÉM. VOCÊ VÊ QUEM ESTÁ INDO. NUNCA QUANTOS."
+          "NENHUM NÚMERO AQUI MEDE VC NEM NINGUÉM. VC VÊ QUEM TÁ INDO. NUNCA QUANTOS."
         ]
       },
       {
-        "head": "O ESCURO É O CHÃO. A COR É A LUZ CHEGANDO.",
+        "head": "SÓ TEM COR QUANDO TEM COISA VIVA.",
         "face": "Blissful",
         "body": [
           "NOITE MORTA É TELA PRETA, E TUDO BEM. É A VERDADE.",
-          "QUANDO APARECE COR, TEM COISA VIVA. UM AMIGO. UMA PISTA PEGANDO FOGO. UMA PORTA ABRINDO."
+          "QUANDO ACENDE, TEM COISA ROLANDO. UM AMIGO. UMA PISTA PEGANDO FOGO. UMA PORTA ABRINDO."
         ]
       },
       {
-        "head": "OLHOU, RESOLVEU, GUARDOU.",
+        "head": "O CELULAR VOLTA PRO BOLSO.",
         "face": "Eyes Closed",
         "body": [
           "UMA OLHADA, UMA RESPOSTA, TELA APAGADA. AQUI NADA TE PRENDE.",
-          "NA PISTA, DAR CERTO É O CELULAR VOLTAR PRO BOLSO."
+          "SE VC PASSOU A NOITE OLHANDO PRO APP, O APP FALHOU."
         ]
       },
       {
@@ -127,6 +129,7 @@
   },
   "nevers": {
     "title": "REGRAS",
+    "sub": "O QUE ELE NUNCA VAI FAZER",
     "face": "Angry",
     "lines": [
       [
@@ -147,7 +150,7 @@
       ],
       [
         "NUNCA ROLAR PRA SEMPRE.",
-        "SEM AUTOPLAY. SEM TELA FEITA PRA VOCÊ FICAR OLHANDO."
+        "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."
       ],
       [
         "NUNCA TE VENDER.",
@@ -165,6 +168,7 @@
   },
   "gift": {
     "title": "UM PRESENTE",
+    "sub": "PRA QUEM ELE É",
     "face": "Stars",
     "paragraphs": [
       "QEVR É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. PRA TODOS QUE NUNCA VOU CONHECER.",
@@ -178,7 +182,6 @@
     "moveLabel": "ELE SE MEXE SOZINHO?",
     "colorLabel": "MUDE A COR DO QEVR",
     "glitchLabel": "CLIQUE AQUI",
-    "gridHint": "AS 23 CARAS DELE",
     "metaTitle": "A REGRA DELE",
     "metaLines": [
       "GRADE 34 X 34",
