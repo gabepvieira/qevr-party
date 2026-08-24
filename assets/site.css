@@ -28,7 +28,8 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 
 html {
   background: var(--ground);
-  scroll-snap-type: y proximity;
+  /* no scroll-snap. it hijacks the scroll the moment a section is taller than the
+     screen, and the reader should always be the one driving. */
   scroll-behavior: smooth;
 }
 
@@ -78,7 +79,6 @@ main > section {
   min-height: calc(100svh - var(--bar));
   padding: clamp(30px, 5vh, 60px) var(--gut);
   border-bottom: var(--rule) solid var(--qevr-hair);
-  scroll-snap-align: start;
   scroll-margin-top: var(--bar);
   display: flex; flex-direction: column; justify-content: center;
 }
@@ -96,12 +96,20 @@ main > section {
 .copy p.dim { color: var(--qevr-muted); }
 .copy p.mark { color: var(--brand); }
 
-/* two columns on wide screens halves the height of the long passage */
-@media (min-width: 1000px) {
-  .copy--cols { column-count: 2; column-gap: clamp(36px, 4vw, 72px); }
-  .copy--cols p { max-width: none; break-inside: avoid; }
-  .copy--cols p + p { margin-top: 1.35em; }
-}
+/* ---------- the world: prose on the left, the people on the right ---------- */
+
+.world__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 72px); align-items: start; }
+.world__col { min-width: 0; }
+
+.people__lead { font-size: clamp(13px, 1.15vw, 16px); color: var(--brand); font-weight: 700; line-height: 1.6; margin-bottom: clamp(12px, 2vh, 20px); }
+.person { display: grid; gap: 4px; padding: clamp(9px, 1.2vh, 14px) 0; border-bottom: var(--rule) solid var(--qevr-hair); }
+.person:first-of-type { border-top: var(--rule) solid var(--qevr-hair); }
+.person__term { font-size: clamp(12px, 1vw, 14.5px); color: var(--qevr-light); font-weight: 700; letter-spacing: .1em; }
+.person__def { font-size: clamp(11.5px, .95vw, 13.5px); color: var(--qevr-muted); line-height: 1.65; }
+.world__close { margin-top: clamp(16px, 2.6vh, 30px); }
+.world__close p { font-size: clamp(12.5px, 1.05vw, 15px); line-height: 1.7; color: var(--qevr-muted); }
+.world__close p + p { margin-top: .9em; }
+.world__close p:last-child { color: var(--brand); }
 
 /* ---------- arrival: the fork ---------- */
 
@@ -161,7 +169,7 @@ main > section {
 
 /* ---------- closing: the nevers and the gift share one screen ---------- */
 
-.closing { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(28px, 4vw, 72px); align-items: start; }
+.closing { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(24px, 3.4vw, 64px); align-items: start; }
 .closing__col { min-width: 0; }
 
 .never { display: grid; grid-template-columns: minmax(0, 25ch) minmax(0, 1fr); gap: clamp(8px, 1.6vw, 26px); padding: clamp(9px, 1.15vh, 15px) 0; border-bottom: var(--rule) solid var(--qevr-hair); align-items: baseline; }
@@ -171,8 +179,19 @@ main > section {
 
 .gift .copy p { font-size: clamp(15px, 1.5vw, 22px); line-height: 1.65; max-width: 32ch; }
 .gift .copy p:last-child { color: var(--accent); }
-.stamp { margin-top: clamp(22px, 4vh, 46px); padding-top: clamp(16px, 2.4vh, 26px); border-top: var(--rule) solid var(--qevr-hair); font-size: clamp(10px, .95vw, 12.5px); line-height: 1.85; color: var(--qevr-muted); max-width: 46ch; }
-.stamp b { color: var(--qevr-light); font-weight: 400; }
+.stamp {
+  grid-column: 1 / -1;
+  margin-top: clamp(20px, 3.4vh, 40px);
+  padding-top: clamp(16px, 2.4vh, 26px);
+  border-top: 3px solid var(--brand);
+  font-size: clamp(16px, 2vw, 30px);
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--qevr-light);
+  letter-spacing: .04em;
+  max-width: 30ch;
+}
+.stamp b { color: var(--brand); font-weight: 700; }
 
 /* ---------- the companion ---------- */
 
@@ -185,6 +204,7 @@ main > section {
 @media (max-width: 1100px) { .stances__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 @media (max-width: 900px) {
+  .world__grid { grid-template-columns: 1fr; gap: clamp(20px, 3vh, 32px); }
   .arrival { grid-template-columns: 1fr; align-content: center; }
   .arrival__mascot { justify-self: start; }
   .closing { grid-template-columns: 1fr; }
@@ -203,6 +223,8 @@ main > section {
   .never__key { font-size: 12px; }
   .never__val { font-size: 11.5px; }
   .heading { margin-bottom: 16px; }
+  .person { padding: 7px 0; }
+  .stamp { font-size: 15px; max-width: none; }
   main > section { padding-top: 24px; padding-bottom: 24px; }
   .stamp { margin-top: 20px; padding-top: 14px; }
   .companion { width: 150px; height: 150px; right: 4px; bottom: 4px; }

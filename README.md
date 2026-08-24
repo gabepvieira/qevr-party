@@ -46,6 +46,14 @@ face. If you add content, keep the budget.
   shows a Portuguese label next to the canonical name.
 - Copy is written in the register of O MUNDO. Nothing careta: no UX vocabulary, no
   corporate softening. If a line would not be said out loud at a party, rewrite it.
+- Write Portuguese, never translate English. "DAR UM DEFEITO NELE" was a word-for-word
+  rendering of "give him a defect" and means nothing. Read every string aloud first.
+- Fill the box. A layout that sizes to its content and leaves the remainder black reads
+  as broken, not as breathing room. Grids stretch; the last cell spans the gap.
+- Hierarchy follows importance. The closing stamp is the loudest type on the page, not
+  a footnote.
+- Padding is structure, not decoration. A mascot fills its cell, then a rule, then a name.
+- Never hijack the scroll. No scroll-snap, no scrolljacking. The reader drives.
 
 ## The time of day mechanic (built, currently off)
 
@@ -140,9 +148,11 @@ claude mcp add porkbun -s local \
 
 ## Studio controls
 
-Every control says what it does rather than naming an internal state. "ELE SE MEXE
-SOZINHO" with SIM and NÃO runs or freezes the behaviour loop. "COR" with VERDE and ROSA
-repaints him and every chip. "DAR UM DEFEITO NELE" fires one GLITCH burst.
+Every control is written in Portuguese a person would actually say, never a translation
+of an English label. "ELE SE MEXE SOZINHO?" with SIM and NÃO runs or freezes the behaviour
+loop. "MUDE A COR DO QEVR" with VERDE and ROSA repaints him and all 23 chips. "CLIQUE
+AQUI" fires one GLITCH burst. All six strings live in `assets/manifesto.pt.json` under
+`studio`, so copy never hides in the markup.
 
 ## Not built yet
 

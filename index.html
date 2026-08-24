@@ -41,7 +41,14 @@
 
   <section id="manifesto">
     <div class="heading"><canvas data-cells="O MUNDO" data-fit="420"></canvas></div>
-    <div class="copy copy--cols" id="worldCopy"></div>
+    <div class="world__grid">
+      <div class="world__col copy" id="worldCopy"></div>
+      <div class="world__col">
+        <div class="people__lead" id="peopleLead"></div>
+        <div id="peopleList"></div>
+        <div class="world__close" id="worldClose"></div>
+      </div>
+    </div>
   </section>
 
   <section id="stances">
@@ -57,8 +64,8 @@
     <div class="closing__col gift">
       <div class="heading"><canvas data-cells="O PRESENTE" data-fit="380"></canvas></div>
       <div class="copy" id="giftCopy"></div>
-      <div class="stamp" id="stamp"></div>
     </div>
+    <div class="stamp" id="stamp"></div>
   </section>
 </main>
 
@@ -134,11 +141,21 @@
   }
 
   function buildWorld() {
+    var w = COPY.world;
     var host = document.getElementById("worldCopy");
-    var n = COPY.world.paragraphs.length;
-    COPY.world.paragraphs.forEach(function (t, i) {
-      host.appendChild(para(t, i === n - 1 ? "mark" : (i === 2 ? "dim" : "")));
+    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i === 2 ? "dim" : "")); });
+
+    document.getElementById("peopleLead").textContent = w.people.lead;
+    var list = document.getElementById("peopleList");
+    w.people.items.forEach(function (pair) {
+      var row = document.createElement("div"); row.className = "person";
+      var t = document.createElement("div"); t.className = "person__term"; t.textContent = pair[0];
+      var d = document.createElement("div"); d.className = "person__def"; d.textContent = pair[1];
+      row.appendChild(t); row.appendChild(d); list.appendChild(row);
     });
+
+    var close = document.getElementById("worldClose");
+    w.close.forEach(function (t) { close.appendChild(para(t)); });
   }
 
   function buildStances() {
