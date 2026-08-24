@@ -2,7 +2,7 @@
   "lang": "pt-BR",
   "brand": "QEVR",
   "city": "SÃO PAULO",
-  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Escrever em português de verdade: ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. Sem abreviação de chat: VOCÊ, nunca VC; TAMBÉM, nunca TBM; ESTÁ e ESTÃO, nunca TÁ e TÃO. Escrever em português de verdade: ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
   "doors": {
     "manifesto": {
       "label": "O MANIFESTO",
@@ -17,35 +17,35 @@
     "title": "O MUNDO",
     "face": "Content",
     "paragraphs": [
-      "O QEVR SAIU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE QUEM TIVER NOITES IGUAIS.",
-      "FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE ACID ONDE TODO MUNDO PARECE FODA, PORQUE ACID TECHNO É FODA. ÀS VEZES VC TÁ LÁ COM A SUA TRIBO. MUITAS VEZES VC TÁ SOZINHO, PENSANDO NO SEU FUTURO NUM MUNDO QUE NÃO TE OFERECE NENHUM. OU NÃO PENSANDO EM NADA.",
-      "O TECHNO PODE SER SOLITÁRIO ÀS VEZES. E A SOLIDÃO FAZ PARTE. POR ISSO QUE NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
+      "O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.",
+      "FESTAS LIVRES EM GALPÕES ABANDONADOS. NOITES DE ACID ONDE TODO MUNDO PARECE FODA, PORQUE ACID TECHNO É FODA. ÀS VEZES VOCÊ ESTÁ LÁ COM A SUA TRIBO. MUITAS VEZES VOCÊ ESTÁ SOZINHO, PENSANDO NO SEU FUTURO NUM MUNDO QUE NÃO TE OFERECE NENHUM. OU NÃO PENSANDO EM NADA.",
+      "O TECHNO PODE SER SOLITÁRIO ÀS VEZES. E A SOLIDÃO FAZ PARTE. POR ISSO NÃO É UM PROBLEMA QUE ESTE APP RESOLVE."
     ],
     "people": {
-      "lead": "E TBM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
+      "lead": "E TAMBÉM TEM AS PESSOAS, E O QUE ELAS SE TORNARAM.",
       "items": [
         [
           "AMIGOS",
-          "PESSOAS QUE VC CONHECEU NO ROLE, E QUE AGORA SÃO PARTE DA SUA VIDA."
+          "PESSOAS QUE VOCÊ CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
         ],
         [
           "DESCONHECIDOS",
-          "PESSOAS QUE VC VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
+          "PESSOAS QUE VOCÊ VIU UMA VEZ, NA FILA DO BANHEIRO, E NUNCA MAIS."
         ],
         [
           "FICANTES E EX-FICANTES",
-          "PESSOAS QUE MUDAM O MAPA DA PISTA. VC SEMPRE SABE ONDE ELAS TÃO."
+          "PESSOAS QUE MUDAM O MAPA DA PISTA. VOCÊ SEMPRE SABE ONDE ELAS ESTÃO."
         ],
         [
           "O AMOR DA SUA VIDA",
-          "UMA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
+          "UMA PESSOA QUE VOCÊ ENCONTROU ÀS 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
         ]
       ]
     },
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS, TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
-      "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
+      "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TAMBÉM NUNCA VAI DEIXAR VOCÊ FINGIR QUE ELE NÃO ACONTECEU."
     ]
   },
   "stances": {
@@ -55,8 +55,8 @@
         "head": "ELE AVISA. NUNCA COMEMORA.",
         "face": "Unamused",
         "body": [
-          "ELE DIZ \"ELA CHEGOU.\" ELE NÃO DIZ \"SEU CRUSH ACABOU DE CHEGAR.\"",
-          "O APP TRAZ O FATO. O RESTO É COM VC."
+          "ELE DIZ \"ELA CHEGOU\". ELE NÃO DIZ \"SEU CRUSH ACABOU DE CHEGAR\".",
+          "O APP TRAZ O FATO. O RESTO É COM VOCÊ."
         ]
       },
       {
@@ -68,7 +68,7 @@
         ]
       },
       {
-        "head": "ELE NÃO QUER NADA DE VC.",
+        "head": "ELE NÃO QUER NADA DE VOCÊ.",
         "face": "Bored",
         "body": [
           "ELE SÓ FALA PORQUE ACONTECEU ALGUMA COISA. ABRIRAM A PORTA. SOLTARAM O ENDEREÇO. A PISTA PEGOU FOGO.",
@@ -80,7 +80,7 @@
         "face": "Content",
         "body": [
           "HORA. TEMPERATURA. PREÇO. LOTAÇÃO. QUANTOS QUARTEIRÕES ATÉ LÁ.",
-          "NENHUM NÚMERO AQUI MEDE VC NEM NINGUÉM. VC VÊ QUEM TÁ INDO. NUNCA QUANTOS."
+          "NENHUM NÚMERO AQUI MEDE VOCÊ NEM NINGUÉM. VOCÊ VÊ QUEM ESTÁ INDO. NUNCA QUANTOS."
         ]
       },
       {
@@ -131,7 +131,7 @@
     "lines": [
       [
         "NUNCA TRANSFORMAR GENTE EM NÚMERO.",
-        "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA EM PESSOA."
+        "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA PRA NINGUÉM."
       ],
       [
         "NUNCA PARABENIZAR.",
@@ -143,14 +143,14 @@
       ],
       [
         "NUNCA MANDAR NO SEU GOSTO.",
-        "SEM FEED DE RECOMENDAÇÃO, SEM EM ALTA. QUEM MANDA É A CIDADE E O RELÓGIO."
+        "SEM FEED DE RECOMENDAÇÃO, SEM \"EM ALTA\". QUEM MANDA É A CIDADE E O RELÓGIO."
       ],
       [
         "NUNCA ROLAR PRA SEMPRE.",
-        "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO."
+        "SEM AUTOPLAY. SEM TELA FEITA PRA VOCÊ FICAR OLHANDO."
       ],
       [
-        "NUNCA VENDER VC.",
+        "NUNCA TE VENDER.",
         "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO."
       ],
       [

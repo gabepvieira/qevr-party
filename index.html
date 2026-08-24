@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>QEVR</title>
-<meta name="description" content="QEVR. NASCEU DAS NOITES DE UMA PESSOA E PERTENCE A TODO MUNDO QUE TEM NOITES ASSIM.">
+<meta name="description" content="O QEVR NASCEU DAS NOITES DE UMA PESSOA SÓ. HOJE É DE TODO MUNDO QUE TEM NOITES ASSIM.">
 <meta name="theme-color" content="#09090B">
 <meta property="og:title" content="QEVR">
 <meta property="og:description" content="O APP TRAZ O FATO. O RESTO É COM VOCÊ.">
@@ -12,6 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -336,7 +339,7 @@
   /* ---------- he reads it with you ---------- */
   function watchSections() {
     if (!("IntersectionObserver" in window)) return;
-    var map = { manifesto: COPY.world.face, stances: "Default", fim: COPY.nevers.face };
+    var map = { manifesto: COPY.world.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting || !mascot || wasFire) return;

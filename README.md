@@ -3,7 +3,7 @@
 First contact. A partier who has never heard of QEVR lands here. The arrival forks into
 two doors, O MANIFESTO and O ESTÚDIO, and a bar keeps both one tap away from anywhere.
 
-**Live at http://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
+**Live at https://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
 
 Static files only. No build step, no framework, no dependencies. Everything runs from
 this folder exactly as it sits.
@@ -28,7 +28,7 @@ npm run site          # from the repo root, serves http://localhost:4599
 ## Screen budget
 
 Scrolling is the enemy. The manifesto is four sections, each sized to about one screen:
-the arrival, O MUNDO, COMO ELE FALA, and the nevers sharing a screen with O PRESENTE.
+the arrival, then four matching toggle blocks: O MUNDO (open by default), O JEITO DELE, REGRAS and UM PRESENTE.
 That lands near 3.8 screens on a desktop and 4.5 on a phone. The long passage runs in two
 columns above 1000px, and the nine stances are headline tiles that open in place rather
 than nine stacked paragraphs. The studio does not scroll at all: the stage holding Qevr is
@@ -38,6 +38,8 @@ face. If you add content, keep the budget.
 ## Rules this site keeps
 
 - Copy is 100% uppercase, SpaceMono, no em dashes, no exclamation points, no emoji.
+- No chat abbreviations, ever: VOCÊ never VC, TAMBÉM never TBM, ESTÁ/ESTÃO never TÁ/TÃO.
+  A draft typed fast in a chat message is input, not publishable copy.
 - Square corners everywhere (`border-radius: 0` is forced globally).
 - Hard offset shadows only. The single glow is the thermometer at ON FIRE.
 - Four brand colours, locked. Nothing else.

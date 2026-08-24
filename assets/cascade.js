@@ -10,6 +10,7 @@
   function makeCanvas() {
     var c = document.createElement("canvas");
     c.setAttribute("aria-hidden", "true");
+    c.setAttribute("data-qevr-cascade", "");
     c.style.cssText = "position:fixed;inset:0;width:100%;height:100%;z-index:9999;pointer-events:none;display:block;";
     document.body.appendChild(c);
     return c;
@@ -141,4 +142,14 @@
   if (!reduce) {
     document.addEventListener("DOMContentLoaded", function () { reveal(null); });
   }
+
+  /* back/forward restores a bfcache snapshot taken mid-cover: a black screen.
+     drop any leftover cover and arrive out of the cascade again. */
+  window.addEventListener("pageshow", function (e) {
+    if (!e.persisted) return;
+    [].forEach.call(document.querySelectorAll("[data-qevr-cascade]"), function (c) {
+      if (c.parentNode) c.parentNode.removeChild(c);
+    });
+    if (!reduce) reveal(null);
+  });
 })();

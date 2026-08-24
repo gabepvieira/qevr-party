@@ -18,7 +18,7 @@
 
   --gut: clamp(16px, 4vw, 64px);
   --rule: 1px;
-  --bar: 52px;
+  --bar: calc(52px + env(safe-area-inset-top, 0px));
 }
 
 html[data-mode="party"] { --brand: var(--qevr-pink); --accent: var(--qevr-pink); }
@@ -46,7 +46,7 @@ body {
 .bar {
   position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 60;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; padding: 0 var(--gut) 0 calc(var(--gut) + 10px);
+  gap: 16px; padding: env(safe-area-inset-top, 0px) var(--gut) 0 calc(var(--gut) + 10px);
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
 }
@@ -198,7 +198,9 @@ main { padding-left: 10px; padding-top: var(--bar); }
 
 @media (max-width: 720px) {
   .stances__grid, #neversList { grid-template-columns: minmax(0, 1fr); }
-  .companion { width: 150px; height: 150px; right: 4px; bottom: 4px; }
+  /* on a phone there is no free corner: he never covers content (soul rule),
+     so once the arrival scrolls away he steps offstage instead of sitting on the copy */
+  .companion { display: none; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
   .door { min-width: 100%; }
