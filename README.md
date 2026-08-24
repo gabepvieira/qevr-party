@@ -23,8 +23,10 @@ assets/pixelfont.js            5x7 cell type, so headings are made of mascot cel
 assets/site.css                VENOM. square, hard shadows, uppercase
 studio/studio.css              studio-only layout
 assets/favicon.svg             the mascot himself (Default face), generated from
-                               qevr-expressions.json. favicon-32 / apple-touch-icon
-                               are renders of the same SVG. never hand-draw an icon.
+                               qevr-expressions.json. favicon-32 / -192 / -512,
+                               apple-touch-icon, and the root favicon.ico are renders
+                               of the same SVG (site.webmanifest points Android at the
+                               192/512 pair). never hand-draw an icon.
 ```
 
 ## Run it locally
