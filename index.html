@@ -33,16 +33,18 @@
 
 <main>
   <section class="arrival" id="topo">
-    <div class="arrival__left">
-      <div class="arrival__word"><canvas data-cells="QEVR" data-fit="680"></canvas></div>
-      <div class="arrival__city"><canvas data-cells="SÃO PAULO" data-fit="320" data-dim="1"></canvas></div>
-      <div class="arrival__rule"></div>
-      <div class="doors" id="doors"></div>
-    </div>
     <div class="arrival__mascot" id="arrivalSlot">
       <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
       <div class="arrival__hint" id="mascotHint"></div>
     </div>
+    <div class="arrival__color" id="arrivalColor">
+      <div class="arrival__question" id="arrivalColorQuestion"></div>
+      <div class="arrival__color-controls" role="group" aria-labelledby="arrivalColorQuestion">
+        <button class="ctl ctl--swatch ctl--green" id="arrivalGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
+        <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
+      </div>
+    </div>
+    <div class="doors" id="doors"></div>
   </section>
 
   <section class="blocks">
@@ -113,12 +115,23 @@
 (function () {
   "use strict";
 
-  /* lime only for now. the time-of-day flip is built and waiting in site.css. */
+  var MODE_KEY = "qevr.mode";
   var TIME_AWARE = false;
   var h = new Date().getHours();
-  var mode = TIME_AWARE ? ((h >= 23 || h < 7) ? "party" : (h === 7 ? "dawn" : "day")) : "day";
-  var forced = (location.search.match(/[?&]mode=(day|party|dawn)/) || [])[1];
-  document.documentElement.setAttribute("data-mode", forced || mode);
+  var auto = TIME_AWARE ? ((h >= 23 || h < 7) ? "party" : (h === 7 ? "dawn" : "day")) : "day";
+  var forced = (location.search.match(/[?&]mode=(day|party|dawn)(?:&|$)/) || [])[1];
+  function readModePreference() {
+    try {
+      var mode = localStorage.getItem(MODE_KEY);
+      return mode === "day" || mode === "party" ? mode : null;
+    } catch (e) { return null; }
+  }
+  function writeModePreference(mode) {
+    if (mode !== "day" && mode !== "party") return;
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+  }
+  var stored = readModePreference();
+  document.documentElement.setAttribute("data-mode", forced || stored || auto);
 
   function cssVar(n, fb) {
     return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb;
@@ -156,6 +169,28 @@
   function drawAllCells() { [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawCells); }
 
   var COPY = null, mascot = null;
+
+  function syncArrivalColor() {
+    var party = document.documentElement.getAttribute("data-mode") === "party";
+    document.getElementById("arrivalGreen").setAttribute("aria-pressed", String(!party));
+    document.getElementById("arrivalPink").setAttribute("aria-pressed", String(party));
+  }
+
+  function repaintBrand() {
+    drawAllCells();
+    if (mascot) mascot.paint();
+  }
+
+  function chooseColor(mode) {
+    document.documentElement.setAttribute("data-mode", mode);
+    writeModePreference(mode);
+    syncArrivalColor();
+    repaintBrand();
+  }
+
+  syncArrivalColor();
+  document.getElementById("arrivalGreen").addEventListener("click", function () { chooseColor("day"); });
+  document.getElementById("arrivalPink").addEventListener("click", function () { chooseColor("party"); });
 
   function para(text, cls) {
     var p = document.createElement("p");
@@ -259,7 +294,7 @@
   function buildWorld() {
     var w = COPY.world;
     var host = document.getElementById("worldCopy");
-    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i === 2 ? "dim" : "")); });
+    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i >= w.paragraphs.length - 2 ? "dim" : "")); });
 
     document.getElementById("peopleLead").textContent = w.people.lead;
     /* the people are a deck like any other list on this page: numbered tiles,
@@ -334,12 +369,22 @@
     stamp.appendChild(document.createTextNode(" " + parts.slice(1).join(". ")));
     var hint = document.getElementById("mascotHint");
     if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
+    var question = document.getElementById("arrivalColorQuestion");
+    if (question && COPY.arrival) question.textContent = COPY.arrival.colorQuestion;
   }
 
   /* ---------- he starts life size, then takes his corner ---------- */
   var inCorner = false;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
-  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : (isSmall() ? 8 : 15); }
+  function arrivalCellFor() {
+    if (!isSmall()) return 16;
+    var arrival = document.getElementById("topo");
+    var room = arrival && arrival.clientWidth ? arrival.clientWidth : window.innerWidth;
+    var byWidth = Math.floor(Math.max(184, room - 40) / window.Qevr.CROP.w);
+    var byHeight = Math.floor(Math.max(200, window.innerHeight * 0.42) / window.Qevr.CROP.h);
+    return Math.max(8, Math.min(13, byWidth, byHeight));
+  }
+  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor(); }
   function boundsFor() {
     return inCorner ? { x: isSmall() ? 14 : 26, y: isSmall() ? 10 : 20 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
@@ -425,6 +470,12 @@
     }, { passive: true });
 
     watchSections();
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        drawAllCells(); unifyToggleHeadings(); placeMascot();
+      });
+    }
   }).catch(function (err) { console.error("[qevr] boot failed", err); });
 
   window.addEventListener("scroll", onScroll, { passive: true });

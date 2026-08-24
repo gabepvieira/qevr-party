@@ -78,24 +78,30 @@ the heart of A CENA, not a disclosure.
 
 Scrolling is the enemy. With A CENA open the whole manifesto is ~2 screens on a desktop
 and ~2.9 on a phone. The accordion is what keeps it there: opening a block closes the
-others. The studio does not scroll at all on desktop; on a phone only the face grid
-scrolls, under a pinned stage. If you add content, keep the budget.
+others. The studio never scrolls on desktop; on a phone it scrolls as one grid with
+the playground near the top. If you add content, keep the budget.
 
-## The studio grid (why there is no 24th cell)
+## The studio: one single grid
 
-23 faces, 23 cells, nothing else in the grid. 23 is prime, so the rectangle closes by
-stretching the last row: desktop runs rows of 6 with a final row of 5 slightly larger
-chips, a phone runs rows of 3 with a final row of 2. The panel width is **solved** so
-the grid fills the height exactly (see `planFor` in `studio/index.html`) and the stage
-takes whatever width is left. Every cell keeps the mascot's exact aspect (23:25 of the
-cropped 34×34 grid), so every cell is entirely QEVR — then a divider, then the name.
+The studio is one grid: a frame of the 23 faces around one big center cell where
+QEVR lives with his playground (name, code, the three controls, the meta line).
+23 is prime, so the sides carry different counts on purpose — desktop runs top 8,
+bottom 8, left 4, right 3, each strip filling its edge exactly, and the center
+cell absorbs every remainder so the frame has no black slack. A phone reads the
+same sketch vertically: a strip of 3 faces, the playground spanning full width,
+then the rest in rows of 3 with the last row stretched; the page scrolls.
 
-- Dividers are **3px of ground** between chips (`--chipgap`), not hairlines: a 1px dark
-  line between two bright chips is invisible.
-- Hover is an inset 2px white frame plus a lit name — it has to survive a cell that is
-  100% mascot. Selected is the brand frame plus the brand name strip.
-- "A REGRA DELE" (grade, 23 caras, só o rosto muda) lives at the bottom of the stage
-  column. It is never a grid cell.
+- The deck drifts one seat clockwise around the ring every ~2s, stepped, never
+  eased. A hand over the frame (or focus in it) holds it still; reduced motion
+  turns it off. `RING_MS` in `studio/index.html` sets the pace; `startRing()`
+  is the switch if it ever needs to be static.
+- The selection highlight travels with its face, not with a slot.
+- Face labels live in the `PT` map in `studio/index.html` — GP's voice, mapped
+  onto the canonical codes, which never change.
+- Dividers are 3px of ground; hover is a white inset frame; selected is brand.
+- The color choice (VERDE/ROSA) persists across pages via `localStorage`
+  `qevr.mode`; `?mode=` previews without persisting. The arrival question on
+  the manifesto writes the same key.
 
 ## Rules this site keeps
 

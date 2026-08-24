@@ -3,10 +3,9 @@
    Four brand colors, locked. The one licensed glow is ON FIRE.
 
    ALIGNMENT STANDARD (applies to every page, every width):
-   - Everything is LEFT-ALIGNED inside one shared container. Desktop and phone
-     agree; columns collapse, alignment never changes.
-   - Two exceptions only: the mascot centers inside his own frame, and a label
-     that names a piece of art (CLICA EM MIM, a chip name) centers under that art.
+   - Reading decks stay LEFT-ALIGNED inside one shared container.
+   - The mascot-first arrival and studio center plate are the sanctioned centered
+     compositions; labels that name art center with that art.
    - Lime fill = where you are, or the primary door. White fill = hover. Never
      the same treatment for both. */
 
@@ -82,29 +81,29 @@ body {
 
 main { padding-left: 10px; padding-top: var(--bar); }
 
-/* ---------- arrival: sized to what it holds, never to the viewport ---------- */
+/* ---------- arrival: one centered mascot-first stack ---------- */
 
 .arrival {
-  min-height: min(86svh, 880px);
+  min-height: min-content;
   max-width: var(--wrap); margin-inline: auto;
-  padding: clamp(24px, 5vh, 64px) var(--gut);
+  padding: clamp(18px, 3.4vh, 38px) var(--gut) clamp(22px, 4vh, 44px);
   border-bottom: var(--rule) solid var(--qevr-hair);
-  display: grid; grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center; gap: clamp(24px, 4vw, 72px);
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(10px, 1.8vh, 18px);
 }
-.arrival__left { display: flex; flex-direction: column; gap: clamp(14px, 2.6vh, 30px); }
-.arrival__word canvas, .arrival__city canvas { display: block; image-rendering: pixelated; }
-.arrival__rule { width: clamp(40px, 8vw, 96px); height: 6px; background: var(--brand); box-shadow: 4px 4px 0 var(--qevr-hair); }
 /* him and his one instruction are a lockup: the label centers under the art */
-.arrival__mascot { display: grid; justify-items: center; gap: 16px; }
+.arrival__mascot { display: grid; justify-items: center; gap: clamp(8px, 1.3vh, 14px); }
 .arrival__hint { font-size: clamp(11px, 1.1vw, 13px); letter-spacing: .24em; color: var(--brand); text-align: center; }
+.arrival__color { display: grid; justify-items: center; gap: 8px; width: min(100%, 360px); }
+.arrival__question { color: var(--qevr-muted); font-size: clamp(9px, .9vw, 10.5px); letter-spacing: .18em; text-align: center; }
+.arrival__color-controls { display: flex; justify-content: center; width: min(100%, 280px); }
 
-.doors { display: flex; flex-wrap: wrap; gap: 0; margin-top: clamp(10px, 2vh, 22px); }
+.doors { display: flex; gap: 0; width: min(100%, 640px); }
 .door {
   display: flex; flex-direction: column; gap: 7px;
   padding: clamp(16px, 2vw, 24px) clamp(20px, 2.6vw, 34px);
   text-decoration: none; border: var(--rule) solid var(--qevr-hair);
-  margin: 0 -1px -1px 0; color: var(--qevr-light); min-width: min(100%, 230px);
+  margin: 0 -1px -1px 0; color: var(--qevr-light); min-width: 0;
   flex: 1 1 0;
 }
 .door strong { font-size: clamp(14px, 1.5vw, 19px); font-weight: 700; letter-spacing: .1em; }
@@ -115,6 +114,24 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .door:not(.door--lead):hover, .door:not(.door--lead):focus-visible { background: var(--qevr-light); border-color: var(--qevr-light); color: var(--qevr-ink); outline: none; }
 .door:not(.door--lead):hover span, .door:not(.door--lead):focus-visible span { color: var(--qevr-ink); opacity: .7; }
 .door--lead:hover, .door--lead:focus-visible { box-shadow: 2px 2px 0 var(--qevr-hair); transform: translate(4px, 4px); outline: none; }
+
+/* ---------- segmented controls: shared by arrival and studio ---------- */
+
+.ctl {
+  font: inherit; text-transform: uppercase; letter-spacing: .12em;
+  font-size: 11px; padding: 10px 13px; cursor: pointer;
+  background: transparent; color: var(--qevr-light);
+  border: var(--rule) solid var(--qevr-hair); margin: 0 -1px 0 0;
+  flex: 1; text-align: center;
+}
+.ctl:hover, .ctl:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); outline: none; }
+.ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); border-color: var(--brand); font-weight: 700; }
+.ctl--swatch { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.ctl--swatch i { width: 10px; height: 10px; display: block; flex: none; }
+.ctl--green i { background: var(--qevr-body); }
+.ctl--pink i { background: var(--qevr-pink); }
+/* a pressed swatch sits on its own colour: flip the square to ink so it never vanishes */
+.ctl--swatch[aria-pressed="true"] i { background: var(--qevr-ink); }
 
 /* ---------- the four blocks: one stack, identical at every width ---------- */
 
@@ -224,8 +241,6 @@ main { padding-left: 10px; padding-top: var(--bar); }
 
 @media (max-width: 900px) {
   .world__grid { grid-template-columns: 1fr; gap: clamp(18px, 3vh, 30px); }
-  .arrival { grid-template-columns: 1fr; align-content: center; }
-  .arrival__mascot { justify-self: start; }
 }
 
 @media (max-width: 720px) {
@@ -235,7 +250,10 @@ main { padding-left: 10px; padding-top: var(--bar); }
   .companion { display: none; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
-  .door { min-width: 100%; }
+  .arrival { padding-inline: 16px; gap: 10px; }
+  .doors { flex-direction: column; }
+  .door { min-width: 100%; padding: 13px 16px; }
+  .arrival__color-controls { width: min(100%, 260px); }
   .copy p { font-size: 13px; line-height: 1.62; }
   .world__close p { font-size: 12px; }
   .stance { min-height: 0; padding: 12px 14px; }

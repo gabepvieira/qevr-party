@@ -1,107 +1,128 @@
-/* O ESTÚDIO. One screen. 23 faces, 23 cells, nothing else in the grid: the
-   last row stretches to close the rectangle, so there is no filler cell and
-   no hole. Every cell is exactly his aspect, so every cell is entirely QEVR,
-   then a divider, then the name. Dividers are 3px of ground between chips.
-   --faceName is the exact name-strip height; the layout maths depends on it. */
+/* O ESTÚDIO. One single grid: a frame of the 23 faces around one big center
+   cell where QEVR lives with his playground. The strips each fill their edge
+   exactly (23 is prime, so the sides carry different counts — top 8, bottom 8,
+   left 4, right 3); the center cell absorbs every remainder, so the frame has
+   no black slack. Faces drift one slot around the ring, stepped, pausable. */
 
-:root { --faceName: 20px; --chipgap: 3px; }
+:root { --face-name: 20px; --chip-gap: 3px; }
 
-/* no thermometer on this page, so nothing reserves room for one */
 .bar { padding-left: var(--gut); }
 
-.studio { height: 100svh; padding-top: var(--bar); display: grid; grid-template-rows: 1fr; overflow: hidden; max-width: var(--wrap); margin-inline: auto; }
-.studio__body { display: grid; grid-template-columns: minmax(300px, 28%) minmax(0, 1fr); min-height: 0; }
-
-/* ---------- stage: one aligned panel, everything flush left ---------- */
-
-.stage {
-  min-height: 0; min-width: 0;
-  padding: clamp(14px, 2.4vh, 28px) clamp(16px, 1.6vw, 28px) clamp(14px, 2.4vh, 28px) var(--gut);
-  border-right: var(--rule) solid var(--qevr-hair);
-  display: grid; grid-template-rows: minmax(0, 1fr) auto auto auto;
-  gap: clamp(14px, 2.2vh, 24px);
-  overflow: hidden;
+.studio {
+  height: 100svh; padding-top: var(--bar); overflow: hidden;
+  max-width: var(--wrap); margin-inline: auto;
 }
-.stage__art { display: grid; place-items: center; min-height: 0; min-width: 0; }
-.stage__label { font-size: 10px; color: var(--qevr-muted); letter-spacing: .2em; }
-.stage__name { font-size: clamp(19px, 2.2vw, 34px); color: var(--brand); font-weight: 700; letter-spacing: .04em; line-height: 1.08; word-break: break-word; margin-top: 6px; }
-.stage__code { font-size: 10px; color: var(--qevr-muted); letter-spacing: .14em; margin-top: 6px; }
-.stage__code b { color: var(--qevr-light); font-weight: 700; }
-
-.stage__controls { display: flex; flex-direction: column; gap: clamp(10px, 1.6vh, 16px); }
-.ctlset { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.ctlset__label { font-size: 9px; color: var(--qevr-muted); letter-spacing: .18em; }
-.lbl-short { display: none; }
-/* every control row spans the same width: one column, one edge */
-.ctlrow { display: flex; width: 100%; }
-.ctl {
-  font: inherit; text-transform: uppercase; letter-spacing: .12em;
-  font-size: 11px; padding: 10px 13px; cursor: pointer;
-  background: transparent; color: var(--qevr-light);
-  border: var(--rule) solid var(--qevr-hair); margin: 0 -1px 0 0;
-  flex: 1; text-align: center;
+.frame {
+  height: 100%; display: grid; gap: var(--chip-gap);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "top    top    top"
+    "left   plate  right"
+    "bottom bottom bottom";
 }
-.ctl:hover { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); }
-.ctl[aria-pressed="true"] { background: var(--brand); color: var(--qevr-ink); border-color: var(--brand); font-weight: 700; }
-.ctl--swatch { display: flex; align-items: center; justify-content: center; gap: 7px; }
-.ctl--swatch i { width: 10px; height: 10px; display: block; flex: none; }
-.ctl--green i { background: #CCFF00; }
-.ctl--pink i { background: #FF007F; }
 
-/* the rule he lives by sits with his controls, not inside his grid */
-.stage__meta { border-top: var(--rule) solid var(--qevr-hair); padding-top: clamp(10px, 1.6vh, 16px); display: flex; flex-direction: column; gap: 4px; }
-.stage__meta-t { font-size: 9px; letter-spacing: .18em; color: var(--brand); font-weight: 700; margin-bottom: 2px; }
-.stage__meta-l { font-size: 9px; letter-spacing: .1em; color: var(--qevr-muted); line-height: 1.5; }
+/* ---------- the strips ---------- */
 
-/* ---------- faces: 23 chips own the whole panel ---------- */
+.frame__strip { display: flex; gap: var(--chip-gap); min-width: 0; min-height: 0; }
+.frame__strip--top { grid-area: top; }
+.frame__strip--bottom { grid-area: bottom; }
+.frame__strip--left { grid-area: left; flex-direction: column; }
+.frame__strip--right { grid-area: right; flex-direction: column; }
 
-.faces { min-height: 0; min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
-.faces__grid {
-  min-height: 0; align-content: start;
-  display: grid; gap: var(--chipgap);
-  background: var(--ground);
-}
 .face {
-  min-width: 0; min-height: 0;
-  background: transparent; color: inherit; font: inherit; cursor: pointer;
-  border: 0; padding: 0; display: grid; grid-template-rows: minmax(0, 1fr) var(--faceName);
+  position: relative; min-width: 0; min-height: 0; flex: 1 1 0;
+  border: 0; padding: 0; background: var(--ground);
+  color: inherit; font: inherit; cursor: pointer;
+  display: grid; grid-template-rows: minmax(0, 1fr) var(--face-name);
 }
-.face__art { display: grid; place-items: center; min-height: 0; overflow: hidden; }
+.face__art { display: grid; place-items: center; min-height: 0; min-width: 0; overflow: hidden; }
 .face canvas { display: block; image-rendering: pixelated; }
 .face__name {
-  font-size: 9.5px; letter-spacing: .12em; color: var(--qevr-muted);
-  text-align: center; padding: 0 4px;
-  height: var(--faceName); line-height: var(--faceName);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block; height: var(--face-name); padding: 0 4px; overflow: hidden;
+  color: var(--qevr-muted); font-size: 9.5px; line-height: var(--face-name);
+  letter-spacing: .1em; text-align: center;
+  text-overflow: ellipsis; white-space: nowrap;
 }
-/* hover has to survive a cell that is 100% mascot: hard inset frame, lit name */
-.face:hover, .face:focus-visible { outline: 2px solid var(--qevr-light); outline-offset: -2px; }
-.face:hover .face__name, .face:focus-visible .face__name { color: var(--qevr-light); }
-.face[aria-pressed="true"] .face__name { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
 .face[aria-pressed="true"] { outline: 2px solid var(--brand); outline-offset: -2px; }
+.face[aria-pressed="true"] .face__name { background: var(--brand); color: var(--qevr-ink); font-weight: 700; }
+.face:hover, .face:focus-visible { outline: 2px solid var(--qevr-light); outline-offset: -2px; }
+.face:hover .face__name, .face:focus-visible .face__name { background: var(--qevr-light); color: var(--qevr-ink); }
 
-/* ---------- phone: stage pinned, grid scrolls ---------- */
+/* ---------- the center cell: his playground ---------- */
 
-@media (max-width: 999px) {
-  .bar { padding-left: var(--gut); }
-  .studio__body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
-  .stage {
-    border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair);
-    grid-template-rows: auto auto auto; gap: 10px;
-    padding: 12px var(--gut) 14px;
+.plate {
+  grid-area: plate; min-width: 0; min-height: 0; overflow: hidden;
+  border: var(--rule) solid var(--qevr-hair); background: var(--qevr-ink);
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(24px, 4vw, 64px);
+  padding: clamp(12px, 2vh, 24px) clamp(16px, 2.5vw, 40px);
+}
+.stage__art { display: grid; place-items: center; min-width: 0; min-height: 0; flex: none; }
+
+.plate__panel { display: flex; flex-direction: column; gap: clamp(12px, 2vh, 20px); min-width: 0; width: min(46%, 380px); }
+.stage__label { color: var(--qevr-muted); font-size: 10px; letter-spacing: .2em; }
+.stage__name {
+  margin-top: 4px; color: var(--brand); font-weight: 700;
+  font-size: clamp(22px, 2.6vw, 36px); letter-spacing: .04em; line-height: 1.08;
+  word-break: break-word;
+}
+.stage__code { margin-top: 5px; color: var(--qevr-muted); font-size: 10px; letter-spacing: .14em; }
+.stage__code b { color: var(--qevr-light); font-weight: 700; }
+
+.stage__controls { display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 14px); }
+.ctlset { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ctlset__label {
+  overflow: hidden; color: var(--qevr-muted); font-size: 9px;
+  letter-spacing: .14em; text-overflow: ellipsis; white-space: nowrap;
+}
+.lbl-short { display: none; }
+.ctlrow { display: flex; width: 100%; }
+.stage__controls .ctl { min-width: 0; }
+
+.stage__meta {
+  padding-top: 8px; border-top: var(--rule) solid var(--qevr-hair);
+  color: var(--qevr-muted); font-size: 9px; line-height: 1.4; letter-spacing: .1em;
+}
+
+/* ---------- phone: the same sketch, read vertically. one grid, it scrolls:
+     a short strip of faces, then the playground spanning full width, then
+     the rest of the deck in rows of 3 (last row stretches). ---------- */
+
+@media (max-width: 720px) {
+  .studio { height: auto; min-height: 100svh; overflow: visible; }
+  .frame {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "top" "plate" "bottom";
   }
-  .stage__art { height: min(26vh, 200px); width: 100%; }
-  .stage__name { font-size: clamp(20px, 6.5vw, 30px); margin-top: 4px; }
-  .stage__controls { flex-direction: row; align-items: flex-end; justify-content: flex-start; gap: 10px; flex-wrap: nowrap; }
-  .ctlset { flex: none; }
-  .ctlset__label { font-size: 8px; letter-spacing: .12em; white-space: nowrap; }
+  .frame__strip--left, .frame__strip--right { display: none; }
+  .frame__strip--bottom {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .frame__strip--bottom .face { grid-column: span 2; }
+  .frame__strip--bottom .face.face--wide { grid-column: span 3; }
+
+  .plate { flex-direction: column; gap: 10px; padding: 14px 16px 16px; }
+  .plate__panel { width: 100%; align-items: center; text-align: center; gap: 10px; }
+  .stage__name { font-size: clamp(21px, 7vw, 29px); margin-top: 3px; }
+  .stage__label, .stage__code { font-size: 8.5px; }
+  .stage__controls { flex-direction: row; align-items: flex-end; justify-content: center; gap: 6px; width: 100%; }
+  .ctlset { flex: 1 1 0; gap: 4px; }
+  .ctlset--glitch { flex-grow: .8; }
+  .ctlset__label { font-size: 8px; letter-spacing: .08em; text-align: center; }
   .lbl-long { display: none; }
   .lbl-short { display: inline; }
-  .ctl { font-size: 10px; padding: 8px 10px; flex: none; }
-  .ctl--swatch { gap: 0; padding: 8px 11px; }
-  .ctl--swatch span { display: none; }
-  .ctl--swatch i { width: 13px; height: 13px; }
-  .stage__meta { display: none; }
-  .faces { grid-template-rows: minmax(0, 1fr); }
-  .faces__grid { overflow-y: auto; }
+  .stage__controls .ctl { padding: 8px 7px; font-size: 9.5px; }
+  .stage__controls .ctl--swatch { gap: 0; }
+  .stage__controls .ctl--swatch span { display: none; }
+  .stage__controls .ctl--swatch i { width: 13px; height: 13px; }
+  .stage__meta { width: 100%; padding-top: 6px; font-size: 7.5px; letter-spacing: .06em; text-align: center; }
+}
+
+@media (max-height: 719px) and (min-width: 721px) {
+  .plate { padding-block: 8px; }
+  .stage__name { font-size: 24px; }
+  .stage__controls .ctl { padding-block: 8px; }
 }

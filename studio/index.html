@@ -27,47 +27,49 @@
   </div>
 </header>
 
-<div class="studio">
-  <div class="studio__body">
+<main class="studio">
+  <div class="frame" id="frame">
+    <div class="frame__strip frame__strip--top" id="stripTop"></div>
+    <div class="frame__strip frame__strip--left" id="stripLeft"></div>
 
-    <section class="stage">
+    <section class="plate" aria-labelledby="stageName">
       <div class="stage__art">
         <button class="mascot" id="stageBtn" aria-label="QEVR"><canvas id="stageCanvas"></canvas></button>
       </div>
-      <div class="stage__read">
-        <div class="stage__label" id="faceLabel">OLHA A CARINHA DELE</div>
-        <div class="stage__name" id="stageName">PADRÃO</div>
-        <div class="stage__code"><span id="codeLabel">NO CÓDIGO</span> <b id="stageCode">DEFAULT</b></div>
-      </div>
-      <div class="stage__controls">
-        <div class="ctlset">
-          <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short">SE MEXE?</span></div>
-          <div class="ctlrow">
-            <button class="ctl" id="ctlLive" aria-pressed="true">SIM</button>
-            <button class="ctl" id="ctlHold" aria-pressed="false">NÃO</button>
+      <div class="plate__panel">
+        <div class="stage__read">
+          <div class="stage__label" id="faceLabel">OLHA A CARINHA DELE</div>
+          <div class="stage__name" id="stageName">NORMAL</div>
+          <div class="stage__code"><span id="codeLabel">NO CÓDIGO</span> <b id="stageCode">DEFAULT</b></div>
+        </div>
+        <div class="stage__controls">
+          <div class="ctlset">
+            <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short">SE MEXE?</span></div>
+            <div class="ctlrow">
+              <button class="ctl" id="ctlLive" type="button" aria-pressed="true">SIM</button>
+              <button class="ctl" id="ctlHold" type="button" aria-pressed="false">NÃO</button>
+            </div>
+          </div>
+          <div class="ctlset">
+            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">MUDE A COR DO QEVR</span><span class="lbl-short">COR</span></div>
+            <div class="ctlrow">
+              <button class="ctl ctl--swatch ctl--green" id="ctlGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
+              <button class="ctl ctl--swatch ctl--pink" id="ctlPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
+            </div>
+          </div>
+          <div class="ctlset ctlset--glitch">
+            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">CLIQUE AQUI</span><span class="lbl-short">CLIQUE AQUI</span></div>
+            <div class="ctlrow"><button class="ctl" id="ctlGlitch" type="button">GLITCH</button></div>
           </div>
         </div>
-        <div class="ctlset">
-          <div class="ctlset__label"><span class="lbl-long" id="colorLabel">MUDE A COR DO QEVR</span><span class="lbl-short">COR</span></div>
-          <div class="ctlrow">
-            <button class="ctl ctl--swatch ctl--green" id="ctlGreen" aria-pressed="true"><i></i><span>VERDE</span></button>
-            <button class="ctl ctl--swatch ctl--pink" id="ctlPink" aria-pressed="false"><i></i><span>ROSA</span></button>
-          </div>
-        </div>
-        <div class="ctlset">
-          <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">CLIQUE AQUI</span><span class="lbl-short">CLIQUE AQUI</span></div>
-          <div class="ctlrow"><button class="ctl" id="ctlGlitch">GLITCH</button></div>
-        </div>
+        <div class="stage__meta" id="stageMeta"></div>
       </div>
-      <div class="stage__meta" id="stageMeta"></div>
     </section>
 
-    <section class="faces">
-      <div class="faces__grid" id="facesGrid"></div>
-    </section>
-
+    <div class="frame__strip frame__strip--right" id="stripRight"></div>
+    <div class="frame__strip frame__strip--bottom" id="stripBottom"></div>
   </div>
-</div>
+</main>
 
 <script src="../assets/pixelfont.js"></script>
 <script src="../assets/qevr.js"></script>
@@ -76,35 +78,64 @@
 (function () {
   "use strict";
 
+  var MODE_KEY = "qevr.mode";
   var TIME_AWARE = false;
   var hh = new Date().getHours();
   var auto = TIME_AWARE ? ((hh >= 23 || hh < 7) ? "party" : (hh === 7 ? "dawn" : "day")) : "day";
-  var forced = (location.search.match(/[?&]mode=(day|party|dawn)/) || [])[1];
-  document.documentElement.setAttribute("data-mode", forced || auto);
+  var forced = (location.search.match(/[?&]mode=(day|party|dawn)(?:&|$)/) || [])[1];
+  function readModePreference() {
+    try {
+      var mode = localStorage.getItem(MODE_KEY);
+      return mode === "day" || mode === "party" ? mode : null;
+    } catch (e) { return null; }
+  }
+  function writeModePreference(mode) {
+    if (mode !== "day" && mode !== "party") return;
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+  }
+  var stored = readModePreference();
+  document.documentElement.setAttribute("data-mode", forced || stored || auto);
 
-  var stage, live = true, current = "Default";
+  var stage = null;
+  var live = true;
+  var current = "Default";
+  var names = [];
+  var slots = [];
+  var ringOffset = 0;
+  var ringTimer = 0;
+  var framePaused = false;
+  var C = window.Qevr.CROP;
+  var ASPECT = C.w / C.h;
+  var GAP = 3;
+  var NAME_H = 20;
+  var RING_MS = 2200;
+  var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
 
-  /* Portuguese labels. The names in qevr-expressions.json are canonical and never
-     renamed, because the app maps behaviours to them. This is a label, not a rename. */
+  /* Canonical codes stay untouched; these are display labels only. */
   var PT = {
-    "Default": "PADRÃO", "Happy": "FELIZ", "Eyes Closed": "OLHOS FECHADOS",
-    "Dead": "MORTO", "Joy": "ALEGRIA", "Anime": "ANIME", "Adoring": "ENCANTADO",
-    "Laughing": "RINDO", "Content": "CONTENTE", "Blissful": "EM PAZ", "Love": "AMOR",
-    "Love Kissing": "BEIJO DE AMOR", "Lovely": "AMOROSO", "Naughty": "SAFADO",
-    "Kissing": "BEIJANDO", "Death": "MORTE", "Stars": "ESTRELAS",
-    "Surprised": "SURPRESO", "Shocked": "CHOCADO", "Sad": "TRISTE",
-    "Unamused": "SEM GRAÇA", "Angry": "BRAVO", "Bored": "ENTEDIADO"
+    "Default": "NORMAL", "Happy": "FELIZ", "Eyes Closed": "DORMINDO",
+    "Dead": "MORRI", "Joy": "FELIZ", "Anime": "ANIME", "Adoring": "ENCANTADO",
+    "Laughing": "RISONHO", "Content": "CONTENTE", "Blissful": "EM PAZ", "Love": "IN LOVE",
+    "Love Kissing": "BEIJINHOS", "Lovely": "SIMPÁTICO", "Naughty": "DANADINHO",
+    "Kissing": "TE AMO", "Death": "MORTO (AGR DE VERDADE)", "Stars": "ESTRELINHAS",
+    "Surprised": "SURPRESO", "Shocked": "GAG", "Sad": "TRISTE",
+    "Unamused": "SEM GRAÇA", "Angry": "PUTO", "Bored": "ENTEDIADO"
   };
-  function label(n) { return PT[n] || n.toUpperCase(); }
-  function inkColor() { return getComputedStyle(document.documentElement).getPropertyValue("--qevr-ink").trim() || "#09090B"; }
-  function brandColor() { return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00"; }
+
+  function label(name) { return PT[name] || name.toUpperCase(); }
+  function cssVar(name, fallback) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  }
+  function inkColor() { return cssVar("--qevr-ink", "#09090B"); }
+  function brandColor() { return cssVar("--brand", "#CCFF00"); }
+  function isPhone() { return window.matchMedia("(max-width: 720px)").matches; }
 
   function setCurrent(name) {
     current = name;
     document.getElementById("stageName").textContent = label(name);
     document.getElementById("stageCode").textContent = name.toUpperCase();
-    [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      f.setAttribute("aria-pressed", String(f.getAttribute("data-name") === name));
+    [].forEach.call(document.querySelectorAll(".face"), function (face) {
+      face.setAttribute("aria-pressed", String(face.getAttribute("data-name") === name));
     });
   }
 
@@ -113,172 +144,230 @@
     document.getElementById("ctlLive").setAttribute("aria-pressed", String(on));
     document.getElementById("ctlHold").setAttribute("aria-pressed", String(!on));
     if (!stage) return;
-    if (on) stage.start({ x: 18, y: 14 });
-    else { stage._running = false; stage.pos.x = 0; stage.pos.y = 0; stage.squash = 1; stage.applyTransform(); }
+    if (on) {
+      if (!stage._running) stage.start({ x: 18, y: 14 });
+    } else {
+      stage._running = false;
+      stage.pos.x = 0;
+      stage.pos.y = 0;
+      stage.squash = 1;
+      stage.applyTransform();
+    }
   }
 
-  /* He is drawn only in columns 6..28 and rows 5..29 of the 34x34 grid, so
-     rendering the full grid renders a black margin as wide as he is. Crop to
-     the real bounds and fill the box exactly, with rounded cell boundaries so
-     runs never gap, and the same scale on both axes so there is no shear. */
-  var C = window.Qevr.CROP;
-  var ASPECT = C.w / C.h;
-
-  function paintChipBox(canvas, name, w, h) {
-    var m = window.Qevr.matrix(name);
-    if (!m) return;
-    w = Math.max(8, Math.round(w)); h = Math.max(8, Math.round(h));
-    var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    canvas.style.width = w + "px"; canvas.style.height = h + "px";
+  /* Every chip is painted into an exact CROP-aspect box. */
+  function paintChipBox(canvas, name, w) {
+    var matrix = window.Qevr.matrix(name);
+    if (!matrix) return;
+    w = Math.max(8, Math.round(w));
+    var h = Math.round(w / ASPECT);
+    /* the frame holds 23 chips: dpr 2 is invisible at this size */
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
     var ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
-    var body = brandColor(), ink = inkColor(), n = m.n;
+    var body = brandColor();
+    var ink = inkColor();
+    var n = matrix.n;
     for (var gy = 0; gy < C.h; gy++) {
-      var y0 = Math.round(gy * h / C.h), y1 = Math.round((gy + 1) * h / C.h);
+      var y0 = Math.round(gy * h / C.h);
+      var y1 = Math.round((gy + 1) * h / C.h);
       for (var gx = 0; gx < C.w; gx++) {
-        var v = m.cells[(gy + C.y0) * n + (gx + C.x0)];
-        if (!v) continue;
-        var x0 = Math.round(gx * w / C.w), x1 = Math.round((gx + 1) * w / C.w);
-        ctx.fillStyle = v === 2 ? ink : body;
+        var value = matrix.cells[(gy + C.y0) * n + (gx + C.x0)];
+        if (!value) continue;
+        var x0 = Math.round(gx * w / C.w);
+        var x1 = Math.round((gx + 1) * w / C.w);
+        ctx.fillStyle = value === 2 ? ink : body;
         ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
       }
     }
   }
 
-  /* 23 chips, no filler, no hole: full rows of c, then a last row of rem
-     chips stretched to close the rectangle. Every cell keeps his exact
-     aspect, so every cell is entirely him. On a desktop the panel width is
-     solved so the grid also fills the height exactly; the stage takes
-     whatever is left. */
-  var GAP = 3, NAME_H = 20;
-  function planFor(c, H, g, n) {
-    var r = Math.ceil(23 / c), rem = 23 - c * (r - 1);
-    var S = (r - 1) * rem + c;
-    var G = (r - 1) * (rem - 1) + (c - 1);
-    var t = (ASPECT * (H - r * n - (r - 1) * g) - g * G) / S;
-    if (t <= 0) return null;
-    var P = c * rem * t + (c * rem - 1) * g;
-    var wN = rem * t + (rem - 1) * g;
-    var wR = c * t + (c - 1) * g;
-    return { c: c, r: r, rem: rem, P: P, wN: wN, wR: wR,
-             hN: wN / ASPECT + n, hR: wR / ASPECT + n };
+  function makeSlot(ringIndex, wide) {
+    var button = document.createElement("button");
+    button.className = "face" + (wide ? " face--wide" : "");
+    button.type = "button";
+    button.setAttribute("data-ring", String(ringIndex));
+    button.setAttribute("aria-pressed", "false");
+    var art = document.createElement("span");
+    art.className = "face__art";
+    art.appendChild(document.createElement("canvas"));
+    button.appendChild(art);
+    var title = document.createElement("span");
+    title.className = "face__name";
+    button.appendChild(title);
+    return button;
   }
 
-  function applyGrid(grid, plan) {
-    grid.style.gridTemplateColumns = "repeat(" + (plan.c * plan.rem) + ", minmax(0, 1fr))";
-    var rows = [];
-    for (var i = 0; i < plan.r - 1; i++) rows.push(Math.round(plan.hN) + "px");
-    rows.push(Math.round(plan.hR) + "px");
-    grid.style.gridTemplateRows = rows.join(" ");
-    var faces = document.querySelectorAll(".face");
-    [].forEach.call(faces, function (f, i) {
-      f.style.gridColumn = "span " + (i < plan.c * (plan.r - 1) ? plan.rem : plan.c);
+  /* the 23 faces occupy the ring slots at (ring + offset) mod 23, so the
+     whole deck drifts one seat clockwise per step and nothing ever repeats */
+  function renderSlots() {
+    if (!names.length) return;
+    slots.forEach(function (slot) {
+      var ring = parseInt(slot.getAttribute("data-ring"), 10);
+      var name = names[(ring + ringOffset) % names.length];
+      slot.setAttribute("data-name", name);
+      slot.setAttribute("aria-label", label(name));
+      slot.querySelector(".face__name").textContent = label(name);
+      var art = slot.querySelector(".face__art");
+      var w = Math.min(art.clientWidth, Math.round((art.clientHeight || 9999) * ASPECT));
+      paintChipBox(slot.querySelector("canvas"), name, w);
+      slot.setAttribute("aria-pressed", String(name === current));
     });
   }
 
-  function paintAllChips() {
-    [].forEach.call(document.querySelectorAll(".face"), function (f) {
-      var art = f.querySelector(".face__art");
-      paintChipBox(f.querySelector("canvas"), f.getAttribute("data-name"), art.clientWidth, art.clientHeight);
-    });
-  }
+  /* one single grid: strips of faces framing the plate. each strip fills its
+     edge exactly; 23 is prime, so the counts differ per side on purpose. */
+  function buildFrame() {
+    var top = document.getElementById("stripTop");
+    var left = document.getElementById("stripLeft");
+    var right = document.getElementById("stripRight");
+    var bottom = document.getElementById("stripBottom");
+    [top, left, right, bottom].forEach(function (s) { s.innerHTML = ""; });
+    slots = [];
+    var frame = document.getElementById("frame");
+    var W = frame.clientWidth || window.innerWidth;
 
-  function layoutFaces() {
-    var bodyEl = document.querySelector(".studio__body");
-    var grid = document.getElementById("facesGrid");
-    var totalW = bodyEl.clientWidth, H = bodyEl.clientHeight;
-    if (!totalW || !H) return;
-    var phone = window.matchMedia("(max-width: 999px)").matches;
-
-    if (phone) {
-      bodyEl.style.gridTemplateColumns = "";
-      var P = grid.clientWidth || totalW;
-      var c = 3, rem = 2, r = 8;
-      var t = (P - (c * rem - 1) * GAP) / (c * rem);
-      var wN = rem * t + (rem - 1) * GAP, wR = c * t + (c - 1) * GAP;
-      applyGrid(grid, { c: c, r: r, rem: rem, hN: wN / ASPECT + NAME_H, hR: wR / ASPECT + NAME_H });
+    if (isPhone()) {
+      /* the sketch read vertically: 3 faces, the playground, then rows of 3 */
+      var artW = (W - 2 * GAP) / 3;
+      var stripH = Math.round(artW / ASPECT + NAME_H);
+      top.style.height = stripH + "px";
+      left.style.width = right.style.width = "";
+      for (var i = 0; i < 3; i++) {
+        var s = makeSlot(i, false);
+        top.appendChild(s); slots.push(s);
+      }
+      var wideH = Math.round(((W - GAP) / 2) / ASPECT + NAME_H);
+      var rows = [];
+      for (var r = 0; r < 6; r++) rows.push(stripH + "px");
+      rows.push(wideH + "px");
+      bottom.style.gridTemplateRows = rows.join(" ");
+      for (var j = 0; j < 20; j++) {
+        var wide = j >= 18;
+        var b = makeSlot(3 + j, wide);
+        bottom.appendChild(b); slots.push(b);
+      }
     } else {
-      var best = null;
-      [5, 6, 7, 8].forEach(function (c) {
-        var p = planFor(c, H, GAP, NAME_H);
-        if (!p) return;
-        var stageW = totalW - p.P - 1;
-        if (stageW < 300 || stageW > totalW * 0.55) return;
-        if (!best || p.wN > best.wN) { best = p; best.stageW = stageW; }
-      });
-      if (!best) { best = planFor(6, H, GAP, NAME_H); best.stageW = Math.max(300, totalW - best.P - 1); }
-      bodyEl.style.gridTemplateColumns = best.stageW + "px minmax(0, 1fr)";
-      applyGrid(grid, best);
+      var H = frame.clientHeight || Math.max(480, window.innerHeight - 52);
+      var counts = { top: 8, right: 3, bottom: 8, left: 4 };
+      var topArt = ((W - (counts.top - 1) * GAP) / counts.top) / ASPECT;
+      var stripHd = Math.round(topArt + NAME_H);
+      top.style.height = bottom.style.height = stripHd + "px";
+      var hMid = H - 2 * stripHd - 2 * GAP;
+      var leftW = Math.round((((hMid - (counts.left - 1) * GAP) / counts.left) - NAME_H) * ASPECT);
+      var rightW = Math.round((((hMid - (counts.right - 1) * GAP) / counts.right) - NAME_H) * ASPECT);
+      left.style.width = leftW + "px";
+      right.style.width = rightW + "px";
+      bottom.style.gridTemplateRows = "";
+      /* ring order is clockwise: top L>R, right T>B, bottom R>L, left B>T */
+      var k;
+      for (k = 0; k < counts.top; k++) { var t = makeSlot(k, false); top.appendChild(t); slots.push(t); }
+      for (k = 0; k < counts.right; k++) { var rr = makeSlot(counts.top + k, false); right.appendChild(rr); slots.push(rr); }
+      for (k = 0; k < counts.bottom; k++) {
+        var bb = makeSlot(counts.top + counts.right + (counts.bottom - 1 - k), false);
+        bottom.appendChild(bb); slots.push(bb);
+      }
+      for (k = 0; k < counts.left; k++) {
+        var ll = makeSlot(counts.top + counts.right + counts.bottom + (counts.left - 1 - k), false);
+        left.appendChild(ll); slots.push(ll);
+      }
     }
-    paintAllChips();
+    renderSlots();
   }
 
-  function fitStage() {
-    if (!stage) return;
-    var art = document.querySelector(".stage__art");
-    var cell = Math.max(2, Math.floor(Math.min(art.clientWidth / C.w, art.clientHeight / C.h)));
-    stage.setCell(cell);
+  /* stepped drift, pausable, never under reduced motion */
+  function stopRing() { if (ringTimer) { clearInterval(ringTimer); ringTimer = 0; } }
+  function startRing() {
+    stopRing();
+    if (motionQuery.matches) return;
+    ringTimer = setInterval(function () {
+      if (framePaused || document.hidden) return;
+      ringOffset = (ringOffset + 1) % 23;
+      renderSlots();
+    }, RING_MS);
   }
 
   function drawBarMark(canvas) {
-    var m = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var matrix = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
     var fitMax = parseFloat(canvas.getAttribute("data-fit")) || 108;
-    var cell = Math.max(2, Math.floor(Math.min(canvas.parentElement.clientWidth || fitMax, fitMax) / m.w));
+    var room = canvas.parentElement.clientWidth || fitMax;
+    var cell = Math.max(2, Math.floor(Math.min(room, fitMax) / matrix.w));
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
-    canvas.style.width = (m.w * cell) + "px"; canvas.style.height = (m.h * cell) + "px";
+    canvas.width = matrix.w * cell * dpr;
+    canvas.height = matrix.h * cell * dpr;
+    canvas.style.width = (matrix.w * cell) + "px";
+    canvas.style.height = (matrix.h * cell) + "px";
     var ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, m.w * cell, m.h * cell);
+    ctx.clearRect(0, 0, matrix.w * cell, matrix.h * cell);
     ctx.fillStyle = brandColor();
-    for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) if (m.cells[y * m.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+    for (var y = 0; y < matrix.h; y++) {
+      for (var x = 0; x < matrix.w; x++) {
+        if (matrix.cells[y * matrix.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", canvas.getAttribute("data-cells"));
   }
 
-  function relayout() {
+  function fitStage() {
+    if (!stage) return;
+    var plate = document.querySelector(".plate");
+    var pw = plate.clientWidth || window.innerWidth;
+    var ph = plate.clientHeight || 320;
+    var cell;
+    if (isPhone()) cell = Math.min(10, Math.floor((pw - 32) / C.w));
+    else cell = Math.floor(Math.min((ph - 24) / C.h, (pw * 0.46) / C.w));
+    stage.setCell(Math.max(4, cell));
+  }
+
+  function syncColorControls() {
+    var party = document.documentElement.getAttribute("data-mode") === "party";
+    document.getElementById("ctlGreen").setAttribute("aria-pressed", String(!party));
+    document.getElementById("ctlPink").setAttribute("aria-pressed", String(party));
+  }
+
+  function relayout(rebuild) {
     [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawBarMark);
-    layoutFaces();
+    if (rebuild) buildFrame();
+    else renderSlots();
     fitStage();
     if (stage) stage.paint();
   }
 
   function setColor(which) {
-    document.documentElement.setAttribute("data-mode", which === "pink" ? "party" : "day");
-    document.getElementById("ctlGreen").setAttribute("aria-pressed", String(which !== "pink"));
-    document.getElementById("ctlPink").setAttribute("aria-pressed", String(which === "pink"));
-    relayout();
+    var mode = which === "pink" || which === "party" ? "party" : "day";
+    document.documentElement.setAttribute("data-mode", mode);
+    writeModePreference(mode);
+    syncColorControls();
+    relayout(false);
   }
 
+  syncColorControls();
+
   Promise.all([
-    fetch("../assets/manifesto.pt.json").then(function (r) { return r.json(); }).catch(function () { return null; }),
+    fetch("../assets/manifesto.pt.json").then(function (response) { return response.json(); }).catch(function () { return null; }),
     window.Qevr.load("../assets/qevr-expressions.json")
-  ]).then(function (res) {
-    var COPY = res[0], names = res[1];
-    if (COPY && COPY.studio) {
-      var s = COPY.studio;
-      document.getElementById("faceLabel").textContent = s.faceLabel;
-      document.getElementById("codeLabel").textContent = s.codeLabel;
-      document.getElementById("moveLabel").textContent = s.moveLabel;
-      document.getElementById("colorLabel").textContent = s.colorLabel;
-      document.getElementById("glitchLabel").textContent = s.glitchLabel;
-      var meta = document.getElementById("stageMeta");
-      var mt = document.createElement("div");
-      mt.className = "stage__meta-t";
-      mt.textContent = s.metaTitle;
-      meta.appendChild(mt);
-      s.metaLines.forEach(function (t) {
-        var l = document.createElement("div");
-        l.className = "stage__meta-l";
-        l.textContent = t;
-        meta.appendChild(l);
-      });
+  ]).then(function (result) {
+    var copy = result[0];
+    names = result[1];
+    if (copy && copy.studio) {
+      var studioCopy = copy.studio;
+      document.getElementById("faceLabel").textContent = studioCopy.faceLabel;
+      document.getElementById("codeLabel").textContent = studioCopy.codeLabel;
+      document.getElementById("moveLabel").textContent = studioCopy.moveLabel;
+      document.getElementById("colorLabel").textContent = studioCopy.colorLabel;
+      document.getElementById("glitchLabel").textContent = studioCopy.glitchLabel;
+      document.getElementById("stageMeta").textContent = studioCopy.metaLines.join(" / ");
     }
 
     stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
-      host: document.getElementById("stageBtn"), cell: 6, face: "Default"
+      host: document.getElementById("stageBtn"), cell: 8, face: "Default"
     });
     setCurrent("Default");
     setLive(true);
@@ -287,47 +376,54 @@
       stage.poke().then(function () { setCurrent(stage.face.name); });
     });
 
-    var grid = document.getElementById("facesGrid");
-    names.forEach(function (name) {
-      var b = document.createElement("button");
-      b.className = "face"; b.type = "button";
-      b.setAttribute("data-name", name);
-      b.setAttribute("aria-pressed", String(name === "Default"));
-      var art = document.createElement("span");
-      art.className = "face__art";
-      art.appendChild(document.createElement("canvas"));
-      b.appendChild(art);
-      var t = document.createElement("span");
-      t.className = "face__name"; t.textContent = label(name);
-      b.appendChild(t);
-      b.addEventListener("click", function () {
-        setLive(false);
-        stage.setFace(name);
-        setCurrent(name);
-      });
-      grid.appendChild(b);
+    var frame = document.getElementById("frame");
+    frame.addEventListener("click", function (event) {
+      var face = event.target;
+      while (face && face !== frame && !(face.classList && face.classList.contains("face"))) face = face.parentElement;
+      if (!face || face === frame) return;
+      var name = face.getAttribute("data-name");
+      if (!name) return;
+      setLive(false);
+      stage.setFace(name);
+      setCurrent(name);
+    });
+    /* a hand over the frame holds the ring still */
+    frame.addEventListener("pointerenter", function () { framePaused = true; });
+    frame.addEventListener("pointerleave", function () { framePaused = frame.contains(document.activeElement); });
+    frame.addEventListener("focusin", function () { framePaused = true; });
+    frame.addEventListener("focusout", function () {
+      setTimeout(function () { framePaused = frame.contains(document.activeElement); }, 0);
     });
 
     window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
-
     document.getElementById("ctlLive").addEventListener("click", function () { setLive(true); });
     document.getElementById("ctlHold").addEventListener("click", function () { setLive(false); });
     document.getElementById("ctlGlitch").addEventListener("click", function () { stage.glitch(); });
     document.getElementById("ctlGreen").addEventListener("click", function () { setColor("green"); });
     document.getElementById("ctlPink").addEventListener("click", function () { setColor("pink"); });
 
-    relayout();
-    /* fonts settle after first paint and change the row heights */
-    setTimeout(relayout, 250);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+    relayout(true);
+    startRing();
+    setTimeout(function () { relayout(true); }, 250);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { relayout(true); });
 
     setInterval(function () {
       if (live && stage && stage.face && stage.face.name !== current) setCurrent(stage.face.name);
     }, 400);
 
-    var rt;
-    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(relayout, 150); });
-  }).catch(function (e) { console.error("[studio] boot failed", e); });
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { relayout(true); }, 150);
+    });
+  }).catch(function (error) { console.error("[studio] boot failed", error); });
+
+  function syncMotionPreference() {
+    if (motionQuery.matches) stopRing();
+    else startRing();
+  }
+  if (motionQuery.addEventListener) motionQuery.addEventListener("change", syncMotionPreference);
+  else if (motionQuery.addListener) motionQuery.addListener(syncMotionPreference);
 })();
 </script>
 </body>
