@@ -1,7 +1,9 @@
 # qevr.party — the public site
 
-First contact. A partier who has never heard of QEVR lands here. It is the manifesto,
-in Portuguese, plus a door into the mascot studio.
+First contact. A partier who has never heard of QEVR lands here. The arrival forks into
+two doors, O MANIFESTO and O ESTÚDIO, and a bar keeps both one tap away from anywhere.
+
+**Live at http://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
 
 Static files only. No build step, no framework, no dependencies. Everything runs from
 this folder exactly as it sits.
@@ -23,6 +25,16 @@ studio/studio.css              studio-only layout
 npm run site          # from the repo root, serves http://localhost:4599
 ```
 
+## Screen budget
+
+Scrolling is the enemy. The manifesto is four sections, each sized to about one screen:
+the arrival, O MUNDO, COMO ELE FALA, and the nevers sharing a screen with O PRESENTE.
+That lands near 3.8 screens on a desktop and 4.5 on a phone. The long passage runs in two
+columns above 1000px, and the nine stances are headline tiles that open in place rather
+than nine stacked paragraphs. The studio does not scroll at all: the stage holding Qevr is
+a fixed row, and only the face grid moves, so you never lose sight of him while picking a
+face. If you add content, keep the budget.
+
 ## Rules this site keeps
 
 - Copy is 100% uppercase, SpaceMono, no em dashes, no exclamation points, no emoji.
@@ -32,6 +44,8 @@ npm run site          # from the repo root, serves http://localhost:4599
 - Headings are drawn cell by cell from the same 5x7 grid the mascot is made of.
 - Face names in `qevr-expressions.json` are canonical and never renamed. The studio
   shows a Portuguese label next to the canonical name.
+- Copy is written in the register of O MUNDO. Nothing careta: no UX vocabulary, no
+  corporate softening. If a line would not be said out loud at a party, rewrite it.
 
 ## The time of day mechanic (built, currently off)
 
@@ -123,6 +137,12 @@ claude mcp add porkbun -s local \
 ```
 
 `-s local` writes to your machine's Claude config, not to `.mcp.json`. Never commit the keys.
+
+## Studio controls
+
+Every control says what it does rather than naming an internal state. "ELE SE MEXE
+SOZINHO" with SIM and NÃO runs or freezes the behaviour loop. "COR" with VERDE and ROSA
+repaints him and every chip. "DAR UM DEFEITO NELE" fires one GLITCH burst.
 
 ## Not built yet
 
