@@ -164,12 +164,27 @@ Lime only for now: `TIME_AWARE = false` at the top of the page script in both
 
 ## Deploying to qevr.party
 
-The GitHub account `gabepvieira` has no paid plan and GitHub Pages from a private repo
-requires one, so the site deploys from its own **public** repo, `gabepvieira/qevr-party`.
-Copy this folder over that repo's contents (keep its `CNAME` and `.nojekyll`), commit,
-push to `main`. Pages serves it; DNS at Porkbun already points the apex at GitHub Pages
-and `www` at `gabepvieira.github.io` (the Porkbun MCP server is registered locally if
-records ever need touching).
+**Since 2026-08-26 the live site is Cloudflare Pages** (project `qevr-party` on GP's
+Cloudflare account; ruling A19 of the sixth voice). The pages stay static exactly as
+before — Cloudflare was chosen so a future ruling (submission relay, email list) can
+add a small function at `qevr.party/api/...` without a migration.
+
+**Deploy = direct upload, then hash-verify:**
+
+```bash
+export CLOUDFLARE_API_TOKEN=$(cat ~/personal/.secrets/cloudflare-api-token)
+export CLOUDFLARE_ACCOUNT_ID=$(cat ~/personal/.secrets/cloudflare-account-id)
+npx -y wrangler@latest pages deploy apps/web-site --project-name=qevr-party --branch=main --commit-dirty=true
+# then hash-verify https://qevr.party/<file> against this tree — live must equal tree
+```
+
+A push to the public GitHub repo NO LONGER updates the live site. Keep the repo
+(`gabepvieira/qevr-party`) as the public record and fallback: after a Cloudflare
+deploy, rsync this folder over it (keep its `CNAME` + `.nojekyll`), commit, push.
+
+DNS: the `qevr.party` zone lives on Cloudflare (nameservers `dante`/`raegan`
+`.ns.cloudflare.com`); Porkbun is registrar only now. Both hostnames are proxied
+CNAMEs to `qevr-party.pages.dev`.
 
 ## Not built yet
 
