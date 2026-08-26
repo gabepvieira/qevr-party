@@ -31,6 +31,10 @@
       <a href="#manifesto" aria-current="page" id="barManifesto">O MANIFESTO</a>
       <a href="studio/" id="barStudio">O ESTÚDIO</a>
     </nav>
+    <div class="bar__lang" role="group" aria-label="PT / EN">
+      <button id="langPt" type="button" aria-pressed="true">PT</button>
+      <button id="langEn" type="button" aria-pressed="false">EN</button>
+    </div>
   </div>
 </header>
 
@@ -144,6 +148,33 @@
   }
   var stored = readModePreference();
   document.documentElement.setAttribute("data-mode", forced || stored || auto);
+
+  /* the language works like the colour: a preference that sticks, a ?lang=
+     preview that doesn't, and switching rooms runs the same QR cascade */
+  var LANG_KEY = "qevr.lang";
+  function readLang() {
+    var forcedLang = (location.search.match(/[?&]lang=(pt|en)(?:&|$)/) || [])[1];
+    if (forcedLang) return forcedLang;
+    try { var l = localStorage.getItem(LANG_KEY); if (l === "pt" || l === "en") return l; } catch (e) {}
+    return "pt";
+  }
+  var LANG = readLang();
+  document.documentElement.lang = LANG === "en" ? "en" : "pt-BR";
+  function chooseLang(next) {
+    if (next === LANG) return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    window.QevrCascade.through(function () {
+      if (location.search || location.hash) location.href = location.pathname;
+      else location.reload();
+    });
+  }
+  function syncLangBoxes() {
+    document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
+    document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
+  }
+  syncLangBoxes();
+  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
+  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
 
   function cssVar(n, fb) {
     return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb;
@@ -464,10 +495,14 @@
   drawAllCells();
 
   Promise.all([
-    fetch("assets/manifesto.pt.json").then(function (r) { return r.json(); }),
+    fetch("assets/manifesto." + LANG + ".json").then(function (r) { return r.json(); }),
     window.Qevr.load("assets/qevr-expressions.json")
   ]).then(function (res) {
     COPY = res[0];
+    if (COPY.ui) {
+      document.querySelector("#arrivalGreen span").textContent = COPY.ui.green;
+      document.querySelector("#arrivalPink span").textContent = COPY.ui.pink;
+    }
     syncTitles();
     buildDoors(); buildWorld(); buildPeople(); buildStances(); buildNevers(); buildGift();
     drawAllCells();

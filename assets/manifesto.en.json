@@ -1,0 +1,182 @@
+{
+  "lang": "en",
+  "brand": "QEVR",
+  "city": "SÃO PAULO",
+  "note": "COPY DECK, ENGLISH. ALL CAPS always. No em dashes, no exclamation marks, no emoji. THE REGISTER IS SPOKEN: the way a partier texts a friend, never marketing. Mirror the PT deck beat for beat; where PT uses VC/TBM texting forms, EN may use U and contractions. Read every line out loud before committing. The stamp is the last line of A GIFT, not a separate footer.",
+  "doors": {
+    "manifesto": {
+      "label": "THE MANIFESTO",
+      "sub": "WHAT IT IS AND WHY IT EXISTS"
+    },
+    "studio": {
+      "label": "THE STUDIO",
+      "sub": ""
+    }
+  },
+  "ui": {
+    "green": "GREEN",
+    "pink": "PINK",
+    "yes": "YES",
+    "no": "NO"
+  },
+  "world": {
+    "title": "THE FLOOR",
+    "sub": "WHERE QEVR CAME FROM",
+    "face": "Content",
+    "paragraphs": [
+      "QEVR WAS BORN ON THE FLOOR AND BELONGS TO THE FLOOR.",
+      "FREE PARTIES IN ABANDONED WAREHOUSES.",
+      "SOME NIGHTS YOU'RE ON THE FLOOR WITH FRIENDS.",
+      "SOME NIGHTS THE FLOOR IS JUST YOU. THAT'S PART OF IT. QEVR DIDN'T COME TO FIX THAT."
+    ]
+  },
+  "people": {
+    "title": "THE PEOPLE",
+    "sub": "AND WHAT THEY BECAME",
+    "face": "Adoring",
+    "items": [
+      [
+        "FRIENDS",
+        "PEOPLE YOU MET OUT ONE NIGHT, AND NOW THEY'RE PART OF YOUR LIFE."
+      ],
+      [
+        "STRANGERS",
+        "THAT PERSON WHO WAS YOUR BEST FRIEND FOR 20 MIN IN THE BATHROOM LINE. AND YOU NEVER SAW AGAIN."
+      ],
+      [
+        "CRUSHES",
+        "YOU KNOW WHO THEY ARE."
+      ],
+      [
+        "THE LOVE OF YOUR LIFE",
+        "THAT PERSON YOU FOUND AT 7AM, IN AN ABANDONED FACTORY."
+      ]
+    ],
+    "close": [
+      "PARTIES, LONELINESS, PEOPLE. ALL PART OF A MOMENT.",
+      "AND THE MOMENT PASSED. THAT'S WHAT MADE IT A MOMENT.",
+      "QEVR WILL NEVER BRING IT BACK. AND IT WILL NEVER LET YOU PRETEND IT DIDN'T HAPPEN."
+    ]
+  },
+  "stances": {
+    "title": "QEVR",
+    "sub": "HOW IT WORKS",
+    "items": [
+      {
+        "head": "IT TELLS YOU. IT NEVER CELEBRATES.",
+        "face": "Unamused",
+        "body": [
+          "THE PARTY STARTS, IT TELLS YOU. THE SOUND STARTS, IT TELLS YOU. THAT'S IT."
+        ]
+      },
+      {
+        "head": "LINE UP, PLACE, TIME. NOTHING ELSE.",
+        "face": "Default",
+        "body": [
+          "NEVER \"DON'T MISS IT\", NEVER \"LAST TICKETS\".",
+          "CAPACITY IS JUST A NUMBER, SAID ONCE."
+        ]
+      },
+      {
+        "head": "IT DOESN'T KEEP CALLING YOU BACK.",
+        "face": "Bored",
+        "body": [
+          "IT ONLY SPEAKS BECAUSE SOMETHING HAPPENED. DOORS OPENED. THE ADDRESS DROPPED. THE FLOOR CAUGHT FIRE.",
+          "IT WILL NEVER CALL YOU BACK BECAUSE IT MISSED YOU."
+        ]
+      },
+      {
+        "head": "YOU SEE WHO'S GOING, NEVER HOW MANY.",
+        "face": "Content",
+        "body": [
+          "NUMBERS HERE BELONG TO THE NIGHT. TIME, PRICE, TEMPERATURE, HOW MANY BLOCKS AWAY.",
+          "PEOPLE DON'T GET COUNTED."
+        ]
+      },
+      {
+        "head": "THE PHONE GOES BACK IN THE POCKET.",
+        "face": "Eyes Closed",
+        "body": [
+          "IF YOU SPENT THE NIGHT STARING AT THE APP, THE APP FAILED."
+        ]
+      },
+      {
+        "head": "MEMORIES ARE LIKE TATTOOS, NEVER CONTENT.",
+        "face": "Sad",
+        "body": [
+          "THEY STAY ON THE APP FOREVER, EVERYONE SEES THEM."
+        ]
+      },
+      {
+        "head": "TEXT ME WHEN YOU GET HOME.",
+        "face": "Surprised",
+        "body": [
+          "THE ONE PART OF THE APP WITH ZERO STYLE. GETTING HOME, GETTING HELP, ALL SPELLED OUT.",
+          "EXIT SIGNS READ FROM ACROSS THE ROOM."
+        ]
+      }
+    ]
+  },
+  "nevers": {
+    "title": "THE RULES",
+    "sub": "WHAT IT WILL NEVER DO",
+    "face": "Angry",
+    "lines": [
+      [
+        "NOBODY HERE BECOMES A NUMBER.",
+        "NO FOLLOWERS, NO LIKES, NO RATINGS ON ANYONE."
+      ],
+      [
+        "IT DOESN'T RUSH YOU.",
+        "NO COUNTDOWNS, NO HIDDEN PRICE TIERS."
+      ],
+      [
+        "IT DOESN'T CHOOSE FOR YOU.",
+        "NO RECOMMENDATION FEED, NO \"TRENDING\". THE CITY AND THE CLOCK ARE IN CHARGE."
+      ],
+      [
+        "EVERYTHING HERE ENDS. INCLUDING THE FEED.",
+        "NO AUTOPLAY. NO SCREEN BUILT TO KEEP YOU STARING."
+      ],
+      [
+        "IT DOESN'T SELL YOU.",
+        "NO ADS, NO DATA RESALE, NO REFERRAL CODES."
+      ],
+      [
+        "NOBODY TEACHES YOU HOW TO DANCE.",
+        "NO TOUR, NO QUIZ. YOU LEARN BY USING IT."
+      ],
+      [
+        "IT DOESN'T PLAY CUTE.",
+        "NO ROUNDED CORNERS. NO EMOJI. NO EXCLAMATION MARKS."
+      ]
+    ]
+  },
+  "gift": {
+    "title": "A GIFT",
+    "sub": "WHO IT'S FOR",
+    "face": "Stars",
+    "paragraphs": [
+      "QEVR IS A GIFT FROM ME TO EVERYONE I EVER MET ON THE FLOOR. AND TO EVERYONE I NEVER WILL.",
+      "AN APP TO USE WITH FRIENDS. OR ALONE."
+    ]
+  },
+  "stamp": "SEE YOU ON THE FLOOR.",
+  "studio": {
+    "moveLabel": "DOES IT MOVE ON ITS OWN?",
+    "moveLabelShort": "MOVES?",
+    "colorLabel": "COLOR",
+    "colorLabelShort": "COLOR",
+    "glitchLabel": "WANNA SEE SOMETHING?",
+    "metaTitle": "ITS ONE RULE",
+    "metaLines": [
+      "34 X 34 GRID",
+      "23 FACES",
+      "ONLY THE FACE CHANGES"
+    ]
+  },
+  "arrival": {
+    "mascotHint": "GO ON, CLICK ME",
+    "colorQuestion": "I CHANGE COLORS TOO :3"
+  }
+}

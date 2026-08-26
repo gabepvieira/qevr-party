@@ -26,6 +26,10 @@
       <a href="../#manifesto">O MANIFESTO</a>
       <a href="./" aria-current="page">O ESTÚDIO</a>
     </nav>
+    <div class="bar__lang" role="group" aria-label="PT / EN">
+      <button id="langPt" type="button" aria-pressed="true">PT</button>
+      <button id="langEn" type="button" aria-pressed="false">EN</button>
+    </div>
   </div>
 </header>
 
@@ -95,6 +99,30 @@
   var stored = readModePreference();
   document.documentElement.setAttribute("data-mode", forced || stored || auto);
 
+  /* the language works like the colour: a preference that sticks, a ?lang=
+     preview that doesn't, and switching runs the same QR cascade */
+  var LANG_KEY = "qevr.lang";
+  function readLang() {
+    var forcedLang = (location.search.match(/[?&]lang=(pt|en)(?:&|$)/) || [])[1];
+    if (forcedLang) return forcedLang;
+    try { var l = localStorage.getItem(LANG_KEY); if (l === "pt" || l === "en") return l; } catch (e) {}
+    return "pt";
+  }
+  var LANG = readLang();
+  document.documentElement.lang = LANG === "en" ? "en" : "pt-BR";
+  function chooseLang(next) {
+    if (next === LANG) return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    window.QevrCascade.through(function () {
+      if (location.search || location.hash) location.href = location.pathname;
+      else location.reload();
+    });
+  }
+  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
+  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
+  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
+  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
+
   var stage = null;
   var live = true;
   var current = "Default";
@@ -123,8 +151,18 @@
     "Surprised": "SURPRESO", "Shocked": "GAG", "Sad": "TRISTE",
     "Unamused": "SEM GRAÇA", "Angry": "PUTO", "Bored": "ENTEDIADO"
   };
+  var EN = {
+    "Default": "NORMAL", "Happy": "HAPPY", "Eyes Closed": "SLEEPING",
+    "Dead": "I DIED", "Joy": "SO HAPPY", "Anime": "ANIME", "Adoring": "IN AWE",
+    "Laughing": "GIGGLY", "Content": "CONTENT", "Blissful": "AT PEACE", "Love": "IN LOVE",
+    "Love Kissing": "LIL KISSES", "Lovely": "SWEET", "Naughty": "UP TO NO GOOD",
+    "Kissing": "LOVE U", "Death": "DEAD (FOR REAL THIS TIME)", "Stars": "STARRY EYES",
+    "Surprised": "SURPRISED", "Shocked": "GAGGED", "Sad": "SAD",
+    "Unamused": "MEH", "Angry": "PISSED", "Bored": "BORED"
+  };
+  var LABELS = LANG === "en" ? EN : PT;
 
-  function label(name) { return PT[name] || name.toUpperCase(); }
+  function label(name) { return LABELS[name] || name.toUpperCase(); }
   function cssVar(name, fallback) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
   }
@@ -451,11 +489,18 @@
   syncColorControls();
 
   Promise.all([
-    fetch("../assets/manifesto.pt.json").then(function (response) { return response.json(); }).catch(function () { return null; }),
+    fetch("../assets/manifesto." + LANG + ".json").then(function (response) { return response.json(); }).catch(function () { return null; }),
     window.Qevr.load("../assets/qevr-expressions.json")
   ]).then(function (result) {
     var copy = result[0];
     names = result[1];
+    if (copy && copy.ui) {
+      document.getElementById("ctlLive").textContent = copy.ui.yes;
+      document.getElementById("ctlHold").textContent = copy.ui.no;
+      document.querySelector("#ctlGreen span").textContent = copy.ui.green;
+      document.querySelector("#ctlPink span").textContent = copy.ui.pink;
+    }
+    if (copy && copy.doors) document.title = "QEVR / " + copy.doors.studio.label;
     if (copy && copy.studio) {
       var studioCopy = copy.studio;
       document.getElementById("moveLabel").textContent = studioCopy.moveLabel;

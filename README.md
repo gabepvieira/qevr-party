@@ -16,7 +16,11 @@ this folder exactly as it sits.
 ```
 index.html                     the manifesto page
 studio/index.html              the mascot studio, all 23 faces
-assets/manifesto.pt.json       ALL THE COPY. edit words here, never in the HTML
+assets/manifesto.pt.json       ALL THE COPY (Portuguese). edit words here, never in HTML
+assets/manifesto.en.json       the English deck — SAME shape, mirrored beat for beat.
+                               PT is canonical; EN follows it. face labels for EN live
+                               in the EN map in studio/index.html (canonical codes
+                               never change)
 assets/qevr-expressions.json   copy of handoff/qevr-expressions.json (canonical faces)
 assets/qevr.js                 mascot renderer + brain (behaviours, blinks, cascade)
 assets/pixelfont.js            5x7 cell type, so headings are made of mascot cells
@@ -120,6 +124,10 @@ and the crawl resumes a beat after it lets go.
 - The color choice (VERDE/ROSA) persists across pages via `localStorage`
   `qevr.mode`; `?mode=` previews without persisting. The arrival question on
   the manifesto writes the same key.
+- The language works the same way: the PT / EN boxes in the bar persist via
+  `localStorage` `qevr.lang` (default pt); `?lang=` previews without
+  persisting. Switching runs the QR cascade and reloads the page with the
+  other deck. Lime fill = the language you are in, same grammar as the nav.
 
 ## Rules this site keeps
 

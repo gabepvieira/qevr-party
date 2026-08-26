@@ -13,6 +13,12 @@
       "sub": ""
     }
   },
+  "ui": {
+    "green": "VERDE",
+    "pink": "ROSA",
+    "yes": "SIM",
+    "no": "NÃO"
+  },
   "world": {
     "title": "A PISTA",
     "sub": "DE ONDE O QEVR VEIO",
