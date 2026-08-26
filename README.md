@@ -124,10 +124,13 @@ and the crawl resumes a beat after it lets go.
 - The color choice (VERDE/ROSA) persists across pages via `localStorage`
   `qevr.mode`; `?mode=` previews without persisting. The arrival question on
   the manifesto writes the same key.
-- The language works the same way: the PT / EN boxes in the bar persist via
-  `localStorage` `qevr.lang` (default pt); `?lang=` previews without
-  persisting. Switching runs the QR cascade and reloads the page with the
-  other deck. Lime fill = the language you are in, same grammar as the nav.
+- The language works the same way: the PT / EN tabs bleed off the RIGHT EDGE
+  just under the bar (GP's placement — never in the bar), stacked, on both
+  pages. They persist via `localStorage` `qevr.lang` (default pt); `?lang=`
+  previews without persisting. Switching runs the QR cascade and reloads with
+  the other deck. Lime fill = the language you are in. On the manifesto they
+  live on the arrival and scroll away with it; the studio never scrolls, so
+  there they simply stay.
 
 ## Rules this site keeps
 

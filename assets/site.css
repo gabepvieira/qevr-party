@@ -74,18 +74,26 @@ body {
 .bar__nav a:not([aria-current="page"]):hover,
 .bar__nav a:not([aria-current="page"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
 
-/* the PT / EN boxes: same grammar as the nav — lime = the language you are in */
-.bar__nav { margin-left: auto; }
-.bar__lang { display: flex; flex: none; }
-.bar__lang button {
-  font: inherit; text-transform: uppercase; cursor: pointer;
-  background: transparent; color: var(--qevr-muted);
-  font-size: clamp(10px, 1.05vw, 12px); letter-spacing: .16em;
-  padding: 9px 12px; border: var(--rule) solid var(--qevr-hair); margin-left: -1px;
+/* the PT / EN boxes: two tabs bleeding off the right edge, just under the
+   bar, stacked. same grammar as everything: lime = the language you are in,
+   white = hover. they live on the arrival, out of the reading's way. */
+.lang {
+  position: absolute; top: calc(var(--bar) + 14px); right: 0; z-index: 55;
+  display: flex; flex-direction: column;
+  /* its own patch of ground: invisible on the manifesto, and on the studio it
+     carves a clean notch out of the belt, the same way the bar and plate do */
+  background: var(--ground); padding: 8px 0 8px 8px;
 }
-.bar__lang button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); border-color: var(--brand); font-weight: 700; }
-.bar__lang button:not([aria-pressed="true"]):hover,
-.bar__lang button:not([aria-pressed="true"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
+.lang button {
+  font: inherit; text-transform: uppercase; cursor: pointer;
+  background: var(--ground); color: var(--qevr-muted);
+  font-size: 11px; letter-spacing: .14em; padding: 10px 12px;
+  border: var(--rule) solid var(--qevr-hair); border-right: 0;
+}
+.lang button + button { margin-top: -1px; }
+.lang button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); border-color: var(--brand); font-weight: 700; }
+.lang button:not([aria-pressed="true"]):hover,
+.lang button:not([aria-pressed="true"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
 
 /* ---------- thermometer ---------- */
 
@@ -276,11 +284,7 @@ main { padding-left: 10px; padding-top: var(--bar); }
   /* GP's ruling: on the read he takes the bottom-right corner, same as the
      app. small zone, small cell, and only he himself takes the tap */
   .companion { width: 92px; height: 92px; right: 10px; bottom: 12px; }
-
-  /* the bar carries mark + nav + PT/EN on one 390px line: everything tightens */
-  .bar__in { gap: 10px; }
-  .bar__nav a { font-size: 9px; padding: 8px 7px; letter-spacing: .1em; }
-  .bar__lang button { font-size: 9px; padding: 8px 7px; letter-spacing: .1em; }
+  .lang button { font-size: 10px; padding: 9px 10px; }
   .thermo { width: 6px; }
   main { padding-left: 6px; }
   .arrival { padding-inline: 16px; gap: 14px; }
