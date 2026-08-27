@@ -95,6 +95,7 @@
     return Math.max(4, Math.min(maxCell, Math.floor(room / n)));
   }
   function paintCrop(canvas, matrix) {
+    if (!matrix) return;
     var C = window.Qevr.CROP, cell = canvasCell(canvas, Math.max(C.w, C.h), 40), dpr = Math.min(devicePixelRatio || 1, 2);
     canvas.width = C.w * cell * dpr; canvas.height = C.h * cell * dpr;
     canvas.style.width = C.w * cell + "px"; canvas.style.height = C.h * cell + "px";
@@ -105,6 +106,7 @@
     }
   }
   function paintStory() {
+    if (!names.length) return;
     var item = stories[storyIndex];
     paintCrop(document.getElementById("storyCanvas"), window.Qevr.matrix(item.face));
     document.getElementById("storyTitle").textContent = item.title; document.getElementById("storyCopy").textContent = item.copy;
@@ -119,7 +121,10 @@
     document.getElementById("dnaName").textContent = name.toUpperCase(); document.getElementById("dnaStats").textContent = diff + " CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.";
   }
   function paintGrowth() {
-    var from = window.Qevr.matrix("Default"), to = window.Qevr.matrix("Joy"), pct = +document.getElementById("growthRange").value, mixed = { n: from.n, cells: new Uint8Array(from.cells) };
+    if (!names.length) return;
+    var from = window.Qevr.matrix("Default"), to = window.Qevr.matrix("Joy");
+    if (!from || !to) return;
+    var pct = +document.getElementById("growthRange").value, mixed = { n: from.n, cells: new Uint8Array(from.cells) };
     var changed = []; for (var i = 0; i < from.cells.length; i++) if (from.cells[i] !== to.cells[i]) changed.push(i);
     var take = Math.round(changed.length * pct / 100); for (i = 0; i < take; i++) mixed.cells[changed[i]] = to.cells[changed[i]];
     paintCrop(document.getElementById("growthCanvas"), mixed); document.getElementById("growthCopy").textContent = pct + "% MUDOU. O CORPO CONTINUA INTEIRO.";
@@ -135,7 +140,7 @@
   document.getElementById("dnaNext").addEventListener("click", function () { dnaIndex = (dnaIndex + 1) % names.length; paintDna(); });
   document.getElementById("growthRange").addEventListener("input", paintGrowth);
   window.Qevr.load("../assets/qevr-expressions.json").then(function (list) { names = list; paintStory(); paintDna(); paintGrowth(); });
-  addEventListener("resize", function () { var on = document.querySelector(".room.on"); if (on) openRoom(on.id.replace("room", "")); });
+  addEventListener("resize", function () { if (!names.length) return; var on = document.querySelector(".room.on"); if (on) openRoom(on.id.replace("room", "")); });
   window.QevrCascade.wireLinks(".back");
 })();
 </script>
