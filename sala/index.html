@@ -9,7 +9,11 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-  .rooms { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: 54px var(--gut) 82px; display: grid; align-items: center; }
+  /* the secret room keeps NO public bar — the knock is the only way in, VOLTAR
+     is the only way back. the language switch rides at the top right. */
+  .switches { top: 0; padding-top: 0; }
+  .back { position: fixed; z-index: 30; left: var(--rail); top: 0; padding: 12px 14px; color: var(--qevr-muted); background: var(--ground); border-right: var(--rule) solid var(--qevr-hair); border-bottom: var(--rule) solid var(--qevr-hair); text-decoration: none; font-size: 9px; letter-spacing: .16em; }
+  .rooms { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: 64px var(--gut) 82px; display: grid; align-items: center; }
   .room { display: none; width: 100%; }
   .room.on { display: block; }
   .room__head { display: grid; gap: 6px; margin-bottom: clamp(18px, 3vh, 32px); }
@@ -26,13 +30,12 @@
   .exhibit__controls { display: flex; border-top: var(--rule) solid var(--qevr-hair); }
   .exhibit__controls .ctl { min-height: 48px; }
   .growth-range { width: calc(100% - 32px); margin: 20px 16px; accent-color: var(--brand); }
-  .room-nav { position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--ground); border-top: var(--rule) solid var(--qevr-hair); }
+  .room-nav { position: fixed; z-index: 30; left: var(--rail); right: 0; bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--ground); border-top: var(--rule) solid var(--qevr-hair); }
   .room-nav button { min-width: 0; min-height: 52px; font: inherit; font-size: 10px; letter-spacing: .14em; color: var(--qevr-muted); background: transparent; border: 0; border-right: var(--rule) solid var(--qevr-hair); cursor: pointer; }
   .room-nav button:last-child { border-right: 0; }
   .room-nav button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
-  .back { position: fixed; z-index: 30; left: 0; top: 0; padding: 12px 14px; color: var(--qevr-muted); background: var(--ground); border-right: var(--rule) solid var(--qevr-hair); border-bottom: var(--rule) solid var(--qevr-hair); text-decoration: none; font-size: 9px; letter-spacing: .16em; }
   @media (max-width: 720px) {
-    .rooms { padding: 58px 12px 72px; align-items: start; }
+    .rooms { padding: 60px 12px 72px; align-items: start; }
     .exhibit { grid-template-columns: 1fr; min-height: 0; }
     .exhibit__art { min-height: 42svh; border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair); }
     .room-nav button { font-size: 8px; letter-spacing: .08em; }
@@ -42,6 +45,9 @@
 </head>
 <body>
 <a class="back" href="../">VOLTAR</a>
+<div class="switches">
+  <button id="langToggle" type="button"></button>
+</div>
 <main class="rooms">
   <section class="room on" id="roomStory" data-room="story">
     <header class="room__head"><span class="room__kicker">01 / HISTÓRIA</span><h1>DE QEVR PRA QIQI</h1><p>O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.</p></header>
@@ -82,6 +88,18 @@
 <script>
 (function () {
   "use strict";
+  var LANG_KEY = "qevr.lang";
+  var LANG = "pt";
+  try { var storedLang = localStorage.getItem(LANG_KEY); if (storedLang === "en") LANG = "en"; } catch (e) {}
+  document.documentElement.lang = LANG === "en" ? "en" : "pt-BR";
+  function chooseLang(next) {
+    if (next === LANG) return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    window.QevrCascade.through(function () { location.reload(); });
+  }
+  document.getElementById("langToggle").textContent = LANG === "pt" ? "EN" : "PT";
+  document.getElementById("langToggle").addEventListener("click", function () { chooseLang(LANG === "pt" ? "en" : "pt"); });
+
   var names = [], dnaIndex = 0, storyIndex = 0;
   var stories = [
     { title: "QEVR", face: "Default", copy: "UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR." },
@@ -141,7 +159,7 @@
   document.getElementById("growthRange").addEventListener("input", paintGrowth);
   window.Qevr.load("../assets/qevr-expressions.json").then(function (list) { names = list; paintStory(); paintDna(); paintGrowth(); });
   addEventListener("resize", function () { if (!names.length) return; var on = document.querySelector(".room.on"); if (on) openRoom(on.id.replace("room", "")); });
-  window.QevrCascade.wireLinks(".back");
+  window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
 })();
 </script>
 <script type="module" src="../assets/qa.mjs"></script>

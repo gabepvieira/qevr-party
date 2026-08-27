@@ -50,6 +50,12 @@
   --rule: 1px;
   --wrap: 1560px;
   --bar: calc(52px + env(safe-area-inset-top, 0px));
+  --utility: 24px;
+  /* the controls float as two compact clusters under the bar — they are NOT a
+     second header row, so the page offset is the bar alone */
+  --chrome: var(--bar);
+  --rail: 14px;
+  --thermo-cell: 60px;
 }
 
 html[data-mode="party"] { --brand: var(--qevr-pink); --accent: var(--qevr-pink); }
@@ -61,6 +67,7 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 html { background: var(--ground); scroll-behavior: auto; scroll-padding-top: var(--bar); }
 
 body {
+  margin-left: var(--rail);
   background: var(--ground);
   color: var(--qevr-light);
   font-family: "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -69,75 +76,75 @@ body {
   letter-spacing: 0.055em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--brand) var(--qevr-hair);
 }
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--qevr-hair); }
-::-webkit-scrollbar-thumb { background: var(--brand); }
-html.scroll-fire { scrollbar-color: var(--qevr-fire) var(--qevr-hair); }
-html.scroll-fire::-webkit-scrollbar-thumb { background: var(--qevr-fire); }
 
 ::selection { background: var(--brand); color: var(--qevr-ink); }
 
 /* ---------- bar ---------- */
 
 .bar {
-  position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 60;
-  padding: env(safe-area-inset-top, 0px) var(--gut) 0 var(--gut);
+  position: fixed; left: var(--rail); right: 0; top: 0; height: var(--bar); z-index: 60;
+  padding: env(safe-area-inset-top, 0px) 0 0 12px;
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
 }
+/* QIQI at the extreme left, the doors at the extreme right — always */
 .bar__in {
-  height: 100%; max-width: var(--wrap); margin-inline: auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  height: 100%; max-width: none;
+  display: flex; align-items: stretch; justify-content: space-between; gap: 16px;
 }
+.bar__mark { display: grid; place-items: center; }
 .bar__mark canvas { display: block; image-rendering: pixelated; }
-.bar__nav { display: flex; gap: 0; }
+.bar__nav { display: flex; align-items: stretch; height: 100%; gap: 0; }
 .bar__nav a {
   color: var(--qevr-muted); text-decoration: none;
   font-size: clamp(10px, 1.05vw, 12px); letter-spacing: .16em;
-  padding: 9px 14px; border: var(--rule) solid var(--qevr-hair); margin-left: -1px;
+  padding: 0 14px; border: 0; border-left: var(--rule) solid var(--qevr-hair);
+  display: grid; place-items: center; height: 100%; white-space: nowrap;
 }
 /* lime marks where you are; hover is white, never lime */
-.bar__nav a[aria-current="page"] { color: var(--qevr-ink); background: var(--brand); border-color: var(--brand); font-weight: 700; }
+.bar__nav a[aria-current="page"] { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
 .bar__nav a:not([aria-current="page"]):hover,
-.bar__nav a:not([aria-current="page"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
+.bar__nav a:not([aria-current="page"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); outline: none; }
 
-/* the PT / EN boxes: two tabs bleeding off the right edge, just under the
-   bar, stacked. same grammar as everything: lime = the language you are in,
-   white = hover. they live on the arrival, out of the reading's way. */
-.lang {
-  position: absolute; top: calc(var(--bar) + 14px); right: 0; z-index: 55;
+/* the switches: each block names what it TURNS INTO. site in PT shows EN;
+   site green shows a pink block. the old stacked boxes at the right edge
+   (GP, 2026-08-27). */
+.switches {
+  position: fixed; top: var(--bar); right: 0; z-index: 59;
   display: flex; flex-direction: column;
-  /* its own patch of ground: invisible on the manifesto, and on the studio it
-     carves a clean notch out of the belt, the same way the bar and plate do */
   background: var(--ground); padding: 8px 0 8px 8px;
 }
-.lang button {
+.switches button {
   font: inherit; text-transform: uppercase; cursor: pointer;
   background: var(--ground); color: var(--qevr-muted);
   font-size: 11px; letter-spacing: .14em; padding: 10px 12px;
   border: var(--rule) solid var(--qevr-hair); border-right: 0;
 }
-.lang button + button { margin-top: -1px; }
-.lang button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); border-color: var(--brand); font-weight: 700; }
-.lang button:not([aria-pressed="true"]):hover,
-.lang button:not([aria-pressed="true"]):focus-visible { color: var(--qevr-ink); background: var(--qevr-light); border-color: var(--qevr-light); outline: none; }
+.switches button + button { margin-top: -1px; }
+.switches button:hover, .switches button:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); outline: none; }
+.switches .switch--color { min-height: 36px; }
+.switches .switch--color.to-pink { background: var(--qevr-pink); }
+.switches .switch--color.to-green { background: var(--qevr-body); }
+.switches .switch--color:hover, .switches .switch--color:focus-visible { background: var(--qevr-light); }
 
 /* ---------- thermometer ---------- */
 
-.thermo { display: none; }
-.thermo__fill { position: absolute; left: 0; right: 0; top: 0; height: 0; background: var(--brand); }
-.thermo.is-fire .thermo__fill { background: var(--qevr-fire); box-shadow: 0 0 18px 2px var(--qevr-fire); }
+.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: 55; background: var(--qevr-ink); }
+.thermo__fill {
+  position: absolute; left: 0; right: 0; top: 0; height: 0;
+  background-color: var(--brand);
+  /* twelve countable cells, L16's own number — never a barcode */
+  background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--thermo-cell) - 2px), var(--ground) calc(var(--thermo-cell) - 2px) var(--thermo-cell));
+}
+.thermo.is-fire .thermo__fill { background-color: var(--qevr-fire); box-shadow: 0 0 18px 2px var(--qevr-fire); }
 
-main { padding-top: var(--bar); }
+main { padding-top: var(--chrome); }
 
 /* ---------- arrival: him and the colour question own the whole first screen ---------- */
 
 .arrival {
-  min-height: calc(100svh - var(--bar));
+  min-height: calc(100svh - var(--chrome));
   max-width: var(--wrap); margin-inline: auto;
   padding: clamp(18px, 3.4vh, 38px) var(--gut) clamp(22px, 4vh, 44px);
   border-bottom: var(--rule) solid var(--qevr-hair);
@@ -147,6 +154,7 @@ main { padding-top: var(--bar); }
 /* him and his one instruction are a lockup: the label centers under the art */
 .arrival__mascot { display: grid; justify-items: center; gap: clamp(8px, 1.3vh, 14px); }
 .arrival__hint { font-size: clamp(11px, 1.1vw, 13px); letter-spacing: .24em; color: var(--brand); text-align: center; }
+.arrival__cursor { display: inline-block; width: 8px; height: 1em; margin-left: 5px; vertical-align: -0.14em; background: var(--brand); }
 .arrival__color { display: grid; justify-items: center; gap: clamp(10px, 1.6vh, 16px); width: min(100%, 400px); }
 .arrival__question { color: var(--qevr-light); font-size: clamp(11px, 1.1vw, 14px); letter-spacing: .2em; text-align: center; }
 .arrival__color-controls { display: flex; justify-content: center; width: min(100%, 300px); }
@@ -184,35 +192,36 @@ main { padding-top: var(--bar); }
 /* a pressed swatch sits on its own colour: flip the square to ink so it never vanishes */
 .ctl--swatch[aria-pressed="true"] i { background: var(--qevr-ink); }
 
-/* ---------- the four blocks: one stack, identical at every width ---------- */
+/* ---------- the panel: five headings, one bay, zero tower (M-A, ruled) ---------- */
 
 .blocks {
   max-width: var(--wrap); margin-inline: auto;
-  padding: clamp(20px, 3.5vh, 40px) var(--gut) clamp(40px, 7vh, 84px);
+  /* top padding clears the floating control clusters (24px) */
+  padding: clamp(30px, 4vh, 44px) var(--gut) clamp(28px, 4vh, 48px);
 }
-.block { border: var(--rule) solid var(--qevr-hair); margin-bottom: -1px; }
-.heading--toggle {
-  background: transparent; border: 0; width: 100%;
-  padding: clamp(14px, 1.8vh, 20px) clamp(15px, 1.8vw, 24px);
-  font: inherit; color: inherit; text-align: left; cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  overflow: hidden;
+#panel { display: grid; grid-template-columns: clamp(210px, 22vw, 320px) minmax(0, 1fr); align-items: stretch; }
+.panel__rail { display: flex; flex-direction: column; border-right: var(--rule) solid var(--qevr-hair); }
+.panel__head {
+  background: transparent; border: 0; border-bottom: var(--rule) solid var(--qevr-hair);
+  padding: clamp(14px, 2vh, 22px) clamp(12px, 1.4vw, 20px);
+  font: inherit; color: inherit; text-align: left; cursor: pointer; overflow: hidden;
 }
-.heading--toggle:hover { background: var(--qevr-surface); }
-.heading--toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: -4px; }
-.heading__text { display: flex; flex-direction: column; gap: 9px; flex: 1; min-width: 0; }
-.heading--toggle canvas { display: block; image-rendering: pixelated; }
-/* the label says what sits behind it */
-.heading__sub { font-size: clamp(10px, .95vw, 11.5px); letter-spacing: .18em; color: var(--qevr-muted); }
-/* closed = a plus (this opens); open = the long brand dash */
-.heading__mark { display: block; position: relative; width: 14px; height: 14px; background: transparent; flex: none; }
-.heading__mark::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 6px; background: var(--qevr-muted); }
-.heading__mark::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 6px; background: var(--qevr-muted); }
-[data-open="true"] > .heading--toggle .heading__mark { width: 30px; height: 6px; }
-[data-open="true"] > .heading--toggle .heading__mark::before { top: 0; background: var(--brand); }
-[data-open="true"] > .heading--toggle .heading__mark::after { content: none; }
-.block__body { padding: 0 clamp(15px, 1.8vw, 24px) clamp(20px, 3vh, 32px); }
-[data-open="false"] .block__body { display: none; }
+.panel__head:last-child { border-bottom: 0; }
+.panel__head:hover { background: var(--qevr-surface); }
+.panel__head:focus-visible { outline: 2px solid var(--brand); outline-offset: -4px; }
+.panel__head canvas { display: block; image-rendering: pixelated; max-width: 100%; }
+.panel__bay { position: relative; padding: clamp(16px, 2.2vw, 28px); min-width: 0; }
+.panel__bay-sub { color: var(--qevr-muted); font-size: clamp(10px, .95vw, 11.5px); letter-spacing: .18em; margin-bottom: 14px; }
+.panel__bay-sub:empty { display: none; }
+.panel__bay-copy { min-width: 0; }
+/* N01: the cursor is a small brand bar that never stops blinking */
+.bay__cursor { display: inline-block; width: 9px; height: 16px; background: var(--brand); margin-top: 10px; }
+
+/* the people speak as stanzas in the bay: no table, no numbers, no borders */
+.bay__stanza { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; letter-spacing: .045em; max-width: 64ch; }
+.bay__stanza + .bay__stanza { margin-top: 1em; }
+.bay__stanza b { font-weight: 700; }
+.bay__close { margin-top: clamp(14px, 2.2vh, 22px); }
 
 /* ---------- a cena ---------- */
 
@@ -221,54 +230,25 @@ main { padding-top: var(--bar); }
 .copy p.dim { color: var(--qevr-muted); }
 .copy p.mark { color: var(--brand); }
 
-/* the intro line reads before the tiles; an absent intro leaves no gap */
-#peopleIntro:empty { display: none; }
-#peopleIntro { margin-bottom: clamp(14px, 2.2vh, 26px); }
-
-/* the people are a deck like every other list: numbered tiles, same borders */
-.people__grid {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
-  max-width: 880px;
-  border-top: var(--rule) solid var(--qevr-hair);
-  border-left: var(--rule) solid var(--qevr-hair);
-}
-.world__close { margin-top: clamp(14px, 2.2vh, 26px); padding-top: clamp(12px, 1.8vh, 20px); border-top: var(--rule) solid var(--qevr-hair); max-width: 880px; }
-.world__close p { font-size: clamp(12px, 1vw, 14px); line-height: 1.65; color: var(--qevr-muted); }
-.world__close p + p { margin-top: .85em; }
-.world__close p:last-child { color: var(--brand); }
+/* the close paragraphs sit under the stanzas, same voice, no chrome */
+.bay__close p { font-size: clamp(12px, 1vw, 14px); line-height: 1.65; color: var(--qevr-light); max-width: 64ch; }
+.bay__close p + p { margin-top: .85em; }
+.bay__close p.dim { color: var(--qevr-muted); }
+.bay__close p.mark { color: var(--brand); }
 
 /* ---------- tiles: every deck on this page is this one component ---------- */
 
-.stances__grid {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
-  border-top: var(--rule) solid var(--qevr-hair);
-  border-left: var(--rule) solid var(--qevr-hair);
-}
-/* a deck always ends on a full row: when the last tile opens a new row alone,
-   it takes the whole row — a wide closing tile, never a hole */
-.stances__grid > .stance:nth-child(3n+1):last-child { grid-column: 1 / -1; }
+.stances__grid { display: block; }
 .stance {
-  border-right: var(--rule) solid var(--qevr-hair);
-  border-bottom: var(--rule) solid var(--qevr-hair);
-  background: transparent; color: inherit; font: inherit;
+  border: 0; background: transparent; color: inherit; font: inherit;
   text-transform: inherit; letter-spacing: inherit; text-align: left;
-  padding: clamp(13px, 1.7vw, 22px);
-  cursor: pointer; display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: flex-start;
-  min-height: clamp(96px, 11vh, 132px); width: 100%;
+  padding: 7px 0; cursor: pointer; display: block; width: 100%;
 }
-.stance:hover, .stance:focus-visible { background: var(--qevr-surface); outline: none; }
-.stance[aria-expanded="true"] { background: var(--qevr-surface); }
-.stance__idx { font-size: 10px; color: var(--qevr-muted); display: block; margin-bottom: 8px; }
-.stance[aria-expanded="true"] .stance__idx { color: var(--brand); }
-.stance__head { font-size: clamp(12.5px, 1vw, 15px); line-height: 1.5; font-weight: 700; }
-.stance__body { display: none; order: 2; margin-top: 12px; padding-top: 12px; border-top: var(--rule) solid var(--qevr-hair); }
-.stance[aria-expanded="true"] .stance__body { display: block; }
-.stance__body p { font-size: clamp(11px, .9vw, 13px); line-height: 1.7; color: var(--qevr-muted); }
-.stance__body p + p { margin-top: .8em; }
-.stance::after { content: ""; display: block; order: 3; margin-top: auto; width: 14px; height: 6px; background: var(--qevr-hair); }
-.stance:hover::after, .stance:focus-visible::after { background: var(--qevr-muted); }
-.stance[aria-expanded="true"]::after { width: 36px; background: var(--brand); }
+.stance:hover .stance__head, .stance:focus-visible .stance__head { color: var(--qevr-light); }
+.stance:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.stance__head { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.6; font-weight: 700; color: var(--qevr-muted); }
+.stance[aria-expanded="true"] .stance__head { color: var(--brand); }
+.stance__body { display: none; }
 
 /* still tiles: same skin, nothing to press, body always out */
 .stance--still { cursor: default; min-height: 0; }
@@ -290,7 +270,7 @@ main { padding-top: var(--bar); }
 /* ---------- companion ---------- */
 
 /* a true corner: small zone, so he never sits on the reading (soul: never covers content) */
-.companion { position: fixed; right: clamp(8px, 1.6vw, 22px); bottom: clamp(8px, 1.6vh, 22px); z-index: 50; width: 130px; height: 130px; display: grid; place-items: center; pointer-events: none; }
+.companion { position: fixed; right: clamp(8px, 1.6vw, 22px); bottom: clamp(8px, 1.6vh, 22px); z-index: 50; width: 96px; height: 96px; display: grid; place-items: center; pointer-events: none; }
 .companion .mascot { pointer-events: auto; }
 .mascot { background: transparent; border: 0; padding: 0; cursor: pointer; display: block; will-change: transform; }
 .mascot canvas { display: block; image-rendering: pixelated; }
@@ -310,18 +290,19 @@ main { padding-top: var(--bar); }
   html, body { scroll-snap-type: y mandatory; }
   .arrival { scroll-snap-align: start; }
   .blocks { scroll-snap-align: start; }
+  /* the page's end is a legal resting point: the doors anchor the bottom */
+  .doors { scroll-snap-align: end; }
 
-  .stances__grid, #neversList, .people__grid { grid-template-columns: minmax(0, 1fr); }
+  .stances__grid, #neversList { grid-template-columns: minmax(0, 1fr); }
   /* GP's ruling: on the read he takes the bottom-right corner, same as the
      app. small zone, small cell, and only he himself takes the tap */
-  .companion { width: 92px; height: 92px; right: 10px; bottom: 12px; }
-  .lang button { font-size: 10px; padding: 9px 10px; }
+  .companion { width: 64px; height: 64px; right: 10px; bottom: 12px; }
   .bar { padding-inline: 0; }
   .bar__in { gap: 0; max-width: none; }
-  .bar__mark { flex: 0 0 64px; width: 64px; overflow: hidden; display: flex; justify-content: center; }
+  .bar__mark { flex: 0 0 64px; width: 64px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   .bar__nav { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .bar__nav a {
-    min-width: 0; margin-left: -1px; padding: 10px 2px;
+    min-width: 0; margin-left: 0; padding: 0 2px;
     font-size: 8px; letter-spacing: .055em; text-align: center; white-space: nowrap;
   }
   .arrival { padding-inline: 16px; gap: 14px; }
@@ -334,6 +315,14 @@ main { padding-top: var(--bar); }
   .stance::after { margin-top: 9px; }
   .heading__sub { letter-spacing: .14em; }
   .stamp { font-size: 15px; max-width: none; }
+  #panel { grid-template-columns: minmax(0, 1fr); }
+  .panel__rail { border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair); }
+  .panel__head { padding: 10px 14px; }
+  .panel__bay { padding: 14px; min-height: 0 !important; }
+  /* the read fills exactly one page: stamp and doors sit at its floor,
+     never a void in the middle (GP, 2026-08-27) */
+  .blocks { min-height: calc(100svh - var(--bar)); display: flex; flex-direction: column; }
+  .blocks .stampband { margin-top: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -349,7 +338,7 @@ main { padding-top: var(--bar); }
 .arrival__floor {
   position: absolute; left: var(--gut); right: var(--gut); bottom: 10px;
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  border-top: var(--rule) solid var(--qevr-hair); padding-top: 8px;
+  padding-top: 2px;
 }
 .arrival__city { font-size: 10px; letter-spacing: .26em; color: var(--qevr-muted); }
 .arrival__scroll { display: flex; align-items: center; gap: 8px; color: var(--qevr-muted); }
@@ -368,15 +357,16 @@ main { padding-top: var(--bar); }
 .arrival__signal.is-ready .arrival__loading { display: none; }
 .arrival__signal.is-loading .arrival__hint { visibility: hidden; }
 .arrival__signal.is-loading .arrival__loading { display: block; }
+.arrival__signal.is-charging .arrival__hint { visibility: hidden; }
 body.is-booting .bar,
-body.is-booting > .lang,
+body.is-booting > .switches,
 body.is-booting .arrival__mascot > :not(.arrival__signal),
 body.is-booting .arrival__from,
 body.is-booting .arrival__color,
 body.is-booting .arrival__floor { visibility: hidden; }
 body.is-booting [data-qevr-cascade] { display: none !important; }
-body.is-booting .arrival__mascot { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; }
-body.is-booting .arrival__signal { position: fixed; inset: 0; }
+/* the boot bar loads IN THE SLOT above where he builds — one bar, one home,
+   never a second centered copy (GP, 2026-08-27) */
 
 /* ---------- the error tag and loader above his head (poke ladder) ---------- */
 .arrival__mascot { position: relative; }
@@ -387,58 +377,31 @@ body.is-booting .arrival__signal { position: fixed; inset: 0; }
   display: none; white-space: nowrap;
 }
 .mascot__tag.on { display: block; }
-.mascot__load {
-  position: absolute; top: -4px; left: 50%; transform: translate(-50%, -100%);
-  width: 90px; height: 6px; border: var(--rule) solid var(--qevr-hair); background: var(--ground);
-  display: none;
-}
-.mascot__load i { display: block; height: 100%; width: 0; background: var(--brand); }
-.mascot__load.on { display: block; }
-
-/* The error hits the whole document in stepped slices, not a floating box. */
-html.page-glitch body { animation: page-glitch-shake 90ms steps(2, end) 7; }
-html.page-glitch body::after {
-  content: ""; position: fixed; inset: 0; z-index: 89; pointer-events: none;
-  background: repeating-linear-gradient(0deg, transparent 0 17px, color-mix(in srgb, var(--brand) 42%, transparent) 17px 20px);
-  mix-blend-mode: difference; animation: page-glitch-slice 80ms steps(2, end) 8;
-}
-@keyframes page-glitch-shake { 0% { transform: translate(0); } 33% { transform: translate(8px, -3px); } 66% { transform: translate(-7px, 2px); } }
-@keyframes page-glitch-slice { 0% { clip-path: inset(8% 0 72% 0); transform: translateX(-10px); } 50% { clip-path: inset(46% 0 30% 0); transform: translateX(12px); } 100% { clip-path: inset(74% 0 4% 0); transform: translateX(-5px); } }
 
 /* ---------- the read: expansion bay + full volume ---------- */
 /* tiles stay short; the opened body lives in a full-width band under its row */
 .stance__body { display: none !important; }
 .stances__bay {
-  grid-column: 1 / -1;
-  border-right: var(--rule) solid var(--qevr-hair);
-  border-bottom: var(--rule) solid var(--qevr-hair);
-  background: var(--qevr-surface);
-  padding: clamp(16px, 2.2vw, 26px);
-  display: flex; gap: clamp(14px, 2vw, 22px); align-items: flex-start;
+  background: transparent; border: 0;
+  padding: 4px 0 12px;
+  display: flex; gap: 12px; align-items: flex-start;
 }
-.stances__bay-idx { color: var(--brand); font-size: 12px; font-weight: 700; flex: none; padding-top: 3px; }
+.stances__bay-idx { display: none; }
 .stances__bay-copy { min-width: 0; flex: 1; }
 /* the doctrine answers at full volume: copy size, white */
 .stances__bay-copy p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; color: var(--qevr-light); max-width: 64ch; }
 .stances__bay-copy p + p { margin-top: 1em; }
 .stances__bay-copy .cursor { display: inline-block; width: 9px; height: 1em; vertical-align: -0.15em; background: var(--brand); margin-left: 3px; }
 
-/* ---------- AS PESSOAS: stanzas, not a pricing grid ---------- */
-.people__grid { grid-template-columns: minmax(0, 1fr); max-width: none; }
-.people__grid .stance--still { flex-direction: row; align-items: baseline; gap: clamp(12px, 1.6vw, 20px); padding: clamp(14px, 1.8vw, 22px); }
-.people__grid .stance__idx { margin-bottom: 0; flex: none; }
-.people__grid .stance__head { flex: none; min-width: clamp(120px, 16vw, 220px); }
-.people__grid .stance--still .stance__body { display: block !important; margin-top: 0; padding-top: 0; border-top: 0; min-width: 0; }
-.people__grid .stance--still .stance__body p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; color: var(--qevr-light); max-width: 64ch; }
 
-/* ---------- the companion enters the open block (desktop) ---------- */
-.block { position: relative; }
+/* ---------- the companion enters the open bay (desktop) ---------- */
 .block__field { position: absolute; right: clamp(14px, 3vw, 60px); bottom: clamp(14px, 3vh, 40px); display: none; }
-@media (min-width: 1101px) { [data-open="true"] .block__field { display: block; } }
+@media (min-width: 1101px) { .panel__bay.has-field .block__field { display: block; } }
 
 /* ---------- the doors out: two bands at heading scale ---------- */
 .doors {
-  width: 100vw; margin-top: clamp(24px, 4vh, 44px); margin-left: calc(50% - 50vw);
+  width: calc(100vw - var(--rail)); margin-top: clamp(24px, 4vh, 44px);
+  margin-left: calc(50% - 50vw + 7px);
   border-top: var(--rule) solid var(--qevr-hair);
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -446,14 +409,15 @@ html.page-glitch body::after {
   display: flex; align-items: center; justify-content: space-between; gap: 18px;
   padding: clamp(18px, 2.6vh, 30px) clamp(16px, 2vw, 26px);
   border: var(--rule) solid var(--qevr-hair); border-top: 0; min-width: 0;
-  text-decoration: none; color: var(--qevr-light); background: transparent;
+  text-decoration: none; color: var(--qevr-ink); background: var(--qevr-light);
 }
 .doorband canvas { display: block; image-rendering: pixelated; max-width: 72%; height: auto !important; }
-.doorband span { min-width: 0; font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .18em; text-align: right; }
-.doorband:hover, .doorband:focus-visible { background: var(--qevr-light); outline: none; }
+.doorband span { min-width: 0; font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-ink); letter-spacing: .18em; text-align: right; }
+.doorband:hover, .doorband:focus-visible { background: var(--brand); outline: none; }
 .doorband:hover span, .doorband:focus-visible span { color: var(--qevr-ink); }
 
-/* ---------- the stamp drawn in his cells ---------- */
+/* ---------- the stamp drawn in his cells: a standing band below the panel ---------- */
+.stampband { padding: clamp(18px, 3vh, 34px) 0 0; }
 .stamp { border-top: 0; padding-top: 0; max-width: none; }
 .stamp__band { border-top: 3px solid var(--brand); padding-top: clamp(14px, 2.2vh, 24px); }
 .stamp canvas { display: block; image-rendering: pixelated; max-width: 100%; }
@@ -467,10 +431,12 @@ html.page-glitch body::after {
 .poster.on { display: grid; }
 .poster__in { width: min(100%, 760px); display: grid; gap: 8px; }
 .poster__sheet {
+  --poster-edge: clamp(3px, .55vw, 6px);
+  --poster-pad: clamp(12px, 2.5vmin, 28px);
   aspect-ratio: 210 / 297; width: min(100%, calc((100svh - 112px) * 210 / 297));
-  max-height: calc(100svh - 112px); margin-inline: auto; overflow: hidden;
-  border: clamp(3px, .55vw, 6px) solid var(--brand); background: var(--qevr-ink);
-  padding: clamp(12px, 2.5vmin, 28px); display: flex; flex-direction: column; gap: clamp(8px, 1.6vmin, 18px);
+  min-width: 0; max-height: calc(100svh - 112px); margin-inline: auto; overflow: visible; position: relative;
+  border: var(--poster-edge) solid var(--brand); background: var(--qevr-ink);
+  padding: var(--poster-pad); display: flex; flex-direction: column; gap: clamp(8px, 1.6vmin, 18px);
 }
 .poster__controls { display: flex; justify-content: center; }
 .poster__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
@@ -481,10 +447,10 @@ html.page-glitch body::after {
   border: var(--rule) solid var(--qevr-hair); padding: 10px 13px;
 }
 .poster__close:hover, .poster__close:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); outline: none; }
-.poster__body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(8px, 1.8vmin, 22px); align-items: start; min-height: 0; }
-.poster__art { flex: none; }
+.poster__body { position: relative; min-height: 0; }
+.poster__art { position: absolute; right: calc(0px - var(--poster-pad) - var(--poster-edge)); top: clamp(6px, 1vmin, 12px); transform: translateX(33.333%); }
 .poster__art canvas { display: block; image-rendering: pixelated; }
-.poster__rules { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.poster__rules { min-width: 0; display: flex; flex-direction: column; padding-right: clamp(82px, 15vmin, 112px); }
 .poster__rule { border-bottom: var(--rule) solid var(--qevr-hair); padding: clamp(4px, .85vmin, 10px) 0; }
 .poster__rule b { display: block; font-size: clamp(7px, 1.18vmin, 13px); letter-spacing: .03em; }
 .poster__rule i { display: block; font-style: normal; margin-top: 2px; font-size: clamp(6px, .92vmin, 10px); color: var(--qevr-muted); line-height: 1.35; }
@@ -492,40 +458,39 @@ html.page-glitch body::after {
 @media (max-width: 720px) {
   .poster { padding: 8px; }
   .poster__in { width: 100%; }
-  .poster__sheet { max-height: calc(100svh - 70px); width: min(100%, calc((100svh - 70px) * 210 / 297)); padding: 11px; }
+  .poster__sheet { --poster-pad: 11px; max-height: calc(100svh - 70px); width: min(calc(100% - 32px), calc((100svh - 70px) * 210 / 297)); }
   .poster__top { gap: 8px; }
-  .poster__body { grid-template-columns: minmax(0, 1fr) 74px; }
+  .poster__rules { padding-right: 50px; }
+  .poster__art { top: 0; }
   .poster__foot { font-size: 6.5px; }
 }
 
-/* ---------- the hold: charging into the secret room ---------- */
+/* ---------- the hold: charging into the secret room ----------
+   the charge is the same bar in the same slot, pink. one bar, one home. */
 .mascot__charge {
-  position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
-  width: 120px; height: 6px; border: var(--rule) solid var(--qevr-hair); background: var(--ground);
   display: none;
+  width: min(46vw, 220px); height: 8px; border: var(--rule) solid var(--qevr-hair);
 }
 .mascot__charge i { display: block; height: 100%; width: 0; background: var(--qevr-pink); }
-.mascot__charge.on { display: block; }
+.arrival__signal .mascot__charge.on { display: block; }
 
 /* ---------- phone: the companion changes corners instead of changing copy width ---------- */
 @media (max-width: 720px) {
   .arrival__floor { left: 16px; right: 16px; }
-  .people__grid .stance--still { flex-direction: column; gap: 6px; }
-  .people__grid .stance__head { min-width: 0; }
   .doorband { padding: 14px 10px; justify-content: center; }
   .doorband span { display: none; }
   .doorband canvas { max-width: 100%; }
   .stances__bay { padding: 14px; }
 }
 
-.companion[data-corner="bottom-left"] { right: auto; left: 10px; }
-.companion[data-corner="top-right"] { bottom: auto; top: calc(var(--bar) + 12px); }
-.companion[data-corner="top-left"] { right: auto; bottom: auto; left: 10px; top: calc(var(--bar) + 12px); }
+.companion[data-corner="bottom-left"] { right: auto; left: calc(var(--rail) + 10px); }
+.companion[data-corner="top-right"] { bottom: auto; top: calc(var(--chrome) + 12px); }
+.companion[data-corner="top-left"] { right: auto; bottom: auto; left: calc(var(--rail) + 10px); top: calc(var(--chrome) + 12px); }
 
 @media (min-width: 2200px) {
   :root { --wrap: min(86vw, 3000px); --gut: clamp(48px, 4vw, 150px); }
   body { font-size: 20px; }
-  .copy p, .stances__bay-copy p, .people__grid .stance--still .stance__body p { font-size: clamp(18px, .82vw, 26px); max-width: 76ch; }
+  .copy p, .stances__bay-copy p, .bay__stanza { font-size: clamp(18px, .82vw, 26px); max-width: 76ch; }
   .heading__sub { font-size: clamp(13px, .55vw, 18px); }
   .block__field { right: clamp(50px, 4vw, 150px); }
   .poster__in { width: min(100%, 960px); }
@@ -533,5 +498,3 @@ html.page-glitch body::after {
 
 /* screen-reader-only heading: the document has a name even before the paint */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-/* L02: the page's one quick hit after HE molts */
-main.jolt { transform: translateX(6px); }

@@ -10,8 +10,6 @@
 
 :root { --face-name: 20px; --chip-gap: 3px; --band-w: 160px; --band-h: 180px; --chip-w: 110px; --strip-h: 130px; }
 
-.bar { padding-left: var(--gut); }
-
 .studio {
   height: 100svh; padding-top: var(--bar); overflow: hidden;
   max-width: var(--wrap); margin-inline: auto;
@@ -59,7 +57,6 @@
   gap: clamp(24px, 4vw, 64px);
   padding: clamp(12px, 2vh, 24px) clamp(16px, 2.5vw, 40px);
 }
-.plate .lang { top: 8px; right: 0; z-index: 5; }
 .stage__art { display: grid; place-items: center; min-width: 0; min-height: 0; flex: none; }
 
 .plate__panel { display: flex; flex-direction: column; gap: clamp(12px, 2vh, 20px); min-width: 0; width: min(46%, 380px); }
@@ -74,7 +71,7 @@
 .stage__controls .ctl { min-width: 0; min-height: 44px; padding: 9px 8px; }
 
 .stage__meta {
-  padding-top: 8px; border-top: var(--rule) solid var(--qevr-hair);
+  padding-top: 8px;
   color: var(--qevr-muted); font-size: 9px; line-height: 1.4; letter-spacing: .1em;
 }
 .stage__meta-title { display: block; color: var(--brand); font-weight: 700; letter-spacing: .2em; margin-bottom: 3px; }

@@ -47,9 +47,9 @@
   </div>
 </header>
 
-<div class="lang" role="group" aria-label="PT / EN">
-  <button id="langPt" type="button" aria-pressed="true">PT</button>
-  <button id="langEn" type="button" aria-pressed="false">EN</button>
+<div class="switches">
+  <button id="langToggle" type="button"></button>
+  <button class="switch--color" id="colorToggle" type="button"></button>
 </div>
 
 <main id="pageMain">
@@ -58,94 +58,56 @@
       <div class="arrival__signal" id="arrivalSignal">
         <div class="arrival__loading" id="bootBar" aria-hidden="true"><i></i></div>
         <div class="arrival__hint" id="mascotHint"></div>
+        <div class="mascot__charge" id="mascotCharge" aria-hidden="true"><i></i></div>
       </div>
       <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
       <div class="mascot__tag" id="mascotTag" aria-hidden="true"></div>
-      <div class="mascot__load" id="mascotLoad" aria-hidden="true"><i></i></div>
-      <div class="mascot__charge" id="mascotCharge" aria-hidden="true"><i></i></div>
     </div>
     <div class="arrival__from" id="arrivalFrom"></div>
     <div class="arrival__color" id="arrivalColor">
       <div class="arrival__question" id="arrivalColorQuestion"></div>
       <div class="arrival__color-controls" role="group" aria-labelledby="arrivalColorQuestion">
-        <button class="ctl ctl--swatch ctl--green" id="arrivalGreen" type="button" aria-pressed="true"><span>VERDE</span></button>
-        <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><span>ROSA</span></button>
+        <button class="ctl ctl--swatch ctl--green" id="arrivalGreen" type="button" aria-pressed="true"><span></span></button>
+        <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><span></span></button>
       </div>
     </div>
     <div class="arrival__floor">
       <span class="arrival__city" id="arrivalCity"></span>
-      <span class="arrival__scroll" id="arrivalScroll"><canvas id="scrollArrow" width="15" height="15" aria-hidden="true"></canvas><span id="scrollWord"></span></span>
+      <span class="arrival__scroll" id="arrivalScroll"><span id="scrollWord"></span><canvas id="scrollArrow" width="15" height="18" aria-hidden="true"></canvas></span>
     </div>
   </section>
 
+  <!-- GP-18 ruled M-A: the read is ONE ROOM — five headings, one bay, zero
+       tower. Headings never move, the bay never resizes, the click glitches
+       (GP-06/07 + N01). All five load closed (GP-04/05). -->
   <section class="blocks">
-    <div class="block" id="manifesto" data-open="true">
-      <button class="heading heading--toggle" aria-expanded="true" aria-controls="mundoBody">
-        <span class="heading__text" role="heading" aria-level="2">
-          <canvas data-cells="A PISTA" data-fit="470"></canvas>
-          <span class="heading__sub" data-sub="world"></span>
-        </span>
-        <span class="heading__mark"></span>
+    <div id="panel">
+    <div class="panel__rail" id="panelRail" role="tablist">
+      <button class="panel__head" id="manifesto" data-section="world" role="tab" aria-selected="false">
+        <canvas data-cells="A PISTA" data-fit="300"></canvas>
       </button>
-      <div class="block__body" id="mundoBody">
-        <div class="copy" id="worldCopy"></div>
-      </div>
-      <div class="block__field" aria-hidden="true"></div>
+      <button class="panel__head" id="pessoas" data-section="people" role="tab" aria-selected="false">
+        <canvas data-cells="AS PESSOAS" data-fit="300"></canvas>
+      </button>
+      <button class="panel__head" id="stances" data-section="stances" role="tab" aria-selected="false">
+        <canvas data-cells="O QIQI" data-fit="300"></canvas>
+      </button>
+      <button class="panel__head" id="regras" data-section="nevers" role="tab" aria-selected="false">
+        <canvas data-cells="AS REGRAS" data-fit="300"></canvas>
+      </button>
+      <button class="panel__head" id="presente" data-section="gift" role="tab" aria-selected="false">
+        <canvas data-cells="UM PRESENTE" data-fit="300"></canvas>
+      </button>
     </div>
-
-    <div class="block" id="pessoas" data-open="true">
-      <button class="heading heading--toggle" aria-expanded="true" aria-controls="peopleBody">
-        <span class="heading__text" role="heading" aria-level="2">
-          <canvas data-cells="AS PESSOAS" data-fit="470"></canvas>
-          <span class="heading__sub" data-sub="people"></span>
-        </span>
-        <span class="heading__mark"></span>
-      </button>
-      <div class="block__body" id="peopleBody">
-        <div class="copy" id="peopleIntro"></div>
-        <div class="people__grid" id="peopleList"></div>
-        <div class="world__close" id="worldClose"></div>
-      </div>
-      <div class="block__field" aria-hidden="true"></div>
+    <div class="panel__bay" id="bay">
+      <div class="panel__bay-sub" id="baySub"></div>
+      <div class="panel__bay-copy" id="bayCopy"></div>
+      <span class="bay__cursor" id="bayCursor" aria-hidden="true"></span>
+      <div class="block__field" id="bayField" aria-hidden="true"></div>
     </div>
-
-    <div class="block" id="stances" data-open="false">
-      <button class="heading heading--toggle" aria-expanded="false" aria-controls="stancesGrid">
-        <span class="heading__text" role="heading" aria-level="2">
-          <canvas data-cells="O QIQI" data-fit="470"></canvas>
-          <span class="heading__sub" data-sub="stances"></span>
-        </span>
-        <span class="heading__mark"></span>
-      </button>
-      <div class="block__body"><div class="stances__grid" id="stancesGrid"></div></div>
-      <div class="block__field" aria-hidden="true"></div>
     </div>
-
-    <div class="block" id="regras" data-open="false">
-      <button class="heading heading--toggle" aria-expanded="false" aria-controls="poster">
-        <span class="heading__text" role="heading" aria-level="2">
-          <canvas data-cells="AS REGRAS" data-fit="470"></canvas>
-          <span class="heading__sub" data-sub="nevers"></span>
-        </span>
-        <span class="heading__mark"></span>
-      </button>
-      <div class="block__body"></div>
-      <div class="block__field" aria-hidden="true"></div>
-    </div>
-
-    <div class="block" id="presente" data-open="false">
-      <button class="heading heading--toggle" aria-expanded="false" aria-controls="giftBody">
-        <span class="heading__text" role="heading" aria-level="2">
-          <canvas data-cells="UM PRESENTE" data-fit="470"></canvas>
-          <span class="heading__sub" data-sub="gift"></span>
-        </span>
-        <span class="heading__mark"></span>
-      </button>
-      <div class="block__body">
-        <div class="copy gift" id="giftBody"></div>
-        <div class="stamp" id="stamp"><div class="stamp__band"><canvas id="stampCanvas"></canvas><span class="stamp__city" id="stampCity"></span></div></div>
-      </div>
-      <div class="block__field" aria-hidden="true"></div>
+    <div class="stampband">
+      <div class="stamp" id="stamp"><div class="stamp__band"><canvas id="stampCanvas"></canvas><span class="stamp__city" id="stampCity"></span></div></div>
     </div>
 
     <div class="doors" id="doors">
@@ -192,7 +154,7 @@
       "O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
       "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
       "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
-      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO."
+      { "t": "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO.", "em": "mark" }
     ]
   },
   "people": {
@@ -208,7 +170,7 @@
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
-      "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
+      { "t": "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU.", "em": "mark" }
     ]
   },
   "stances": {
@@ -250,13 +212,25 @@
     "sub": "PRA QUEM ELE É",
     "face": "Stars",
     "paragraphs": [
-      "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+      { "t": "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.", "em": "mark" },
       "UM APP PRA USAR COM OS AMIGOS. OU SOZINHO."
     ],
     "appLine": "O APP TÁ SENDO FEITO. QUANDO TIVER PRONTO, ELE TE AVISA."
   },
   "stamp": "NOS VEMOS NA PISTA",
   "stampSmiley": ":)",
+  "galeria": {
+    "moveYes": "SE MEXE",
+    "moveNo": "PARADO",
+    "green": "VERDE",
+    "pink": "ROSA",
+    "glitch": "GLITCH",
+    "download": "BAIXAR",
+    "count": "{N} PROTÓTIPOS",
+    "creditBy": "DE",
+    "protoWord": "PROTÓTIPO",
+    "creditPattern": "QIQI {DE} {NOME}"
+  },
   "arrival": {
     "mascotHint": "VAI, CLICA EM MIM",
     "colorQuestion": "EU TBM MUDO DE COR :3",
@@ -310,10 +284,9 @@
       location.href = nextURL.pathname + nextURL.search + nextURL.hash;
     });
   }
-  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
-  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
-  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
-  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
+  /* the block names what it turns into: site in PT shows EN, and back */
+  document.getElementById("langToggle").textContent = LANG === "pt" ? "EN" : "PT";
+  document.getElementById("langToggle").addEventListener("click", function () { chooseLang(LANG === "pt" ? "en" : "pt"); });
 
   function cssVar(n, fb) {
     return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb;
@@ -371,46 +344,41 @@
     syncHeadingDim();
   }
 
-  /* closed headings are the quiet ones; the open block carries the heat */
+  /* closed headings are the quiet ones; the open one carries the heat (M-A) */
   function syncHeadingDim() {
-    [].forEach.call(document.querySelectorAll(".block"), function (b) {
-      var c = b.querySelector(".heading--toggle canvas");
+    [].forEach.call(document.querySelectorAll(".panel__head"), function (b) {
+      var c = b.querySelector("canvas");
       if (!c) return;
-      var open = b.getAttribute("data-open") === "true";
+      var open = b.id === activeSection;
       if (open) c.removeAttribute("data-dim"); else c.setAttribute("data-dim", "1");
       drawCells(c);
     });
   }
 
-  /* the open heading IGNITES: cells flip muted to brand in random chunks */
-  function ignite(canvas) {
+  /* GP-06: the opening click GLITCHES — a hard two-frame shear, then the
+     heading lands in the brand. no cube-flip. */
+  function shearOpen(canvas) {
+    canvas.removeAttribute("data-dim");
     if (reduce) { drawCells(canvas); return; }
-    var m = canvas._matrix || window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
-    var idx = [];
-    for (var i = 0; i < m.cells.length; i++) if (m.cells[i]) idx.push(i);
-    for (var j = idx.length - 1; j > 0; j--) {
-      var k = Math.floor(Math.random() * (j + 1));
-      var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
-    }
-    var mask = new Uint8Array(m.cells.length);
-    var frames = 5, per = Math.ceil(idx.length / frames), p = 0;
-    (function step() {
-      for (var n = 0; n < per && p < idx.length; n++, p++) mask[idx[p]] = 1;
-      drawCells(canvas, { mask: mask });
-      if (p < idx.length) setTimeout(step, 46);
-      else drawCells(canvas);
-    })();
+    var band = 2 + Math.floor(Math.random() * 5);
+    var shear = {}; shear[band] = 1; shear[band + 1] = 1;
+    drawCells(canvas, { shear: shear });
+    setTimeout(function () {
+      var shear2 = {}; shear2[band + 2] = -1;
+      drawCells(canvas, { shear: shear2 });
+      setTimeout(function () { drawCells(canvas); }, 70);
+    }, 70);
   }
 
   /* one shear beat: a row band slips sideways for two frames and snaps back */
-  function flinch(canvas) {
+  function flinch(canvas, color) {
     if (reduce || canvas._flinching) return;
     canvas._flinching = true;
     var band = 2 + Math.floor(Math.random() * 5);
     var shear = {}; shear[band] = 1; shear[band + 1] = 1;
-    drawCells(canvas, { shear: shear, dim: canvas.hasAttribute("data-dim") });
+    drawCells(canvas, { shear: shear, dim: canvas.hasAttribute("data-dim"), color: color });
     setTimeout(function () {
-      drawCells(canvas);
+      drawCells(canvas, color ? { color: color } : undefined);
       canvas._flinching = false;
     }, 90);
   }
@@ -421,17 +389,22 @@
     var party = document.documentElement.getAttribute("data-mode") === "party";
     document.getElementById("arrivalGreen").setAttribute("aria-pressed", String(!party));
     document.getElementById("arrivalPink").setAttribute("aria-pressed", String(party));
+    var colorToggle = document.getElementById("colorToggle");
+    colorToggle.classList.toggle("to-pink", !party);
+    colorToggle.classList.toggle("to-green", party);
+    if (COPY && COPY.ui) colorToggle.setAttribute("aria-label", party ? COPY.ui.green : COPY.ui.pink);
   }
 
   function repaintBrand() {
     drawAllCells();
     paintStamp();
+    paintScrollArrow();
     if (mascot) mascot.paint();
   }
 
-  /* ---------- L02: he molts FIRST, the page follows with one quick hit ----------
+  /* ---------- L02: he molts FIRST, the page follows through the QR cascade ----------
      picking a colour repaints HIS body cells in stepped chunks on his own canvas,
-     and only when he finishes does the page take one fast jolt and follow. */
+     and only when he finishes does the page cross the same cascade as a room change. */
   var MODE_HEX = { day: "#CCFF00", party: "#FF007F" };
   function moltTo(mode) {
     if (document.documentElement.getAttribute("data-mode") === mode) return;
@@ -464,63 +437,162 @@
     setTimeout(function step() {
       for (var m = 0; m < per && p < bodyIdx.length; m++, p++) paintIdx(bodyIdx[p], target);
       if (p < bodyIdx.length) { setTimeout(step, 55); return; }
-      /* he finished. now the page takes one quick stepped hit and follows. */
-      var main = document.getElementById("pageMain");
-      main.classList.add("jolt");
-      setTimeout(function () {
+      /* he finished. now the page follows through its own QR grammar. */
+      window.QevrCascade.through(function () {
         document.documentElement.setAttribute("data-mode", mode);
         writeModePreference(mode);
         syncArrivalColor();
         repaintBrand();
-        main.classList.remove("jolt");
         mascot._busy = false;
-      }, 90);
+      });
     }, 180);
   }
 
   syncArrivalColor();
   document.getElementById("arrivalGreen").addEventListener("click", function () { moltTo("day"); });
   document.getElementById("arrivalPink").addEventListener("click", function () { moltTo("party"); });
+  document.getElementById("colorToggle").addEventListener("click", function () {
+    moltTo(document.documentElement.getAttribute("data-mode") === "party" ? "day" : "party");
+  });
 
-  function para(text, cls) {
+  function para(entry, cls) {
     var p = document.createElement("p");
-    if (cls) p.className = cls;
-    p.textContent = text;
+    var line = typeof entry === "string" ? { t: entry } : entry;
+    var emphasis = cls || (line && (line.em === "dim" || line.em === "mark") ? line.em : "");
+    if (emphasis) p.className = emphasis;
+    p.textContent = line && line.t ? line.t : "";
     return p;
   }
 
   function syncTitles() {
     var map = [
-      ["#manifesto", COPY.world],
-      ["#pessoas", COPY.people],
-      ["#stances", COPY.stances],
-      ["#regras", COPY.nevers],
-      ["#presente", COPY.gift]
+      ["manifesto", COPY.world],
+      ["pessoas", COPY.people],
+      ["stances", COPY.stances],
+      ["regras", COPY.nevers],
+      ["presente", COPY.gift]
     ];
     map.forEach(function (pair) {
-      var c = document.querySelector(pair[0] + " .heading--toggle canvas");
+      var head = document.getElementById(pair[0]);
+      if (!head) return;
+      var c = head.querySelector("canvas");
       if (c && pair[1].title) c.setAttribute("data-cells", pair[1].title);
-      var s = document.querySelector(pair[0] + " .heading__sub");
-      if (s && pair[1].sub) s.textContent = pair[1].sub;
+      panelSubs[pair[0]] = pair[1].sub || "";
+      panelFaces[pair[0]] = pair[1].face || "Default";
     });
   }
 
-  /* one block open at a time. the closed headings dim, the opened one ignites,
-     and on desktop the companion jumps into the open block's right field. */
-  function setOpen(box) {
-    [].forEach.call(document.querySelectorAll(".block"), function (b) {
-      var open = b.id === "pessoas" || box === b;
-      b.setAttribute("data-open", open ? "true" : "false");
-      var btn = b.querySelector(".heading--toggle");
-      if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
+  /* ---------- M-A: the panel. five headings, ONE bay, nothing ever resizes.
+     the content of the open section always renders in the same piece
+     (GP-07's own sentence made structural). ---------- */
+  var activeSection = null, panelSubs = {}, panelFaces = {}, panelContent = {}, bayGen2 = 0, bayBlinkTimer = 0;
+  function bayEls() {
+    return {
+      bay: document.getElementById("bay"),
+      sub: document.getElementById("baySub"),
+      copy: document.getElementById("bayCopy"),
+      cursor: document.getElementById("bayCursor")
+    };
+  }
+  function startBayCursor() {
+    var cursor = document.getElementById("bayCursor");
+    if (bayBlinkTimer || !cursor) return;
+    bayBlinkTimer = setInterval(function () {
+      cursor.style.visibility = cursor.style.visibility === "hidden" ? "visible" : "hidden";
+    }, 600);
+  }
+  function renderSection(id, opts) {
+    opts = opts || {};
+    var els = bayEls();
+    bayGen2++;
     closeBay();
-    syncHeadingDim();
-    if (box) {
-      var c = box.querySelector(".heading--toggle canvas");
-      if (c) ignite(c);
+    els.sub.textContent = id ? (panelSubs[id] || "") : "";
+    els.copy.innerHTML = "";
+    if (!id) return;
+    var content = panelContent[id];
+    if (!content) return;
+    els.copy.appendChild(content);
+    if (opts.instant || reduce) return;
+    /* the words arrive in three hard chunks — never letter by letter */
+    var g = bayGen2;
+    var parts = [].slice.call(content.children.length ? content.children : [content]);
+    var blocksList = [];
+    parts.forEach(function (node) {
+      if (node.children.length && !node.classList.contains("stances__grid")) {
+        [].forEach.call(node.children, function (child) { blocksList.push(child); });
+      } else blocksList.push(node);
+    });
+    blocksList.forEach(function (b) { b.style.visibility = "hidden"; });
+    var steps = 3, per = Math.ceil(blocksList.length / steps), p = 0;
+    (function step() {
+      if (g !== bayGen2) return;
+      for (var n = 0; n < per && p < blocksList.length; n++, p++) blocksList[p].style.visibility = "";
+      if (p < blocksList.length) setTimeout(step, 90);
+    })();
+  }
+  function setOpen(id, opts) {
+    opts = opts || {};
+    if (id === "regras") {
+      var rc = document.getElementById("regras").querySelector("canvas");
+      if (rc) flinch(rc);
+      openPoster();
+      return;
     }
+    if (id === activeSection) id = null;
+    activeSection = id;
+    [].forEach.call(document.querySelectorAll(".panel__head"), function (b) {
+      b.setAttribute("aria-selected", String(b.id === id));
+    });
+    syncHeadingDim();
+    if (id) {
+      var c = document.getElementById(id).querySelector("canvas");
+      if (c) shearOpen(c);
+    }
+    renderSection(id, opts);
+    var bayNode = document.getElementById("bay");
+    if (bayNode) bayNode.classList.toggle("has-field", !!id);
+    if (mascot && id && panelFaces[id]) { mascot.ignoredSince = Date.now(); mascot.setFace(panelFaces[id]); }
     syncJump();
+    if (isSmall()) {
+      avoidCompanionOverlap();
+      /* the phone reaction is visible: he lands with the jump beat (N13) */
+      if (mascot && id && inCorner) {
+        mascot.squash = 0.84; mascot.applyTransform();
+        setTimeout(function () { mascot.squash = 1; mascot.applyTransform(); }, 110);
+      }
+    }
+  }
+  /* the bay NEVER resizes: reserve the tallest section once per width */
+  function measureBay() {
+    var els = bayEls();
+    if (!els.bay) return;
+    if (isSmall()) { els.bay.style.minHeight = ""; return; }
+    var prev = activeSection;
+    els.bay.style.minHeight = "";
+    els.bay.style.visibility = "hidden";
+    var max = 0;
+    ["manifesto", "pessoas", "stances", "presente"].forEach(function (id) {
+      renderSection(id, { instant: true });
+      if (id === "stances") {
+        /* reserve room for the tallest tile's answer too (GP-07) */
+        var grid = els.copy.querySelector(".stances__grid");
+        if (grid && COPY) {
+          var longest = "", items = COPY.stances.items;
+          items.forEach(function (it) { var t = it.body.join(" "); if (t.length > longest.length) longest = t; });
+          var temp = document.createElement("div");
+          temp.className = "stances__bay";
+          var tc = document.createElement("div"); tc.className = "stances__bay-copy";
+          tc.appendChild(para(longest));
+          temp.appendChild(tc); grid.appendChild(temp);
+          max = Math.max(max, els.bay.scrollHeight);
+          grid.removeChild(temp);
+        }
+      }
+      max = Math.max(max, els.bay.scrollHeight);
+    });
+    els.bay.style.minHeight = max + "px";
+    els.bay.style.visibility = "";
+    renderSection(prev, { instant: true });
   }
 
   function wireCascade() {
@@ -532,7 +604,11 @@
         if (!target) return;
         e.preventDefault();
         window.QevrCascade.through(function () {
-          if (target.classList.contains("block")) setOpen(target);
+          if (target.classList.contains("panel__head")) {
+            if (target.id !== "regras" && target.id !== activeSection) setOpen(target.id);
+            document.querySelector("section.blocks").scrollIntoView({ behavior: "auto", block: "start" });
+            return;
+          }
           target.scrollIntoView({ behavior: "auto", block: "start" });
         });
       });
@@ -540,56 +616,41 @@
   }
 
   function wireToggles() {
-    [].forEach.call(document.querySelectorAll(".block"), function (box) {
-      var btn = box.querySelector(".heading--toggle");
-      if (!btn) return;
+    [].forEach.call(document.querySelectorAll(".panel__head"), function (btn) {
       var canvas = btn.querySelector("canvas");
       if (canHover && canvas) {
         btn.addEventListener("pointerenter", function () {
-          if (box.getAttribute("data-open") !== "true") flinch(canvas);
+          if (btn.id !== activeSection) flinch(canvas);
         });
       }
       btn.addEventListener("click", function () {
-        /* AS REGRAS opens as the poster, not a dropdown */
-        if (box.id === "regras") { openPoster(); return; }
-        /* AS PESSOAS is the human constant. It never collapses. */
-        if (box.id === "pessoas") { setOpen(openBlock()); return; }
-        var open = box.getAttribute("data-open") === "true";
-        if (open) {
-          box.setAttribute("data-open", "false");
-          btn.setAttribute("aria-expanded", "false");
-          closeBay();
-          syncHeadingDim();
-          syncJump();
-        } else {
-          if (!canHover && canvas) flinch(canvas);
-          setOpen(box);
-          var r = box.getBoundingClientRect();
-          var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
-          if (r.top < bar) box.scrollIntoView({ behavior: "auto", block: "start" });
-          if (box.id === "presente") stampFirstOpen();
-        }
+        if (!canHover && canvas && btn.id !== activeSection) flinch(canvas);
+        setOpen(btn.id);
       });
     });
   }
 
   function unifyToggleHeadings() {
-    var cs = document.querySelectorAll(".heading--toggle canvas");
+    var cs = document.querySelectorAll(".panel__head canvas");
     if (!cs.length) return;
     var minCell = Infinity;
     [].forEach.call(cs, function (c) {
       var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
-      var room = c.parentElement.clientWidth || window.innerWidth;
-      var fit = parseFloat(c.getAttribute("data-fit")) || 470;
+      var host = c.parentElement;
+      var pad = 40;
+      var room = Math.max(60, (host.clientWidth || window.innerWidth) - pad);
+      var fit = parseFloat(c.getAttribute("data-fit")) || 300;
       minCell = Math.min(minCell, Math.max(2, Math.floor(Math.min(room, fit) / m.w)));
     });
+    /* the headings can never overlay their own cells: the shared cell is the
+       LARGEST that still fits the narrowest word in the rail (M-A amendment) */
     [].forEach.call(cs, function (c) { c.setAttribute("data-force-cell", minCell); drawCells(c); });
     syncHeadingDim();
   }
 
   /* ---------- the doors out: two bands at heading scale ---------- */
-  function drawDoorWord(canvas, flooded) {
-    drawCells(canvas, { color: flooded ? inkColor() : brandColor() });
+  function drawDoorWord(canvas) {
+    drawCells(canvas, { color: inkColor() });
   }
   function buildDoors() {
     document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
@@ -603,36 +664,36 @@
     gal.querySelector("span").textContent = COPY.doors.galeria.sub;
     [est, gal].forEach(function (a) {
       var c = a.querySelector("canvas");
-      a.addEventListener("pointerenter", function () { drawDoorWord(c, true); });
-      a.addEventListener("pointerleave", function () { drawDoorWord(c, false); });
-      a.addEventListener("focus", function () { drawDoorWord(c, true); });
-      a.addEventListener("blur", function () { drawDoorWord(c, false); });
+      a.addEventListener("pointerenter", function () { flinch(c, inkColor()); });
+      a.addEventListener("pointerleave", function () { drawDoorWord(c); });
+      a.addEventListener("focus", function () { drawDoorWord(c); });
+      a.addEventListener("blur", function () { drawDoorWord(c); });
     });
   }
 
   function buildWorld() {
-    var w = COPY.world;
-    var host = document.getElementById("worldCopy");
-    w.paragraphs.forEach(function (t, i) { host.appendChild(para(t, i >= w.paragraphs.length - 1 ? "dim" : "")); });
+    var host = document.createElement("div"); host.className = "copy";
+    COPY.world.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
+    panelContent.manifesto = host;
   }
 
+  /* AS PESSOAS speaks as stanzas: name, the sentence, nothing else.
+     no numbers, no borders, no table (GP-18). */
   function buildPeople() {
-    var intro = document.getElementById("peopleIntro");
-    if (intro && COPY.people.intro) intro.appendChild(para(COPY.people.intro));
-    var list = document.getElementById("peopleList");
-    COPY.people.items.forEach(function (pair, i) {
-      var row = document.createElement("div"); row.className = "stance stance--still";
-      var idx = document.createElement("span");
-      idx.className = "stance__idx";
-      idx.textContent = "0" + (i + 1);
-      row.appendChild(idx);
-      var t = document.createElement("span"); t.className = "stance__head"; t.textContent = pair[0];
-      var d = document.createElement("span"); d.className = "stance__body";
-      d.appendChild(para(pair[1]));
-      row.appendChild(t); row.appendChild(d); list.appendChild(row);
+    var host = document.createElement("div");
+    var stanzas = document.createElement("div");
+    COPY.people.items.forEach(function (pair) {
+      var p = document.createElement("p"); p.className = "bay__stanza";
+      var b = document.createElement("b"); b.textContent = pair[0];
+      p.appendChild(b);
+      p.appendChild(document.createTextNode(" · " + pair[1]));
+      stanzas.appendChild(p);
     });
-    var close = document.getElementById("worldClose");
+    host.appendChild(stanzas);
+    var close = document.createElement("div"); close.className = "bay__close";
     COPY.people.close.forEach(function (t) { close.appendChild(para(t)); });
+    host.appendChild(close);
+    panelContent.pessoas = host;
   }
 
   /* ---------- L08 + L09 + L13: tiles stay short; the opened body slides into a
@@ -727,11 +788,7 @@
       var b = document.createElement("button");
       b.className = "stance"; b.type = "button";
       b.setAttribute("aria-expanded", "false");
-      var idxText = (i + 1 < 10 ? "0" : "") + (i + 1);
-      var idx = document.createElement("span");
-      idx.className = "stance__idx";
-      idx.textContent = idxText;
-      b.appendChild(idx);
+      var idxText = "";
       var head = document.createElement("span");
       head.className = "stance__head"; head.textContent = item.head;
       b.appendChild(head);
@@ -750,7 +807,12 @@
   }
 
   function buildStances() {
-    buildTiles(document.getElementById("stancesGrid"), COPY.stances.items);
+    var host = document.createElement("div");
+    var grid = document.createElement("div");
+    grid.className = "stances__grid"; grid.id = "stancesGrid";
+    buildTiles(grid, COPY.stances.items);
+    host.appendChild(grid);
+    panelContent.stances = host;
   }
 
   /* ---------- AS REGRAS: the poster pop ---------- */
@@ -787,7 +849,8 @@
     ctx.fillStyle = "#09090B"; ctx.fillRect(0, 0, W, H);
     var brand = brandColor();
     ctx.strokeStyle = brand; ctx.lineWidth = 12;
-    ctx.strokeRect(36, 36, W - 72, H - 72);
+    var frameRight = W - 120;
+    ctx.strokeRect(36, 36, frameRight - 36, H - 72);
     /* the title in his cells */
     var tm = window.QevrType.textMatrix(COPY.nevers.title);
     var tCell = Math.floor((W - 200) / tm.w);
@@ -795,11 +858,12 @@
     for (var y = 0; y < tm.h; y++) for (var x = 0; x < tm.w; x++) {
       if (tm.cells[y * tm.w + x]) ctx.fillRect(100 + x * tCell, 90 + y * tCell, tCell, tCell);
     }
-    /* him, mad, beside the rules */
+    /* him, mad, straddling the frame's right edge */
     var m = window.Qevr.matrix(COPY.nevers.face || "Angry");
     var C = window.Qevr.CROP;
-    var fCell = 14;
-    var fx = W - 100 - C.w * fCell, fy = 320;
+    var fCell = 10;
+    var artW = C.w * fCell;
+    var fx = frameRight - Math.round(artW * 2 / 3), fy = 320;
     for (y = 0; y < C.h; y++) for (x = 0; x < C.w; x++) {
       var v = m.cells[(y + C.y0) * m.n + (x + C.x0)];
       if (!v) continue;
@@ -863,19 +927,55 @@
   }
 
   function buildGift() {
-    var host = document.getElementById("giftBody");
-    COPY.gift.paragraphs.forEach(function (t) { host.appendChild(para(t)); });
+    var host = document.createElement("div"); host.className = "copy gift";
+    COPY.gift.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
     if (COPY.gift.appLine) host.appendChild(para(COPY.gift.appLine, "dim"));
-    var hint = document.getElementById("mascotHint");
-    if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
+    panelContent.presente = host;
     var question = document.getElementById("arrivalColorQuestion");
     if (question && COPY.arrival) question.textContent = COPY.arrival.colorQuestion;
+    document.querySelector("#arrivalGreen span").textContent = COPY.ui.green;
+    document.querySelector("#arrivalPink span").textContent = COPY.ui.pink;
+    syncArrivalColor();
     document.getElementById("stampCity").textContent = COPY.city;
+  }
+
+  var hintBlinkTimer = 0;
+  function revealArrivalHint() {
+    var hint = document.getElementById("mascotHint");
+    var signal = document.getElementById("arrivalSignal");
+    var full = COPY.arrival.mascotHint;
+    hint.innerHTML = "";
+    hint.setAttribute("aria-label", full);
+    var copy = document.createElement("span");
+    copy.className = "arrival__hint-copy";
+    var cursor = document.createElement("span");
+    cursor.className = "arrival__cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    hint.appendChild(copy);
+    hint.appendChild(cursor);
+    signal.classList.add("is-ready");
+
+    var words = full.split(" ");
+    if (reduce) {
+      copy.textContent = full;
+    } else {
+      var chunk = 1;
+      (function typeHint() {
+        copy.textContent = words.slice(0, Math.ceil(words.length * chunk / 3)).join(" ");
+        chunk++;
+        if (chunk <= 3) setTimeout(typeHint, 90);
+      })();
+    }
+    if (!hintBlinkTimer) {
+      hintBlinkTimer = setInterval(function () {
+        cursor.style.visibility = cursor.style.visibility === "hidden" ? "visible" : "hidden";
+      }, 600);
+    }
   }
 
   /* ---------- L15: the stamp drawn in his cells, the smiley in the brand ---------- */
   var stampShown = false;
-  function paintStamp(mask) {
+  function paintStamp(mask, shear) {
     var canvas = document.getElementById("stampCanvas");
     if (!canvas || !COPY) return;
     var text = COPY.stamp + " " + (COPY.stampSmiley || ":)");
@@ -893,12 +993,13 @@
     var smileyM = window.QevrType.textMatrix((COPY.stampSmiley || ":)"));
     var smileyStart = m.w - smileyM.w;
     for (var y = 0; y < m.h; y++) {
+      var rowShear = shear && shear[y] ? shear[y] : 0;
       for (var x = 0; x < m.w; x++) {
         var i = y * m.w + x;
         if (!m.cells[i]) continue;
         if (mask && !mask[i]) continue;
         ctx.fillStyle = x >= smileyStart ? brandColor() : cssVar("--qevr-light", "#FFFFFF");
-        ctx.fillRect(x * cell, y * cell, cell, cell);
+        ctx.fillRect((x + rowShear) * cell, y * cell, cell, cell);
       }
     }
     canvas.setAttribute("role", "img");
@@ -922,9 +1023,25 @@
     (function step() {
       for (var n = 0; n < per && p < idx.length; n++, p++) mask[idx[p]] = 1;
       paintStamp(mask);
-      if (p < idx.length) setTimeout(step, 48);
-      else paintStamp();
+      if (p < idx.length) { setTimeout(step, 48); return; }
+      var band = 2 + Math.floor(Math.random() * Math.max(1, m.h - 4));
+      var shear = {}; shear[band] = 1; shear[band + 1] = 1;
+      paintStamp(null, shear);
+      setTimeout(function () { paintStamp(); }, 90);
     })();
+  }
+  function watchStamp() {
+    var stamp = document.getElementById("stamp");
+    if (reduce) { paintStamp(); stampShown = true; return; }
+    if (!("IntersectionObserver" in window)) { stampFirstOpen(); return; }
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        stampFirstOpen();
+      });
+    }, { threshold: 0.2 });
+    observer.observe(stamp);
   }
 
   /* ---------- he starts life size, then takes his corner, and on desktop he
@@ -950,29 +1067,22 @@
     return Math.max(8, Math.min(13, byWidth, byHeight));
   }
   function cellFor() {
-    if (jumpedBlock) return largeMonitorScale(6, 14);
-    return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor();
+    if (jumpedBlock) return largeMonitorScale(4, 9);
+    return inCorner ? (isSmall() ? 2 : 3) : arrivalCellFor();
   }
   function boundsFor() {
-    if (jumpedBlock) return { x: largeMonitorScale(6, 14), y: largeMonitorScale(5, 12) };
-    return inCorner ? { x: isSmall() ? 8 : 10, y: isSmall() ? 6 : 8 }
+    if (jumpedBlock) return { x: largeMonitorScale(4, 9), y: largeMonitorScale(4, 8) };
+    return inCorner ? { x: isSmall() ? 6 : 7, y: isSmall() ? 4 : 6 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
-  }
-  function openBlock() {
-    return document.querySelector(".block[data-open='true']");
   }
   function syncJump() {
     var target = null;
-    if (inCorner && isDesktop()) {
-      var b = openBlock();
-      if (b) target = b;
-    }
+    if (inCorner && isDesktop() && activeSection) target = activeSection;
     if (target !== jumpedBlock) {
       jumpedBlock = target;
       placeMascot();
       if (mascot && jumpedBlock) {
-        var faceMap = { manifesto: COPY.world.face, pessoas: COPY.people.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
-        var f = faceMap[jumpedBlock.id];
+        var f = panelFaces[jumpedBlock];
         if (f) mascot.setFace(f);
         /* the hop in: a small squash beat so the arrival reads as a jump */
         mascot.squash = 0.84; mascot.applyTransform();
@@ -984,7 +1094,7 @@
     if (!mascot) return;
     var btn = document.getElementById("mascotBtn");
     var target;
-    if (jumpedBlock) target = jumpedBlock.querySelector(".block__field");
+    if (jumpedBlock) target = document.getElementById("bayField");
     else target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
     if (btn.parentElement !== target) target.appendChild(btn);
     mascot.pos.x = 0; mascot.pos.y = 0; mascot.squash = 1;
@@ -996,17 +1106,18 @@
   function avoidCompanionOverlap() {
     if (!inCorner || !isSmall()) return;
     var slot = document.getElementById("companionSlot");
-    var size = slot.getBoundingClientRect().width || 92;
+    var size = slot.getBoundingClientRect().width || 64;
     var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
+    var rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail")) || 14;
     var candidates = [], y;
     for (y = bar + 8; y <= innerHeight - size - 8; y += 12) {
-      candidates.push({ name: "smart-left", left: 8, top: y });
+      candidates.push({ name: "smart-left", left: rail + 8, top: y });
       candidates.push({ name: "smart-right", left: innerWidth - size - 8, top: y });
     }
     /* Score actual words and pixel lettering, not an entire card. Empty parts
        of a card are valid places to stand; text and controls are not. */
     var readable = [];
-    [].forEach.call(document.querySelectorAll(".blocks p, .heading--toggle, .stance, .stances__bay, .stamp__city, .doorband span"), function (el) {
+    [].forEach.call(document.querySelectorAll(".blocks p, .panel__head, .stance, .stances__bay, .stamp__city, .doorband span"), function (el) {
       var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
       var node;
       while ((node = walker.nextNode())) {
@@ -1022,7 +1133,7 @@
       var r = canvas.getBoundingClientRect();
       if (r.width > 0 && r.height > 0 && r.bottom > bar && r.top < innerHeight) readable.push(r);
     });
-    [].forEach.call(document.querySelectorAll(".lang button"), function (control) {
+    [].forEach.call(document.querySelectorAll(".switches button"), function (control) {
       var r = control.getBoundingClientRect();
       if (r.width > 0 && r.height > 0) readable.push(r);
     });
@@ -1052,11 +1163,18 @@
   var fill = document.getElementById("thermoFill");
   var thermo = document.getElementById("thermo");
   var wasFire = false, fireFlipping = false;
-  var THERMO_CELL = 14;
+  /* L16: twelve countable cells, sized to the room */
+  function thermoCell() {
+    var cell = Math.max(24, Math.floor(window.innerHeight / 12));
+    document.documentElement.style.setProperty("--thermo-cell", cell + "px");
+    return cell;
+  }
   function onScroll() {
+    if (document.body.classList.contains("is-booting")) return;
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    var px = Math.floor((p * window.innerHeight) / THERMO_CELL) * THERMO_CELL;
+    var cell = thermoCell();
+    var px = Math.floor((p * window.innerHeight) / cell) * cell;
     fill.style.height = px + "px";
     var fire = p > 0.92;
     if (fire && !wasFire) {
@@ -1066,6 +1184,7 @@
         fireFlipping = true;
         var flips = 0;
         (function flip() {
+          if (!fireFlipping) return;
           thermo.classList.toggle("is-fire");
           flips++;
           if (flips < 3) setTimeout(flip, 90);
@@ -1075,27 +1194,10 @@
         thermo.classList.add("is-fire");
       }
     }
-    if (!fire && !fireFlipping) thermo.classList.remove("is-fire");
-    document.documentElement.classList.toggle("scroll-fire", fire);
+    if (!fire) { fireFlipping = false; thermo.classList.remove("is-fire"); }
     wasFire = fire;
     checkCorner();
     avoidCompanionOverlap();
-  }
-
-  function watchSections() {
-    if (!("IntersectionObserver" in window)) return;
-    var map = { manifesto: COPY.world.face, pessoas: COPY.people.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting || !mascot || wasFire || jumpedBlock) return;
-        var f = map[e.target.id];
-        if (f) mascot.setFace(f);
-      });
-    }, { threshold: 0.4 });
-    Object.keys(map).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) io.observe(el);
-    });
   }
 
   /* ---------- A13: he keeps São Paulo hours, for the whole world ---------- */
@@ -1153,14 +1255,13 @@
     tag.textContent = "ERRO";
     mascot.setFace("Dead", true);
     tag.classList.add("on");
-    document.documentElement.classList.add("page-glitch");
-    /* more violent glitch: three rounds back to back */
+    /* the violence stays on HIS canvas: three glitch rounds back to back.
+       the page never shows the lines (GP, 2026-08-27). */
     mascot.glitch();
     setTimeout(function () { mascot.glitch(); }, 160);
     setTimeout(function () { mascot.glitch(); }, 320);
     setTimeout(function () {
       tag.classList.remove("on");
-      document.documentElement.classList.remove("page-glitch");
       /* he breaks into the floor, row by row */
       var f = 0, frames = 8;
       (function collapse() {
@@ -1209,22 +1310,20 @@
     if (pokeCount === 5) { mascot.poke(); return; }
     if (pokeCount === 6) { mascot.glitch(); return; }
     if (pokeCount === 7) { mascot.rowwave(); return; }
-    if (pokeCount === 8) {
-      document.documentElement.classList.add("page-glitch");
-      setTimeout(function () { document.documentElement.classList.remove("page-glitch"); }, 260);
-      return;
-    }
+    if (pokeCount === 8) { mascot.rowwave(); mascot.glitch(); return; }
     if (pokeCount >= 9) ladderDie();
   }
 
   /* ---------- A08: hold him ~2s and the three story rooms open ---------- */
   var holdTimer = 0, holdStart = 0, holdFired = false, holdRaf = 0;
   function wireHold(btn) {
+    var signal = document.getElementById("arrivalSignal");
     var charge = document.getElementById("mascotCharge");
     var chargeFill = charge.querySelector("i");
     function cancelHold() {
       if (holdRaf) cancelAnimationFrame(holdRaf);
       holdRaf = 0;
+      signal.classList.remove("is-charging");
       charge.classList.remove("on");
       chargeFill.style.width = "0";
     }
@@ -1234,11 +1333,13 @@
       holdFired = false;
       (function tick(now) {
         var t = (now || performance.now()) - holdStart;
+        /* a quick poke never flashes the bar: the charge shows after 350ms of hold */
         if (t > 350) {
+          signal.classList.add("is-charging");
           charge.classList.add("on");
           chargeFill.style.width = Math.min(100, ((t - 350) / 1650) * 100) + "%";
-          if (t > 700 && mascot && mascot.face.name !== "Anime") mascot.setFace("Anime");
         }
+        if (t > 700 && mascot && mascot.face.name !== "Anime") mascot.setFace("Anime");
         if (t >= 2000) {
           holdFired = true;
           cancelHold();
@@ -1331,25 +1432,28 @@
     } catch (e) {}
   }
 
-  /* ---------- the scroll cue: a stepped arrow plus the word ---------- */
-  function wireScrollCue() {
-    document.getElementById("scrollWord").textContent = COPY.arrival.scrollLabel || "SCROLL";
-    document.getElementById("arrivalCity").textContent = COPY.city;
+  /* ---------- the scroll cue: the word, then a two-position brand bounce ---------- */
+  var scrollArrowOffset = 0;
+  var scrollArrowCells = [[2, 0], [2, 1], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [1, 3], [2, 3], [3, 3], [2, 4]];
+  function paintScrollArrow() {
     var cv = document.getElementById("scrollArrow");
+    if (!cv) return;
     var ctx = cv.getContext("2d");
-    var cells = [[2, 0], [2, 1], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [1, 3], [2, 3], [3, 3], [2, 4]];
-    var offset = 0;
-    function draw() {
-      ctx.clearRect(0, 0, 15, 15);
-      ctx.fillStyle = mutedColor();
-      cells.forEach(function (p) {
-        var y = (p[1] + offset) % 5;
-        ctx.fillRect(p[0] * 3, y * 3, 3, 3);
-      });
-    }
-    draw();
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = brandColor();
+    scrollArrowCells.forEach(function (point) {
+      ctx.fillRect(point[0] * 3, (point[1] + scrollArrowOffset) * 3, 3, 3);
+    });
+  }
+  function wireScrollCue() {
+    document.getElementById("scrollWord").textContent = COPY.arrival.scrollLabel;
+    document.getElementById("arrivalCity").textContent = COPY.city;
+    paintScrollArrow();
     if (reduce) return;
-    setInterval(function () { offset = (offset + 1) % 5; draw(); }, 420);
+    setInterval(function () {
+      scrollArrowOffset = scrollArrowOffset ? 0 : 1;
+      paintScrollArrow();
+    }, 340);
   }
 
   /* ---------- boot ---------- */
@@ -1375,11 +1479,19 @@
     buildDoors(); buildWorld(); buildPeople(); buildStances(); buildPoster(); buildGift();
     drawAllCells();
     unifyToggleHeadings();
+    measureBay();
+    startBayCursor();
     wireCascade();
     wireToggles();
+    var initialAnchor = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    if (initialAnchor && initialAnchor.classList.contains("panel__head") && initialAnchor.id !== "regras") setOpen(initialAnchor.id, { instant: true });
+    function settleInitialAnchor() {
+      if (initialAnchor) initialAnchor.scrollIntoView({ behavior: "auto", block: "start" });
+    }
     wireScrollCue();
     giftTag();
     paintStamp();
+    watchStamp();
     onScroll();
     consoleArt();
     wireFavicon();
@@ -1400,7 +1512,8 @@
     if (reduce) {
       bootFill.style.width = "100%";
       document.body.classList.remove("is-booting");
-      arrivalSignal.classList.add("is-ready");
+      revealArrivalHint();
+      settleInitialAnchor();
       mascot.setFace(hourFace(), true);
       mascot.start(boundsFor());
     } else {
@@ -1426,11 +1539,8 @@
           for (var n = 0; n < per && p < idx.length; n++, p++) mascot.render[idx[p]] = savedRender[idx[p]];
           mascot.paint();
           if (p < idx.length) { setTimeout(build, 75); return; }
-          document.documentElement.classList.add("page-glitch");
-          setTimeout(function () {
-            document.documentElement.classList.remove("page-glitch");
-            arrivalSignal.classList.add("is-ready");
-          }, 420);
+          revealArrivalHint();
+          settleInitialAnchor();
           setTimeout(function () { mascot.setFace("Anime"); }, 900);
           setTimeout(function () { mascot.setFace("Joy"); }, 2400);
           setTimeout(function () {
@@ -1447,11 +1557,10 @@
       mascot._look = { x: Math.max(-10, Math.min(10, (e.clientX - cx) / 40)) };
     }, { passive: true });
 
-    watchSections();
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        drawAllCells(); unifyToggleHeadings(); paintStamp(); placeMascot();
+        drawAllCells(); unifyToggleHeadings(); measureBay(); paintStamp(); placeMascot();
       });
     }
   }).catch(function (err) { console.error("[qiqi] boot failed", err); });
@@ -1461,9 +1570,9 @@
   window.addEventListener("resize", function () {
     clearTimeout(rt);
     rt = setTimeout(function () {
-      [].forEach.call(document.querySelectorAll(".heading--toggle canvas"), function (c) { c.removeAttribute("data-force-cell"); });
+      [].forEach.call(document.querySelectorAll(".panel__head canvas"), function (c) { c.removeAttribute("data-force-cell"); });
       closeBay();
-      drawAllCells(); unifyToggleHeadings(); paintStamp(); onScroll(); placeMascot(); syncJump();
+      drawAllCells(); unifyToggleHeadings(); measureBay(); paintStamp(); onScroll(); placeMascot(); syncJump();
     }, 150);
   });
 })();

@@ -98,7 +98,7 @@
 }
 
 .canon-door {
-  position: fixed; left: 0; bottom: 0; z-index: 20; padding: 8px 10px;
+  position: fixed; left: var(--rail); bottom: 0; z-index: 20; padding: 8px 10px;
   border: var(--rule) solid var(--qevr-hair); border-left: 0; border-bottom: 0;
   background: var(--ground); color: var(--qevr-muted); text-decoration: none;
   font-size: 8px; letter-spacing: .18em;

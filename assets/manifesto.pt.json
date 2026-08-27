@@ -31,7 +31,10 @@
       "O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
       "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
       "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
-      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO."
+      {
+        "t": "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO.",
+        "em": "mark"
+      }
     ]
   },
   "people": {
@@ -59,7 +62,10 @@
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
-      "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
+      {
+        "t": "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU.",
+        "em": "mark"
+      }
     ]
   },
   "stances": {
@@ -161,7 +167,10 @@
     "sub": "PRA QUEM ELE É",
     "face": "Stars",
     "paragraphs": [
-      "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+      {
+        "t": "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+        "em": "mark"
+      },
       "UM APP PRA USAR COM OS AMIGOS. OU SOZINHO."
     ],
     "appLine": "O APP TÁ SENDO FEITO. QUANDO TIVER PRONTO, ELE TE AVISA."
@@ -169,18 +178,14 @@
   "stamp": "NOS VEMOS NA PISTA",
   "stampSmiley": ":)",
   "galeria": {
-    "moveLabel": "ELE SE MEXE SOZINHO?",
-    "moveLabelShort": "SE MEXE?",
-    "colorLabel": "COR",
-    "colorLabelShort": "COR",
-    "glitchLabel": "QUER VER UMA COISA?",
-    "wallpaperLabel": "WALLPAPER",
-    "metaTitle": "A REGRA DELE",
-    "metaLines": [
-      "GRADE 34 X 34",
-      "{N} PROTÓTIPOS",
-      "SÓ O ROSTO MUDA"
-    ],
+    "moveYes": "SE MEXE",
+    "moveNo": "PARADO",
+    "green": "VERDE",
+    "pink": "ROSA",
+    "glitch": "GLITCH",
+    "download": "BAIXAR",
+    "count": "{N} PROTÓTIPOS",
+    "creditBy": "DE",
     "protoWord": "PROTÓTIPO",
     "creditPattern": "QIQI {DE} {NOME}"
   },

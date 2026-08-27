@@ -31,7 +31,10 @@
       "QIQI WAS BORN ON THE FLOOR AND BELONGS TO THE FLOOR.",
       "FREE PARTIES IN ABANDONED WAREHOUSES.",
       "SOME NIGHTS YOU'RE ON THE FLOOR WITH FRIENDS.",
-      "SOME NIGHTS THE FLOOR IS JUST YOU. THAT'S PART OF IT. QIQI DIDN'T COME TO FIX THAT."
+      {
+        "t": "SOME NIGHTS THE FLOOR IS JUST YOU. THAT'S PART OF IT. QIQI DIDN'T COME TO FIX THAT.",
+        "em": "mark"
+      }
     ]
   },
   "people": {
@@ -59,7 +62,10 @@
     "close": [
       "PARTIES, LONELINESS, PEOPLE. ALL PART OF A MOMENT.",
       "AND THE MOMENT PASSED. THAT'S WHAT MADE IT A MOMENT.",
-      "QIQI WILL NEVER BRING IT BACK. AND IT WILL NEVER LET YOU PRETEND IT DIDN'T HAPPEN."
+      {
+        "t": "QIQI WILL NEVER BRING IT BACK. AND IT WILL NEVER LET YOU PRETEND IT DIDN'T HAPPEN.",
+        "em": "mark"
+      }
     ]
   },
   "stances": {
@@ -161,7 +167,10 @@
     "sub": "WHO IT'S FOR",
     "face": "Stars",
     "paragraphs": [
-      "QIQI IS A GIFT FROM ME TO EVERYONE I EVER MET ON THE FLOOR. AND TO EVERYONE I NEVER WILL.",
+      {
+        "t": "QIQI IS A GIFT FROM ME TO EVERYONE I EVER MET ON THE FLOOR. AND TO EVERYONE I NEVER WILL.",
+        "em": "mark"
+      },
       "AN APP TO USE WITH FRIENDS. OR ALONE."
     ],
     "appLine": "THE APP IS BEING BUILT. WHEN IT'S READY, IT TELLS YOU."
@@ -169,18 +178,14 @@
   "stamp": "SEE YOU ON THE FLOOR",
   "stampSmiley": ":)",
   "galeria": {
-    "moveLabel": "DOES IT MOVE ON ITS OWN?",
-    "moveLabelShort": "MOVES?",
-    "colorLabel": "COLOR",
-    "colorLabelShort": "COLOR",
-    "glitchLabel": "WANNA SEE SOMETHING?",
-    "wallpaperLabel": "WALLPAPER",
-    "metaTitle": "ITS ONE RULE",
-    "metaLines": [
-      "34 X 34 GRID",
-      "{N} PROTOTYPES",
-      "ONLY THE FACE CHANGES"
-    ],
+    "moveYes": "MOVES",
+    "moveNo": "STILL",
+    "green": "GREEN",
+    "pink": "PINK",
+    "glitch": "GLITCH",
+    "download": "DOWNLOAD",
+    "count": "{N} PROTOTYPES",
+    "creditBy": "BY",
     "protoWord": "PROTOTYPE",
     "creditPattern": "QIQI BY {NOME}"
   },

@@ -37,9 +37,8 @@
   </div>
 </header>
 
-<div class="lang" role="group" aria-label="PT / EN">
-  <button id="langPt" type="button" aria-pressed="true">PT</button>
-  <button id="langEn" type="button" aria-pressed="false">EN</button>
+<div class="switches">
+  <button id="langToggle" type="button"></button>
 </div>
 
 <main class="maker">
@@ -134,10 +133,8 @@
       location.href = nextURL.pathname + nextURL.search + nextURL.hash;
     });
   }
-  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
-  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
-  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
-  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
+  document.getElementById("langToggle").textContent = LANG === "pt" ? "EN" : "PT";
+  document.getElementById("langToggle").addEventListener("click", function () { chooseLang(LANG === "pt" ? "en" : "pt"); });
 
   /* ---------- constants, verified in docs/design-research/estudio-math-2026-08.md ---------- */
   var GRID = 34;
