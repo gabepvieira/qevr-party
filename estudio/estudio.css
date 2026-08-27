@@ -82,7 +82,9 @@
   .maker { height: auto; min-height: 100svh; overflow-y: auto; }
   .maker__frame {
     flex-direction: column; align-items: stretch; justify-content: flex-start;
-    gap: 8px; padding: 12px; height: auto; min-height: calc(100svh - var(--bar));
+    gap: 8px; padding: 56px 12px 12px; height: auto; min-height: calc(100svh - var(--bar));
+    /* top headroom clears the fixed EN switch so it never sits on his corner
+       (walk finding, 2026-08-27) */
   }
   /* the name lives at the top: the keyboard rises from the bottom and can
      never cover it */

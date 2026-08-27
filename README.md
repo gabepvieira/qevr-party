@@ -130,68 +130,95 @@ One rule, all pages, both breakpoints:
 - **Lime fill = where you are** (bar current page, active controls). **White fill =
   hover.** Never the same treatment for both.
 
-## The section grammar (the read)
+## The read: the panel (ruled 2026-08-27)
 
-The manifesto is an accordion of five blocks — A PISTA (open on arrival), AS PESSOAS,
-O QIQI, AS REGRAS, UM PRESENTE — one open at a time. Ruled behavior (2026-08-26):
+The manifesto is ONE ROOM — five cell-type headings and one bay. Desktop: the
+headings stack in a left rail, the bay is the right side. Phone: the headings
+are five compact rows, the bay below. All five load CLOSED; the empty bay
+holds only the blinking brand-bar cursor.
 
-- **Closed headings render DIM (muted); only the open block's heading is lime.**
-  Opening IGNITES the heading — cells flip muted→brand in random chunks. Touching a
-  closed heading makes it flinch one shear beat (hover on desktop; the opening tap
-  carries the beat on phones).
-- **Tiles stay short.** Opening a tile slides its body into a full-width BAY under
-  that tile's row, at full reading size, in white — the doctrine answers at full
-  volume. The bay types in 3-4 hard chunks (~300ms), the block cursor blinks twice
-  and dies, and then the final period quietly disappears (GP's ruling: only the
-  period). The bay reserves its final height first so nothing below jumps.
-- **AS PESSOAS is not a pricing grid:** full-width stanzas, always open, body at
-  copy size in white. They are the heart, not a disclosure.
-- **AS REGRAS opens as the POSTER**, not a dropdown: a centered A4-shaped popup,
-  angry QIQI beside the seven rules; FECHAR/Esc closes. (Same composition as the
-  printable poster.)
-- **The companion JUMPS:** on desktop, opening a block moves the corner QIQI into
-  that block's empty right field wearing the block's face; closing sends him back.
-  On phones the copy keeps its full width and he scans both edges for an empty
-  place, moving whenever he would cover a word, cell heading or language control.
-- The stamp is drawn in his own cells at the largest size on the page —
-  `NOS VEMOS NA PISTA :)` with the smiley in the current brand color — and
-  assembles once per visit on the first opening of UM PRESENTE.
-- After the stamp: TWO doors on one line (ESTÚDIO / GALERIA), full-viewport bands,
-  cell-type labels, hover floods white.
+- **Closed headings render DIM; the open one is brand.** Hover flinches one
+  shear beat. The opening CLICK runs the hard two-frame shear — the house
+  glitch, never a color-flip effect.
+- **The bay never resizes.** Its height is reserved for the tallest section
+  (including the tallest open answer) on desktop; on phones it sizes to
+  content and the read fills exactly one page — stamp and doors at its floor.
+  Content arrives in three hard chunks; the brand-bar cursor keeps blinking
+  forever.
+- **AS PESSOAS speaks as stanzas** — name, a middle dot, the sentence. No
+  numbers, no borders, no table.
+- **O QIQI is a spoken list** — seven muted head-lines, no grid, no numbers;
+  the open line turns brand and its answer speaks right below it inside the
+  reserved room.
+- **AS REGRAS opens as the POSTER**, not a bay: the A4-shaped popup, angry
+  QIQI straddling the sheet's right edge (a third of him outside the frame),
+  FECHAR/Esc closes. The downloadable print carries the same composition.
+- **The companion JUMPS:** on desktop, opening a section moves the corner
+  QIQI into the bay's right field wearing the section's face. On phones he
+  re-scans for a clean spot and lands with the jump beat.
+- **The stamp is a standing band below the panel** — `NOS VEMOS NA PISTA :)`
+  in his cells, the smiley in the brand color. It assembles once per visit
+  the FIRST time it becomes visible (click or scroll) and ends with one hard
+  shear beat.
+- After the stamp: TWO doors (ESTÚDIO / GALERIA), full-viewport bands,
+  cell-type labels. Default is the WHITE flood with ink words; hover floods
+  BRAND with the shear beat on the word.
+- **Per-line emphasis comes from the deck** (`{ "t": ..., "em": "dim"|"mark" }`)
+  — never from position heuristics. GP's pen decides which lines carry color.
 
 ## Motion law
 
-Stepped, hard, no easing — now with zero exceptions: anchor moves are hard cuts
-(`scroll-behavior: auto`), and the thermometer climbs in 14px cell steps; at the
-top it catches fire in three hard frames. The one glow stays ON FIRE.
+Stepped, hard, no easing — zero exceptions: anchor moves are hard cuts
+(`scroll-behavior: auto`). The thermometer is a fixed 14px rail on the LEFT
+edge, constant width, climbing in TWELVE countable cells (viewport/12); at
+the top it catches fire in three hard frames. The one glow stays ON FIRE.
+The document scrollbar is the system's — never restyled.
 
 ## The entrance (every landing)
 
-A stepped loading bar is the only first frame. Then QIQI builds himself in from
-cells, the bar becomes `VAI, CLICA EM MIM`, then the
-ritual: DEFAULT → ANIME → FELIZ DA VIDA — then the brain takes over on **São Paulo
-time** (his resting face follows SP's clock for the whole world; MORRI at 8h on a
-Sunday). Reduced motion goes straight to the still, but he KEEPS BLINKING — a blink
-is a state swap, not motion.
+A stepped loading bar — in the ONE signal slot above his head, never centered
+full-screen — is the first frame. QIQI builds himself in from cells (the page
+itself never glitches on load), then `VAI, CLICA EM MIM` types on in three
+hard chunks with a brand-bar cursor that KEEPS BLINKING, then the ritual:
+DEFAULT → ANIME → FELIZ DA VIDA — then the brain takes over on **São Paulo
+time** (MORRI at 8h on a Sunday). The hold-to-sala charge fills the SAME
+slot (pink), replacing the hint, and only after 350ms of hold — a quick poke
+never flashes it. Reduced motion goes straight to the still, but he KEEPS
+BLINKING — a blink is a state swap, not motion.
 
 ## The poke ladder
 
-Poke him once: normal reaction. He only dies after nine fast pokes. Before that he
-escalates through glitches, row waves and reactions. On nine: Dead face, unboxed
-pink ERRO text and a whole-page glitch; he breaks into the floor row by row, the
-phrase becomes the same loading bar, and the network re-rezzes him bottom-up before
-the phrase returns. No gray anywhere: off states are structural, never colored.
+Poke him once: normal reaction. He only dies after nine fast pokes. Before
+that he escalates through glitches, row waves and reactions. On nine: Dead
+face, unboxed pink ERRO tag, three violent glitch rounds ON HIS CANVAS — the
+page itself NEVER shows glitch lines — then he breaks into the floor row by
+row, the signal slot becomes the loading bar, and the network re-rezzes him
+bottom-up. No gray anywhere: off states are structural, never colored.
 
 ## The gallery: one conveyor
 
-As before (one crawling conveyor, same-size fully visible chips, phone strips, never scrolls) with
-the ruled changes: PT labels are GP's spoken set (TÔ BEM, APAGUEI :x, AMEIIII,
-KKKKKK, DE BOA, PLENO, Q BOM, APRONTANDO HIHI, BRILHANDO, EITA, NA BAD, TÉDIO,
-TÔ GAG + the keepers), the stage name is drawn in cell type and glitches WITH him,
-labels wrap instead of truncating, `?face=NAME` deep-links and pins a prototype until
-the visitor picks another, the BAIXAR control exports the current face+color as a
-lock-screen PNG, and when the canon
-grows the newest face arrives once per visitor as a small ceremony.
+As before (one crawling conveyor whose chips travel PAST the frame edges —
+one continuous ring, never corner pops; same-size fully visible chips, phone
+strips, never scrolls) with the ruled changes: PT labels are GP's spoken set
+(TÔ BEM, APAGUEI :x, AMEIIII, KKKKKK, DE BOA, PLENO, Q BOM, APRONTANDO HIHI,
+BRILHANDO, EITA, NA BAD, TÉDIO, TÔ GAG + the keepers), the stage name is
+drawn in cell type and glitches WITH him, labels wrap instead of truncating,
+`?face=NAME` deep-links and pins a prototype until the visitor picks another,
+the controls read from the deck (SE MEXE / PARADO / VERDE / ROSA / GLITCH /
+BAIXAR — GP-blessed, never hardcoded in JS), one clean `{N} PROTÓTIPOS` line
+counts from the data with no divider above it, BAIXAR exports the current
+face+color as a lock-screen PNG, and when the canon grows the newest face
+arrives once per visitor as a small ceremony.
+
+## The switches
+
+Two blocks at the right edge under the bar, stacked (the classic boxes). Each
+names what it TURNS INTO: site in PT shows `EN` (click: English; the block
+now says `PT`); site green shows a PINK block (click: he molts first, the
+page follows through the QR cascade, and the block turns green). The language
+switch rides every page; the color block lives on the manifesto. In the bar,
+QIQI sits at the extreme left and the three doors end at the extreme right,
+tabs filling the bar's full height.
 
 ## The maker: O ESTÚDIO
 
