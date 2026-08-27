@@ -1,20 +1,30 @@
 <!DOCTYPE html>
+<!--
+  ██████  QIQI / qiqi na pista / são paulo
+  ██  ██  um qr code que ganhou vida.
+  ██████  34 pixels de sinal puro.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>QEVR</title>
-<meta name="description" content="O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
+<title>QIQI</title>
+<meta name="description" content="O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
 <meta name="theme-color" content="#09090B">
-<meta property="og:title" content="QEVR">
-<meta property="og:description" content="O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
+<meta property="og:title" content="QIQI">
+<meta property="og:description" content="O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://qevr.party/assets/favicon-512.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta property="og:url" content="https://qevr.party/">
+<meta property="og:image" content="https://qevr.party/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/spacemono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/spacemono-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/spacemono-400-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/spacemono-700-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" id="favicon32">
 <link rel="icon" href="assets/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
@@ -22,14 +32,17 @@
 </head>
 <body>
 
+<h1 class="sr-only">QIQI</h1>
+
 <div class="thermo" id="thermo" aria-hidden="true"><div class="thermo__fill" id="thermoFill"></div></div>
 
 <header class="bar">
   <div class="bar__in">
-    <a class="bar__mark" href="#topo" aria-label="QEVR"><canvas data-cells="QEVR" data-fit="108"></canvas></a>
+    <a class="bar__mark" href="#topo" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
     <nav class="bar__nav">
       <a href="#manifesto" aria-current="page" id="barManifesto">O MANIFESTO</a>
-      <a href="studio/" id="barStudio">O ESTÚDIO</a>
+      <a href="estudio/" id="barEstudio">O ESTÚDIO</a>
+      <a href="galeria/" id="barGaleria">A GALERIA</a>
     </nav>
   </div>
 </header>
@@ -39,12 +52,17 @@
   <button id="langEn" type="button" aria-pressed="false">EN</button>
 </div>
 
-<main>
+<main id="pageMain">
   <section class="arrival" id="topo">
     <div class="arrival__mascot" id="arrivalSlot">
       <div class="arrival__hint" id="mascotHint"></div>
-      <button class="mascot" id="mascotBtn" aria-label="QEVR"><canvas id="mascotCanvas"></canvas></button>
+      <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
+      <div class="mascot__tag" id="mascotTag" aria-hidden="true"></div>
+      <div class="mascot__load" id="mascotLoad" aria-hidden="true"><i></i></div>
+      <div class="mascot__charge" id="mascotCharge" aria-hidden="true"><i></i></div>
+      <div class="arrival__loading" id="bootBar" aria-hidden="true"><i></i></div>
     </div>
+    <div class="arrival__from" id="arrivalFrom"></div>
     <div class="arrival__color" id="arrivalColor">
       <div class="arrival__question" id="arrivalColorQuestion"></div>
       <div class="arrival__color-controls" role="group" aria-labelledby="arrivalColorQuestion">
@@ -52,12 +70,16 @@
         <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
       </div>
     </div>
+    <div class="arrival__floor">
+      <span class="arrival__city" id="arrivalCity"></span>
+      <span class="arrival__scroll" id="arrivalScroll"><canvas id="scrollArrow" width="15" height="15" aria-hidden="true"></canvas><span id="scrollWord"></span></span>
+    </div>
   </section>
 
   <section class="blocks">
     <div class="block" id="manifesto" data-open="true">
       <button class="heading heading--toggle" aria-expanded="true" aria-controls="mundoBody">
-        <span class="heading__text">
+        <span class="heading__text" role="heading" aria-level="2">
           <canvas data-cells="A PISTA" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="world"></span>
         </span>
@@ -66,11 +88,12 @@
       <div class="block__body" id="mundoBody">
         <div class="copy" id="worldCopy"></div>
       </div>
+      <div class="block__field" aria-hidden="true"></div>
     </div>
 
     <div class="block" id="pessoas" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="peopleBody">
-        <span class="heading__text">
+        <span class="heading__text" role="heading" aria-level="2">
           <canvas data-cells="AS PESSOAS" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="people"></span>
         </span>
@@ -81,33 +104,36 @@
         <div class="people__grid" id="peopleList"></div>
         <div class="world__close" id="worldClose"></div>
       </div>
+      <div class="block__field" aria-hidden="true"></div>
     </div>
 
     <div class="block" id="stances" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="stancesGrid">
-        <span class="heading__text">
-          <canvas data-cells="O QEVR" data-fit="470"></canvas>
+        <span class="heading__text" role="heading" aria-level="2">
+          <canvas data-cells="O QIQI" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="stances"></span>
         </span>
         <span class="heading__mark"></span>
       </button>
       <div class="block__body"><div class="stances__grid" id="stancesGrid"></div></div>
+      <div class="block__field" aria-hidden="true"></div>
     </div>
 
     <div class="block" id="regras" data-open="false">
-      <button class="heading heading--toggle" aria-expanded="false" aria-controls="neversList">
-        <span class="heading__text">
+      <button class="heading heading--toggle" aria-expanded="false" aria-controls="poster">
+        <span class="heading__text" role="heading" aria-level="2">
           <canvas data-cells="AS REGRAS" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="nevers"></span>
         </span>
         <span class="heading__mark"></span>
       </button>
-      <div class="block__body"><div class="stances__grid" id="neversList"></div></div>
+      <div class="block__body"></div>
+      <div class="block__field" aria-hidden="true"></div>
     </div>
 
     <div class="block" id="presente" data-open="false">
       <button class="heading heading--toggle" aria-expanded="false" aria-controls="giftBody">
-        <span class="heading__text">
+        <span class="heading__text" role="heading" aria-level="2">
           <canvas data-cells="UM PRESENTE" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="gift"></span>
         </span>
@@ -115,15 +141,126 @@
       </button>
       <div class="block__body">
         <div class="copy gift" id="giftBody"></div>
-        <div class="stamp" id="stamp"></div>
+        <div class="stamp" id="stamp"><div class="stamp__band"><canvas id="stampCanvas"></canvas></div></div>
       </div>
+      <div class="block__field" aria-hidden="true"></div>
     </div>
 
-    <a class="door door--exit" id="studioDoor" href="studio/"></a>
+    <div class="doors" id="doors">
+      <a class="doorband" id="doorEstudio" href="estudio/"><canvas data-cells="O ESTÚDIO" data-fit="560" data-doorword></canvas><span></span></a>
+      <a class="doorband" id="doorGaleria" href="galeria/"><canvas data-cells="A GALERIA" data-fit="560" data-doorword></canvas><span></span></a>
+    </div>
   </section>
 </main>
 
+<div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="AS REGRAS">
+  <div class="poster__in">
+    <div class="poster__top">
+      <span class="poster__title"><canvas id="posterTitle" data-cells="AS REGRAS" data-fit="420"></canvas></span>
+      <span><button class="poster__close" id="posterDownload" type="button" style="margin-right:-1px">BAIXAR</button><button class="poster__close" id="posterClose" type="button">FECHAR</button></span>
+    </div>
+    <div class="poster__body">
+      <span class="poster__art"><canvas id="posterArt"></canvas></span>
+      <div class="poster__rules" id="posterRules"></div>
+    </div>
+    <div class="poster__foot"><span id="posterBrand"></span><span id="posterCity"></span></div>
+  </div>
+</div>
+
 <div class="companion" id="companionSlot" aria-hidden="true"></div>
+
+<script type="application/json" id="deck-pt">
+{
+  "lang": "pt-BR",
+  "brand": "QIQI",
+  "city": "SÃO PAULO",
+  "doors": {
+    "manifesto": { "label": "O MANIFESTO", "sub": "O QUE É O QIQI" },
+    "estudio": { "label": "O ESTÚDIO", "sub": "CRIA O SEU QIQI" },
+    "galeria": { "label": "A GALERIA", "sub": "OS 23 PROTÓTIPOS EXISTENTES" }
+  },
+  "ui": { "green": "VERDE", "pink": "ROSA", "yes": "SIM", "no": "NÃO" },
+  "world": {
+    "title": "A PISTA",
+    "sub": "DE ONDE O QIQI VEIO",
+    "face": "Content",
+    "paragraphs": [
+      "O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
+      "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
+      "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
+      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO."
+    ]
+  },
+  "people": {
+    "title": "AS PESSOAS",
+    "sub": "E O QUE ELAS SE TORNARAM",
+    "face": "Adoring",
+    "items": [
+      [ "AMIGOS", "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA." ],
+      [ "DESCONHECIDOS", "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU." ],
+      [ "CRUSHES", "VC SABE QUEM SÃO." ],
+      [ "O AMOR DA SUA VIDA", "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA." ]
+    ],
+    "close": [
+      "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
+      "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
+      "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
+    ]
+  },
+  "stances": {
+    "title": "O QIQI",
+    "sub": "COMO ELE FUNCIONA",
+    "items": [
+      { "head": "ELE AVISA. NUNCA COMEMORA.", "face": "Unamused",
+        "body": [ "COMEÇOU O ROLÊ, ELE AVISA. COMEÇOU O SOM, ELE AVISA. E SÓ ISSO." ] },
+      { "head": "LINE UP, LUGAR, HORA. E É ISSO.", "face": "Default",
+        "body": [ "NUNCA \"NÃO PERCA\", NUNCA \"ÚLTIMOS INGRESSOS\".", "LOTAÇÃO É SÓ UM NÚMERO, FALADO UMA VEZ." ] },
+      { "head": "ELE NÃO FICA TE CHAMANDO.", "face": "Bored",
+        "body": [ "ELE SÓ FALA PORQUE ACONTECEU ALGUMA COISA. ABRIRAM A PORTA. SOLTARAM O ENDEREÇO. A PISTA PEGOU FOGO.", "ELE NUNCA VAI TE CHAMAR DE VOLTA PORQUE SENTIU SUA FALTA." ] },
+      { "head": "VC VÊ QUEM VAI, NUNCA QUANTOS.", "face": "Content",
+        "body": [ "NÚMERO AQUI É COISA DA NOITE. HORA, PREÇO, TEMPERATURA, QUANTOS QUARTEIRÕES ATÉ LÁ.", "GENTE NÃO ENTRA NA CONTA." ] },
+      { "head": "O CELULAR VOLTA PRO BOLSO.", "face": "Eyes Closed",
+        "body": [ "SE VC PASSOU A NOITE OLHANDO PRO APP, O APP FALHOU." ] },
+      { "head": "MEMÓRIAS SÃO TIPO TATUAGENS, NUNCA CONTEÚDO.", "face": "Sad",
+        "body": [ "FICAM NO APP PRA SEMPRE, TODO MUNDO VÊ." ] },
+      { "head": "ME AVISA QUANDO CHEGAR.", "face": "Surprised",
+        "body": [ "A ÚNICA PARTE DO APP SEM ESTILO NENHUM. VOLTAR PRA CASA, PEDIR AJUDA, TUDO POR EXTENSO.", "PLACA DE SAÍDA SE LÊ DE LONGE." ] }
+    ]
+  },
+  "nevers": {
+    "title": "AS REGRAS",
+    "sub": "O QUE ELE NUNCA VAI FAZER",
+    "face": "Angry",
+    "lines": [
+      [ "AQUI NINGUÉM VIRA NÚMERO.", "SEM SEGUIDOR, SEM CURTIDA, SEM NOTA PRA NINGUÉM." ],
+      [ "ELE NÃO TE APRESSA.", "SEM CONTAGEM REGRESSIVA, SEM LOTE ESCONDIDO." ],
+      [ "ELE NÃO ESCOLHE POR VC.", "SEM FEED DE RECOMENDAÇÃO, SEM \"EM ALTA\". QUEM MANDA É A CIDADE E O RELÓGIO." ],
+      [ "TUDO AQUI TEM FIM. INCLUSIVE O FEED.", "SEM AUTOPLAY. SEM TELA FEITA PRA VC FICAR OLHANDO." ],
+      [ "ELE NÃO TE VENDE.", "SEM ANÚNCIO, SEM REVENDA DE DADOS, SEM CÓDIGO DE INDICAÇÃO." ],
+      [ "NINGUÉM TE ENSINA A DANÇAR.", "SEM TOUR, SEM QUIZ. VC APRENDE USANDO." ],
+      [ "ELE NÃO SE FAZ DE FOFO.", "SEM CANTO ARREDONDADO. SEM EMOJI. SEM PONTO DE EXCLAMAÇÃO." ]
+    ]
+  },
+  "gift": {
+    "title": "UM PRESENTE",
+    "sub": "PRA QUEM ELE É",
+    "face": "Stars",
+    "paragraphs": [
+      "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+      "UM APP PRA USAR COM OS AMIGOS. OU SOZINHO."
+    ],
+    "appLine": "O APP TÁ SENDO FEITO. QUANDO TIVER PRONTO, ELE TE AVISA."
+  },
+  "stamp": "NOS VEMOS NA PISTA",
+  "stampSmiley": ":)",
+  "arrival": {
+    "mascotHint": "VAI, CLICA EM MIM",
+    "colorQuestion": "EU TBM MUDO DE COR :3",
+    "scrollLabel": "SCROLL",
+    "fromPattern": "{NOME} TE DEU ISSO."
+  }
+}
+</script>
 
 <script src="assets/pixelfont.js"></script>
 <script src="assets/qevr.js"></script>
@@ -133,10 +270,7 @@
   "use strict";
 
   var MODE_KEY = "qevr.mode";
-  var TIME_AWARE = false;
-  var h = new Date().getHours();
-  var auto = TIME_AWARE ? ((h >= 23 || h < 7) ? "party" : (h === 7 ? "dawn" : "day")) : "day";
-  var forced = (location.search.match(/[?&]mode=(day|party|dawn)(?:&|$)/) || [])[1];
+  var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
   function readModePreference() {
     try {
       var mode = localStorage.getItem(MODE_KEY);
@@ -147,8 +281,10 @@
     if (mode !== "day" && mode !== "party") return;
     try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
   }
-  var stored = readModePreference();
-  document.documentElement.setAttribute("data-mode", forced || stored || auto);
+  document.documentElement.setAttribute("data-mode", forced || readModePreference() || "day");
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover)").matches;
 
   /* the language works like the colour: a preference that sticks, a ?lang=
      preview that doesn't, and switching rooms runs the same QR cascade */
@@ -169,11 +305,8 @@
       else location.reload();
     });
   }
-  function syncLangBoxes() {
-    document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
-    document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
-  }
-  syncLangBoxes();
+  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
+  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
   document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
   document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
 
@@ -182,17 +315,22 @@
   }
   function brandColor() { return cssVar("--brand", "#CCFF00"); }
   function mutedColor() { return cssVar("--qevr-muted", "#9A9AA5"); }
+  function inkColor() { return cssVar("--qevr-ink", "#09090B"); }
 
-  /* ---------- headings drawn from the mascot's own cells ---------- */
-  function drawCells(canvas) {
+  /* ---------- headings drawn from the mascot's own cells.
+     the type engine finally performs: closed headings render DIM, the open
+     one is the only brand heading on screen, opening IGNITES it in chunks,
+     and a touch makes it flinch one shear beat. ---------- */
+  function drawCells(canvas, opts) {
+    opts = opts || {};
     var text = canvas.getAttribute("data-cells");
     var m = window.QevrType.textMatrix(text);
     var fitMax = parseFloat(canvas.getAttribute("data-fit"));
     var host = canvas.parentElement;
     var room = host.clientWidth || window.innerWidth;
     var avail = Math.min(room, fitMax || 400);
-    var forced = parseFloat(canvas.getAttribute("data-force-cell"));
-    var cell = forced ? forced : Math.max(2, Math.floor(avail / m.w));
+    var forcedCell = parseFloat(canvas.getAttribute("data-force-cell"));
+    var cell = forcedCell ? forcedCell : Math.max(2, Math.floor(avail / m.w));
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
     canvas.width = m.w * cell * dpr;
     canvas.height = m.h * cell * dpr;
@@ -201,16 +339,76 @@
     var ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, m.w * cell, m.h * cell);
-    ctx.fillStyle = canvas.getAttribute("data-dim") ? mutedColor() : brandColor();
+    var dim = opts.dim != null ? opts.dim : canvas.hasAttribute("data-dim");
+    ctx.fillStyle = opts.color || (dim ? mutedColor() : brandColor());
     for (var y = 0; y < m.h; y++) {
+      var shear = opts.shear && opts.shear[y] ? opts.shear[y] : 0;
       for (var x = 0; x < m.w; x++) {
-        if (m.cells[y * m.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+        var i = y * m.w + x;
+        if (!m.cells[i]) continue;
+        if (opts.mask) {
+          ctx.fillStyle = opts.mask[i] ? brandColor() : mutedColor();
+        }
+        ctx.fillRect((x + shear) * cell, y * cell, cell, cell);
       }
     }
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", text);
+    canvas._matrix = m;
+    canvas._cell = cell;
+    return m;
   }
-  function drawAllCells() { [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawCells); }
+  function drawAllCells() {
+    [].forEach.call(document.querySelectorAll("canvas[data-cells]"), function (c) {
+      if (c.hasAttribute("data-doorword")) { drawDoorWord(c, false); return; }
+      drawCells(c);
+    });
+    syncHeadingDim();
+  }
+
+  /* closed headings are the quiet ones; the open block carries the heat */
+  function syncHeadingDim() {
+    [].forEach.call(document.querySelectorAll(".block"), function (b) {
+      var c = b.querySelector(".heading--toggle canvas");
+      if (!c) return;
+      var open = b.getAttribute("data-open") === "true";
+      if (open) c.removeAttribute("data-dim"); else c.setAttribute("data-dim", "1");
+      drawCells(c);
+    });
+  }
+
+  /* the open heading IGNITES: cells flip muted to brand in random chunks */
+  function ignite(canvas) {
+    if (reduce) { drawCells(canvas); return; }
+    var m = canvas._matrix || window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var idx = [];
+    for (var i = 0; i < m.cells.length; i++) if (m.cells[i]) idx.push(i);
+    for (var j = idx.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
+    }
+    var mask = new Uint8Array(m.cells.length);
+    var frames = 5, per = Math.ceil(idx.length / frames), p = 0;
+    (function step() {
+      for (var n = 0; n < per && p < idx.length; n++, p++) mask[idx[p]] = 1;
+      drawCells(canvas, { mask: mask });
+      if (p < idx.length) setTimeout(step, 46);
+      else drawCells(canvas);
+    })();
+  }
+
+  /* one shear beat: a row band slips sideways for two frames and snaps back */
+  function flinch(canvas) {
+    if (reduce || canvas._flinching) return;
+    canvas._flinching = true;
+    var band = 2 + Math.floor(Math.random() * 5);
+    var shear = {}; shear[band] = 1; shear[band + 1] = 1;
+    drawCells(canvas, { shear: shear, dim: canvas.hasAttribute("data-dim") });
+    setTimeout(function () {
+      drawCells(canvas);
+      canvas._flinching = false;
+    }, 90);
+  }
 
   var COPY = null, mascot = null;
 
@@ -222,23 +420,62 @@
 
   function repaintBrand() {
     drawAllCells();
+    paintStamp();
     if (mascot) mascot.paint();
   }
 
-  /* picking a colour is a room change: it runs the same QR cascade as the doors */
-  function chooseColor(mode) {
+  /* ---------- L02: he molts FIRST, the page follows with one quick hit ----------
+     picking a colour repaints HIS body cells in stepped chunks on his own canvas,
+     and only when he finishes does the page take one fast jolt and follow. */
+  var MODE_HEX = { day: "#CCFF00", party: "#FF007F" };
+  function moltTo(mode) {
     if (document.documentElement.getAttribute("data-mode") === mode) return;
-    window.QevrCascade.through(function () {
+    if (!mascot || reduce) {
       document.documentElement.setAttribute("data-mode", mode);
       writeModePreference(mode);
       syncArrivalColor();
       repaintBrand();
-    });
+      return;
+    }
+    mascot._busy = true;
+    var target = MODE_HEX[mode];
+    var ctx = mascot.canvas.getContext("2d");
+    var C = window.Qevr.CROP, n = mascot.n, c = mascot.cell;
+    var bodyIdx = [];
+    for (var i = 0; i < mascot.render.length; i++) if (mascot.render[i] === 1) bodyIdx.push(i);
+    for (var j = bodyIdx.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = bodyIdx[j]; bodyIdx[j] = bodyIdx[k]; bodyIdx[k] = t;
+    }
+    mascot.glitch();
+    var frames = 5, per = Math.ceil(bodyIdx.length / frames), p = 0;
+    function paintIdx(idx, color) {
+      var y = Math.floor(idx / n), x = idx % n;
+      var gy = y - C.y0, gx = x - C.x0;
+      if (gy < 0 || gy >= C.h || gx < 0 || gx >= C.w) return;
+      ctx.fillStyle = color;
+      ctx.fillRect(gx * c, gy * c, c, c);
+    }
+    setTimeout(function step() {
+      for (var m = 0; m < per && p < bodyIdx.length; m++, p++) paintIdx(bodyIdx[p], target);
+      if (p < bodyIdx.length) { setTimeout(step, 55); return; }
+      /* he finished. now the page takes one quick stepped hit and follows. */
+      var main = document.getElementById("pageMain");
+      main.classList.add("jolt");
+      setTimeout(function () {
+        document.documentElement.setAttribute("data-mode", mode);
+        writeModePreference(mode);
+        syncArrivalColor();
+        repaintBrand();
+        main.classList.remove("jolt");
+        mascot._busy = false;
+      }, 90);
+    }, 180);
   }
 
   syncArrivalColor();
-  document.getElementById("arrivalGreen").addEventListener("click", function () { chooseColor("day"); });
-  document.getElementById("arrivalPink").addEventListener("click", function () { chooseColor("party"); });
+  document.getElementById("arrivalGreen").addEventListener("click", function () { moltTo("day"); });
+  document.getElementById("arrivalPink").addEventListener("click", function () { moltTo("party"); });
 
   function para(text, cls) {
     var p = document.createElement("p");
@@ -247,7 +484,6 @@
     return p;
   }
 
-  /* titles come from the copy deck, and every label says what sits behind it */
   function syncTitles() {
     var map = [
       ["#manifesto", COPY.world],
@@ -264,7 +500,8 @@
     });
   }
 
-  /* one block open at a time. opening is not a page change, so no glitch. */
+  /* one block open at a time. the closed headings dim, the opened one ignites,
+     and on desktop the companion jumps into the open block's right field. */
   function setOpen(box) {
     [].forEach.call(document.querySelectorAll(".block"), function (b) {
       var open = box === b;
@@ -272,11 +509,17 @@
       var btn = b.querySelector(".heading--toggle");
       if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
     });
+    closeBay();
+    syncHeadingDim();
+    if (box) {
+      var c = box.querySelector(".heading--toggle canvas");
+      if (c) ignite(c);
+    }
+    syncJump();
   }
 
-  /* every move runs the QR cascade, the same entrance the app uses for his chat */
   function wireCascade() {
-    window.QevrCascade.wireLinks(".bar__nav a, .door[href='studio/']");
+    window.QevrCascade.wireLinks(".bar__nav a, .doorband");
     [].forEach.call(document.querySelectorAll("a[href^='#']"), function (a) {
       a.addEventListener("click", function (e) {
         var id = a.getAttribute("href").slice(1);
@@ -284,7 +527,6 @@
         if (!target) return;
         e.preventDefault();
         window.QevrCascade.through(function () {
-          /* landing on a block also opens it */
           if (target.classList.contains("block")) setOpen(target);
           target.scrollIntoView({ behavior: "auto", block: "start" });
         });
@@ -296,23 +538,34 @@
     [].forEach.call(document.querySelectorAll(".block"), function (box) {
       var btn = box.querySelector(".heading--toggle");
       if (!btn) return;
+      var canvas = btn.querySelector("canvas");
+      if (canHover && canvas) {
+        btn.addEventListener("pointerenter", function () {
+          if (box.getAttribute("data-open") !== "true") flinch(canvas);
+        });
+      }
       btn.addEventListener("click", function () {
+        /* AS REGRAS opens as the poster, not a dropdown */
+        if (box.id === "regras") { openPoster(); return; }
         var open = box.getAttribute("data-open") === "true";
         if (open) {
           box.setAttribute("data-open", "false");
           btn.setAttribute("aria-expanded", "false");
+          closeBay();
+          syncHeadingDim();
+          syncJump();
         } else {
+          if (!canHover && canvas) flinch(canvas);
           setOpen(box);
-          /* keep the heading you tapped where your finger is */
           var r = box.getBoundingClientRect();
           var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
           if (r.top < bar) box.scrollIntoView({ behavior: "auto", block: "start" });
+          if (box.id === "presente") stampFirstOpen();
         }
       });
     });
   }
 
-  /* all four headings render at one shared cell size, so they match */
   function unifyToggleHeadings() {
     var cs = document.querySelectorAll(".heading--toggle canvas");
     if (!cs.length) return;
@@ -324,19 +577,30 @@
       minCell = Math.min(minCell, Math.max(2, Math.floor(Math.min(room, fit) / m.w)));
     });
     [].forEach.call(cs, function (c) { c.setAttribute("data-force-cell", minCell); drawCells(c); });
+    syncHeadingDim();
   }
 
-  /* the bar and the one exit door read their words from the deck, like everything */
+  /* ---------- the doors out: two bands at heading scale ---------- */
+  function drawDoorWord(canvas, flooded) {
+    drawCells(canvas, { color: flooded ? inkColor() : brandColor() });
+  }
   function buildDoors() {
     document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
-    document.getElementById("barStudio").textContent = COPY.doors.studio.label;
-    var exit = document.getElementById("studioDoor");
-    exit.innerHTML = "";
-    var s = document.createElement("strong"); s.textContent = COPY.doors.studio.label; exit.appendChild(s);
-    /* the door can stand on its label alone: no sub, no empty span */
-    if (COPY.doors.studio.sub) {
-      var t = document.createElement("span"); t.textContent = COPY.doors.studio.sub; exit.appendChild(t);
-    }
+    document.getElementById("barEstudio").textContent = COPY.doors.estudio.label;
+    document.getElementById("barGaleria").textContent = COPY.doors.galeria.label;
+    var est = document.getElementById("doorEstudio");
+    var gal = document.getElementById("doorGaleria");
+    est.querySelector("canvas").setAttribute("data-cells", COPY.doors.estudio.label);
+    gal.querySelector("canvas").setAttribute("data-cells", COPY.doors.galeria.label);
+    est.querySelector("span").textContent = COPY.doors.estudio.sub;
+    gal.querySelector("span").textContent = COPY.doors.galeria.sub;
+    [est, gal].forEach(function (a) {
+      var c = a.querySelector("canvas");
+      a.addEventListener("pointerenter", function () { drawDoorWord(c, true); });
+      a.addEventListener("pointerleave", function () { drawDoorWord(c, false); });
+      a.addEventListener("focus", function () { drawDoorWord(c, true); });
+      a.addEventListener("blur", function () { drawDoorWord(c, false); });
+    });
   }
 
   function buildWorld() {
@@ -346,8 +610,6 @@
   }
 
   function buildPeople() {
-    /* the people are a deck like any other list on this page: numbered tiles,
-       same borders, same paddings. these stay open, they are the heart. */
     var intro = document.getElementById("peopleIntro");
     if (intro && COPY.people.intro) intro.appendChild(para(COPY.people.intro));
     var list = document.getElementById("peopleList");
@@ -362,9 +624,95 @@
       d.appendChild(para(pair[1]));
       row.appendChild(t); row.appendChild(d); list.appendChild(row);
     });
-
     var close = document.getElementById("worldClose");
     COPY.people.close.forEach(function (t) { close.appendChild(para(t)); });
+  }
+
+  /* ---------- L08 + L09 + L13: tiles stay short; the opened body slides into a
+     full-width bay under its row, at full volume, typing in hard chunks. ---------- */
+  var bay = null, bayTimer = 0, bayGen = 0;
+  function closeBay() {
+    bayGen++;
+    if (bayTimer) { clearTimeout(bayTimer); bayTimer = 0; }
+    if (bay && bay.parentNode) bay.parentNode.removeChild(bay);
+    bay = null;
+    [].forEach.call(document.querySelectorAll(".stance[aria-expanded='true']"), function (t) {
+      t.setAttribute("aria-expanded", "false");
+    });
+  }
+  function rowEndOf(grid, tile) {
+    var tiles = [].filter.call(grid.children, function (c) { return c.classList.contains("stance"); });
+    var top = tile.offsetTop, last = tile;
+    tiles.forEach(function (t) { if (t.offsetTop === top) last = t; });
+    return last;
+  }
+  function openBay(grid, tile, idxText, paragraphs) {
+    closeBay();
+    var g = ++bayGen;
+    tile.setAttribute("aria-expanded", "true");
+    bay = document.createElement("div");
+    bay.className = "stances__bay";
+    var idx = document.createElement("span");
+    idx.className = "stances__bay-idx"; idx.textContent = idxText;
+    var copyHost = document.createElement("div");
+    copyHost.className = "stances__bay-copy";
+    bay.appendChild(idx); bay.appendChild(copyHost);
+    var anchor = rowEndOf(grid, tile);
+    if (anchor.nextSibling) grid.insertBefore(bay, anchor.nextSibling);
+    else grid.appendChild(bay);
+
+    /* reserve the final height first so nothing below jumps while it types */
+    var ps = paragraphs.map(function (t) { return para(t); });
+    ps.forEach(function (p) { copyHost.appendChild(p); });
+    var fullH = copyHost.offsetHeight;
+    copyHost.style.minHeight = fullH + "px";
+
+    if (reduce) { dropFinalDot(copyHost); return; }
+
+    /* type in 3-4 hard chunks, block cursor blinks twice and dies */
+    var full = paragraphs.map(function (t) { return t; });
+    ps.forEach(function (p) { p.textContent = ""; });
+    var cursor = document.createElement("span");
+    cursor.className = "cursor";
+    var chunksPer = 4;
+    var plan = [];
+    full.forEach(function (t, pi) {
+      var words = t.split(" ");
+      var size = Math.max(1, Math.ceil(words.length / chunksPer));
+      for (var i = 0; i < words.length; i += size) {
+        plan.push({ p: pi, text: words.slice(0, i + size).join(" ") });
+      }
+    });
+    var step = 0;
+    (function type() {
+      if (g !== bayGen) return;
+      if (step < plan.length) {
+        var item = plan[step++];
+        ps[item.p].textContent = item.text;
+        ps[item.p].appendChild(cursor);
+        bayTimer = setTimeout(type, 80);
+        return;
+      }
+      var blinks = 0;
+      (function blink() {
+        if (g !== bayGen) return;
+        cursor.style.visibility = cursor.style.visibility === "hidden" ? "" : "hidden";
+        blinks++;
+        if (blinks < 4) { bayTimer = setTimeout(blink, 90); return; }
+        if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
+        dropFinalDot(copyHost);
+      })();
+    })();
+  }
+  /* the final period lands, then only IT disappears */
+  function dropFinalDot(copyHost) {
+    var ps = copyHost.querySelectorAll("p");
+    if (!ps.length) return;
+    var last = ps[ps.length - 1];
+    setTimeout(function () {
+      var t = last.textContent;
+      if (t && t.charAt(t.length - 1) === ".") last.textContent = t.slice(0, -1);
+    }, 500);
   }
 
   function buildTiles(grid, items) {
@@ -372,22 +720,19 @@
       var b = document.createElement("button");
       b.className = "stance"; b.type = "button";
       b.setAttribute("aria-expanded", "false");
+      var idxText = (i + 1 < 10 ? "0" : "") + (i + 1);
       var idx = document.createElement("span");
       idx.className = "stance__idx";
-      idx.textContent = (i + 1 < 10 ? "0" : "") + (i + 1);
+      idx.textContent = idxText;
       b.appendChild(idx);
       var head = document.createElement("span");
       head.className = "stance__head"; head.textContent = item.head;
       b.appendChild(head);
-      var body = document.createElement("span");
-      body.className = "stance__body";
-      item.body.forEach(function (t) { body.appendChild(para(t)); });
-      b.appendChild(body);
       b.addEventListener("click", function () {
         var open = b.getAttribute("aria-expanded") === "true";
-        [].forEach.call(grid.children, function (c) { c.setAttribute("aria-expanded", "false"); });
-        b.setAttribute("aria-expanded", open ? "false" : "true");
-        if (!open && mascot) {
+        if (open) { closeBay(); return; }
+        openBay(grid, b, idxText, item.body);
+        if (mascot) {
           mascot.ignoredSince = Date.now();
           mascot.setFace(item.face);
           mascot.glitch();
@@ -401,33 +746,186 @@
     buildTiles(document.getElementById("stancesGrid"), COPY.stances.items);
   }
 
-  /* REGRAS reads exactly like O JEITO DELE: same tile, same behaviour */
-  function buildNevers() {
-    buildTiles(document.getElementById("neversList"), COPY.nevers.lines.map(function (pair) {
-      return { head: pair[0], body: [pair[1]], face: COPY.nevers.face };
-    }));
+  /* ---------- AS REGRAS: the poster pop ---------- */
+  var posterOpen = false;
+  function buildPoster() {
+    var rules = document.getElementById("posterRules");
+    rules.innerHTML = "";
+    COPY.nevers.lines.forEach(function (pair) {
+      var row = document.createElement("div");
+      row.className = "poster__rule";
+      var b = document.createElement("b"); b.textContent = pair[0];
+      var i = document.createElement("i"); i.textContent = pair[1];
+      row.appendChild(b); row.appendChild(i);
+      rules.appendChild(row);
+    });
+    document.getElementById("posterBrand").textContent = COPY.brand;
+    document.getElementById("posterCity").textContent = COPY.city;
+    var title = document.getElementById("posterTitle");
+    title.setAttribute("data-cells", COPY.nevers.title);
+    document.getElementById("posterClose").addEventListener("click", closePoster);
+    document.getElementById("posterDownload").addEventListener("click", downloadPoster);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && posterOpen) closePoster();
+    });
+  }
+  /* A09: the poster leaves the site print-ready. A4 proportion, pixel art
+     survives print. a lambe from the scene, never an ad. */
+  function downloadPoster() {
+    var W = 1240, H = 1754;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "#09090B"; ctx.fillRect(0, 0, W, H);
+    var brand = brandColor();
+    ctx.strokeStyle = brand; ctx.lineWidth = 12;
+    ctx.strokeRect(36, 36, W - 72, H - 72);
+    /* the title in his cells */
+    var tm = window.QevrType.textMatrix(COPY.nevers.title);
+    var tCell = Math.floor((W - 200) / tm.w);
+    ctx.fillStyle = brand;
+    for (var y = 0; y < tm.h; y++) for (var x = 0; x < tm.w; x++) {
+      if (tm.cells[y * tm.w + x]) ctx.fillRect(100 + x * tCell, 90 + y * tCell, tCell, tCell);
+    }
+    /* him, mad, beside the rules */
+    var m = window.Qevr.matrix(COPY.nevers.face || "Angry");
+    var C = window.Qevr.CROP;
+    var fCell = 14;
+    var fx = W - 100 - C.w * fCell, fy = 320;
+    for (y = 0; y < C.h; y++) for (x = 0; x < C.w; x++) {
+      var v = m.cells[(y + C.y0) * m.n + (x + C.x0)];
+      if (!v) continue;
+      ctx.fillStyle = v === 2 ? "#09090B" : brand;
+      ctx.fillRect(fx + x * fCell, fy + y * fCell, fCell, fCell);
+    }
+    /* the rules, verbatim from the deck */
+    ctx.textAlign = "left";
+    var ty = 360;
+    COPY.nevers.lines.forEach(function (pair) {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "700 34px 'Space Mono', monospace";
+      ctx.fillText(pair[0], 100, ty);
+      ctx.fillStyle = "#9A9AA5";
+      ctx.font = "22px 'Space Mono', monospace";
+      ctx.fillText(pair[1], 100, ty + 36);
+      ty += 120;
+    });
+    ctx.fillStyle = "#9A9AA5";
+    ctx.font = "24px 'Space Mono', monospace";
+    ctx.fillText(COPY.brand + " / " + COPY.city, 100, H - 100);
+    var a = document.createElement("a");
+    a.download = "qiqi-as-regras.png";
+    a.href = canvas.toDataURL("image/png");
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function paintPosterArt() {
+    var canvas = document.getElementById("posterArt");
+    var m = window.Qevr.matrix(COPY.nevers.face || "Angry");
+    if (!m) return;
+    var C = window.Qevr.CROP;
+    var cell = window.matchMedia("(max-width: 720px)").matches ? 6 : 9;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = C.w * cell * dpr; canvas.height = C.h * cell * dpr;
+    canvas.style.width = (C.w * cell) + "px"; canvas.style.height = (C.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, C.w * cell, C.h * cell);
+    for (var y = 0; y < C.h; y++) {
+      for (var x = 0; x < C.w; x++) {
+        var v = m.cells[(y + C.y0) * m.n + (x + C.x0)];
+        if (!v) continue;
+        ctx.fillStyle = v === 2 ? inkColor() : brandColor();
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+  }
+  function openPoster() {
+    posterOpen = true;
+    document.getElementById("poster").classList.add("on");
+    document.body.style.overflow = "hidden";
+    paintPosterArt();
+    drawCells(document.getElementById("posterTitle"));
+    document.getElementById("posterClose").focus();
+    if (mascot) { mascot.ignoredSince = Date.now(); mascot.setFace(COPY.nevers.face); }
+  }
+  function closePoster() {
+    posterOpen = false;
+    document.getElementById("poster").classList.remove("on");
+    document.body.style.overflow = "";
   }
 
   function buildGift() {
     var host = document.getElementById("giftBody");
     COPY.gift.paragraphs.forEach(function (t) { host.appendChild(para(t)); });
-    /* the closing line is the last thing UM PRESENTE says, not a footer */
-    var stamp = document.getElementById("stamp");
-    stamp.innerHTML = "";
-    var b = document.createElement("b"); b.textContent = COPY.stamp;
-    stamp.appendChild(b);
+    if (COPY.gift.appLine) host.appendChild(para(COPY.gift.appLine, "dim"));
     var hint = document.getElementById("mascotHint");
     if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
     var question = document.getElementById("arrivalColorQuestion");
     if (question && COPY.arrival) question.textContent = COPY.arrival.colorQuestion;
   }
 
-  /* ---------- he starts life size, then takes his corner ---------- */
-  var inCorner = false;
+  /* ---------- L15: the stamp drawn in his cells, the smiley in the brand ---------- */
+  var stampShown = false;
+  function paintStamp(mask) {
+    var canvas = document.getElementById("stampCanvas");
+    if (!canvas || !COPY) return;
+    var text = COPY.stamp + " " + (COPY.stampSmiley || ":)");
+    var m = window.QevrType.textMatrix(text);
+    var host = canvas.parentElement;
+    var room = (host.clientWidth || window.innerWidth) - 4;
+    var cell = Math.max(3, Math.floor(Math.min(room, 900) / m.w));
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
+    canvas.style.width = (m.w * cell) + "px"; canvas.style.height = (m.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, m.w * cell, m.h * cell);
+    /* the smiley is the last two glyphs: they wear the brand colour */
+    var smileyM = window.QevrType.textMatrix((COPY.stampSmiley || ":)"));
+    var smileyStart = m.w - smileyM.w;
+    for (var y = 0; y < m.h; y++) {
+      for (var x = 0; x < m.w; x++) {
+        var i = y * m.w + x;
+        if (!m.cells[i]) continue;
+        if (mask && !mask[i]) continue;
+        ctx.fillStyle = x >= smileyStart ? brandColor() : cssVar("--qevr-light", "#FFFFFF");
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", text);
+    canvas._matrix = m;
+  }
+  function stampFirstOpen() {
+    if (stampShown || reduce) { paintStamp(); stampShown = true; return; }
+    stampShown = true;
+    var canvas = document.getElementById("stampCanvas");
+    paintStamp();
+    var m = canvas._matrix;
+    var idx = [];
+    for (var i = 0; i < m.cells.length; i++) if (m.cells[i]) idx.push(i);
+    for (var j = idx.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
+    }
+    var mask = new Uint8Array(m.cells.length);
+    var frames = 7, per = Math.ceil(idx.length / frames), p = 0;
+    (function step() {
+      for (var n = 0; n < per && p < idx.length; n++, p++) mask[idx[p]] = 1;
+      paintStamp(mask);
+      if (p < idx.length) setTimeout(step, 48);
+      else paintStamp();
+    })();
+  }
+
+  /* ---------- he starts life size, then takes his corner, and on desktop he
+     JUMPS into the open block instead of hiding in it ---------- */
+  var inCorner = false, jumpedBlock = null;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
+  function isDesktop() { return window.matchMedia("(min-width: 1101px)").matches; }
   function arrivalCellFor() {
     if (!isSmall()) {
-      /* the arrival owns the whole first screen now: he scales with it */
       var byH = Math.floor((window.innerHeight * 0.52) / window.Qevr.CROP.h);
       return Math.max(14, Math.min(22, byH));
     }
@@ -437,52 +935,96 @@
     var byHeight = Math.floor(Math.max(200, window.innerHeight * 0.42) / window.Qevr.CROP.h);
     return Math.max(8, Math.min(13, byWidth, byHeight));
   }
-  function cellFor() { return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor(); }
+  function cellFor() {
+    if (jumpedBlock) return 6;
+    return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor();
+  }
   function boundsFor() {
-    /* the corner zone is small on purpose: he wanders a little, never onto the copy */
+    if (jumpedBlock) return { x: 6, y: 5 };
     return inCorner ? { x: isSmall() ? 8 : 10, y: isSmall() ? 6 : 8 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
+  }
+  function openBlock() {
+    return document.querySelector(".block[data-open='true']");
+  }
+  function syncJump() {
+    var target = null;
+    if (inCorner && isDesktop()) {
+      var b = openBlock();
+      if (b) target = b;
+    }
+    if (target !== jumpedBlock) {
+      jumpedBlock = target;
+      placeMascot();
+      if (mascot && jumpedBlock) {
+        var faceMap = { manifesto: COPY.world.face, pessoas: COPY.people.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
+        var f = faceMap[jumpedBlock.id];
+        if (f) mascot.setFace(f);
+        /* the hop in: a small squash beat so the arrival reads as a jump */
+        mascot.squash = 0.84; mascot.applyTransform();
+        setTimeout(function () { mascot.squash = 1; mascot.applyTransform(); }, 110);
+      }
+    }
   }
   function placeMascot() {
     if (!mascot) return;
     var btn = document.getElementById("mascotBtn");
-    var target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
+    var target;
+    if (jumpedBlock) target = jumpedBlock.querySelector(".block__field");
+    else target = inCorner ? document.getElementById("companionSlot") : document.getElementById("arrivalSlot");
     if (btn.parentElement !== target) target.appendChild(btn);
     mascot.pos.x = 0; mascot.pos.y = 0; mascot.squash = 1;
     mascot.applyTransform();
     mascot.setCell(cellFor());
     mascot._bounds = boundsFor();
+    document.body.classList.toggle("gutter", inCorner && isSmall());
   }
   function checkCorner() {
     var arrival = document.getElementById("topo");
     if (!arrival) return;
     var b = arrival.getBoundingClientRect().bottom;
     var next = inCorner ? (b > 200 ? false : true) : (b < 90 ? true : false);
-    if (next !== inCorner) { inCorner = next; placeMascot(); }
+    if (next !== inCorner) { inCorner = next; jumpedBlock = null; placeMascot(); syncJump(); }
   }
 
-  /* ---------- the thermometer replaces the scrollbar ---------- */
+  /* ---------- L16: the thermometer counts cells ---------- */
   var fill = document.getElementById("thermoFill");
   var thermo = document.getElementById("thermo");
-  var wasFire = false;
+  var wasFire = false, fireFlipping = false;
+  var THERMO_CELL = 14;
   function onScroll() {
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    fill.style.height = (p * 100) + "%";
+    var px = Math.floor((p * window.innerHeight) / THERMO_CELL) * THERMO_CELL;
+    fill.style.height = px + "px";
     var fire = p > 0.92;
-    thermo.classList.toggle("is-fire", fire);
-    if (fire && !wasFire && mascot) mascot.setFace(COPY ? COPY.gift.face : "Stars");
+    if (fire && !wasFire) {
+      if (mascot) mascot.setFace(COPY ? COPY.gift.face : "Stars");
+      if (!reduce && !fireFlipping) {
+        /* ON FIRE is an event: the strip flips in three hard frames */
+        fireFlipping = true;
+        var flips = 0;
+        (function flip() {
+          thermo.classList.toggle("is-fire");
+          flips++;
+          if (flips < 3) setTimeout(flip, 90);
+          else { thermo.classList.add("is-fire"); fireFlipping = false; }
+        })();
+      } else {
+        thermo.classList.add("is-fire");
+      }
+    }
+    if (!fire && !fireFlipping) thermo.classList.remove("is-fire");
     wasFire = fire;
     checkCorner();
   }
 
-  /* ---------- he reads it with you ---------- */
   function watchSections() {
     if (!("IntersectionObserver" in window)) return;
     var map = { manifesto: COPY.world.face, pessoas: COPY.people.face, stances: "Default", regras: COPY.nevers.face, presente: COPY.gift.face };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (!e.isIntersecting || !mascot || wasFire) return;
+        if (!e.isIntersecting || !mascot || wasFire || jumpedBlock) return;
         var f = map[e.target.id];
         if (f) mascot.setFace(f);
       });
@@ -493,10 +1035,257 @@
     });
   }
 
+  /* ---------- A13: he keeps São Paulo hours, for the whole world ---------- */
+  function spNow() {
+    try {
+      var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Sao_Paulo", hour: "2-digit", hourCycle: "h23", weekday: "short" }).formatToParts(new Date());
+      var h = 12, wd = "";
+      parts.forEach(function (p) { if (p.type === "hour") h = parseInt(p.value, 10); if (p.type === "weekday") wd = p.value; });
+      return { hour: h, sunday: wd === "Sun" };
+    } catch (e) { return { hour: new Date().getHours(), sunday: new Date().getDay() === 0 }; }
+  }
+  function hourFace() {
+    var t = spNow();
+    if (t.sunday && t.hour === 8) return "Dead";
+    if (t.hour >= 13 && t.hour < 16) return "Eyes Closed";
+    if (t.hour >= 8 && t.hour < 13) return "Bored";
+    if (t.hour >= 16 && t.hour < 19) return "Content";
+    if (t.hour >= 19 && t.hour < 23) return "Happy";
+    if (t.hour >= 23 || t.hour < 5) return "Stars";
+    return "Blissful";
+  }
+
+  /* ---------- L04: keep poking and he escalates, dies with an ERROR,
+     breaks into the floor, and network-reloads back ---------- */
+  var pokeCount = 0, pokeTimer = 0, laddering = false;
+  function paintCustom(opts) {
+    /* page-level painter over his canvas: rows can drop into the floor or
+       only some rows render. engines are called, never edited. */
+    var ctx = mascot.canvas.getContext("2d");
+    var C = window.Qevr.CROP, n = mascot.n, c = mascot.cell;
+    ctx.clearRect(0, 0, C.w * c, C.h * c);
+    var body = brandColor(), ink = inkColor();
+    for (var y = 0; y < n; y++) {
+      var gy = y - C.y0;
+      if (gy < 0 || gy >= C.h) continue;
+      if (opts.visibleRows && opts.visibleRows.indexOf(gy) < 0) continue;
+      var drop = opts.rowDrop ? Math.min(C.h - 1 - gy, Math.floor((C.h - 1 - gy) * opts.rowDrop)) : 0;
+      var shear = opts.shear && opts.shear[y] ? opts.shear[y] : 0;
+      for (var x = 0; x < n; x++) {
+        var v = mascot.render[y * n + x];
+        if (!v) continue;
+        var sx = ((x + shear) % n + n) % n - C.x0;
+        if (sx < 0 || sx >= C.w) continue;
+        ctx.fillStyle = v === 2 ? ink : body;
+        ctx.fillRect(sx * c, (gy + (C.h - 1 - gy) * (opts.rowDrop || 0)) * c > (C.h - 1) * c ? (C.h - 1) * c : (gy + drop) * c, c, c);
+      }
+    }
+  }
+  function ladderDie() {
+    laddering = true;
+    mascot._busy = true;
+    var tag = document.getElementById("mascotTag");
+    var load = document.getElementById("mascotLoad");
+    tag.textContent = "ERRO";
+    mascot.setFace("Dead", true);
+    tag.classList.add("on");
+    /* more violent glitch: two rounds back to back */
+    mascot.glitch();
+    setTimeout(function () { mascot.glitch(); }, 160);
+    setTimeout(function () {
+      tag.classList.remove("on");
+      /* he breaks into the floor, row by row */
+      var f = 0, frames = 8;
+      (function collapse() {
+        paintCustom({ rowDrop: f / frames });
+        f++;
+        if (f <= frames) { setTimeout(collapse, reduce ? 0 : 55); return; }
+        /* gone. the network reloads him. */
+        load.classList.add("on");
+        var barFill = load.querySelector("i");
+        var lp = 0;
+        (function loadStep() {
+          lp += 20;
+          barFill.style.width = Math.min(100, lp) + "%";
+          if (lp < 100) { setTimeout(loadStep, reduce ? 0 : 90); return; }
+          load.classList.remove("on");
+          barFill.style.width = "0";
+          /* re-rez bottom-up */
+          var C = window.Qevr.CROP;
+          var shown = [];
+          var row = C.h - 1;
+          (function rerez() {
+            for (var k = 0; k < 4 && row >= 0; k++, row--) shown.push(row);
+            paintCustom({ visibleRows: shown });
+            if (row >= 0) { setTimeout(rerez, reduce ? 0 : 55); return; }
+            mascot.setFace("Default", true);
+            mascot.paint();
+            mascot._busy = false;
+            laddering = false;
+            pokeCount = 0;
+          })();
+        })();
+      })();
+    }, 420);
+  }
+  function pokeLadder() {
+    if (laddering) return;
+    pokeCount++;
+    clearTimeout(pokeTimer);
+    pokeTimer = setTimeout(function () { pokeCount = 0; }, 2200);
+    if (pokeCount === 1) { mascot.poke(); return; }
+    if (pokeCount === 2) { mascot.glitch(); return; }
+    if (pokeCount === 3) { mascot.rowwave(); return; }
+    ladderDie();
+  }
+
+  /* ---------- A08: hold him ~2s and the secret room opens ---------- */
+  var holdTimer = 0, holdStart = 0, holdFired = false, holdRaf = 0;
+  function wireHold(btn) {
+    var charge = document.getElementById("mascotCharge");
+    var chargeFill = charge.querySelector("i");
+    function cancelHold() {
+      if (holdRaf) cancelAnimationFrame(holdRaf);
+      holdRaf = 0;
+      charge.classList.remove("on");
+      chargeFill.style.width = "0";
+    }
+    btn.addEventListener("pointerdown", function (e) {
+      if (laddering) return;
+      holdStart = performance.now();
+      holdFired = false;
+      (function tick(now) {
+        var t = (now || performance.now()) - holdStart;
+        if (t > 350) {
+          charge.classList.add("on");
+          chargeFill.style.width = Math.min(100, ((t - 350) / 1650) * 100) + "%";
+          if (t > 700 && mascot && mascot.face.name !== "Anime") mascot.setFace("Anime");
+        }
+        if (t >= 2000) {
+          holdFired = true;
+          cancelHold();
+          window.QevrCascade.leave("sala/");
+          return;
+        }
+        holdRaf = requestAnimationFrame(tick);
+      })();
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
+      btn.addEventListener(ev, function () {
+        var held = performance.now() - holdStart;
+        cancelHold();
+        if (mascot && held > 700 && !holdFired) mascot.setFace("Default");
+      });
+    });
+    btn.addEventListener("click", function (e) {
+      /* a long hold is the knock, not a poke */
+      if (performance.now() - holdStart > 450) { e.preventDefault(); e.stopPropagation(); return; }
+      pokeLadder();
+    });
+  }
+
+  /* ---------- A15: the gift tag: the URL carries the dedication ---------- */
+  function giftTag() {
+    var m = location.search.match(/[?&]de=([^&]+)/);
+    if (!m) return;
+    var name;
+    try { name = decodeURIComponent(m[1].replace(/\+/g, " ")); } catch (e) { return; }
+    name = name.replace(/[^0-9A-Za-zÀ-ÖØ-öø-ÿ ]/g, "").trim().slice(0, 24);
+    if (!name) return;
+    var line = (COPY.arrival.fromPattern || "{NOME} TE DEU ISSO.").replace("{NOME}", name.toUpperCase());
+    document.getElementById("arrivalFrom").textContent = line;
+  }
+
+  /* ---------- L25: the visible tab blinks, a hidden one never moves ---------- */
+  function wireFavicon() {
+    if (reduce) return;
+    var link = document.getElementById("favicon32");
+    if (!link) return;
+    var orig = link.href;
+    function frame(faceName) {
+      var m = window.Qevr.matrix(faceName);
+      if (!m) return null;
+      var C = window.Qevr.CROP;
+      var c = document.createElement("canvas");
+      c.width = 32; c.height = 32;
+      var ctx = c.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+      var cw = 32 / C.w, ch = 32 / C.h;
+      for (var y = 0; y < C.h; y++) for (var x = 0; x < C.w; x++) {
+        var v = m.cells[(y + C.y0) * m.n + (x + C.x0)];
+        if (!v) continue;
+        ctx.fillStyle = v === 2 ? "#09090B" : "#CCFF00";
+        ctx.fillRect(Math.floor(x * cw), Math.floor(y * ch), Math.ceil(cw), Math.ceil(ch));
+      }
+      return c.toDataURL("image/png");
+    }
+    var closed = null;
+    (function loop() {
+      setTimeout(function () {
+        if (!document.hidden) {
+          if (closed === null) closed = frame("Eyes Closed");
+          if (closed) {
+            link.href = closed;
+            setTimeout(function () { link.href = orig; }, 110);
+          }
+        }
+        loop();
+      }, 3200 + Math.random() * 2600);
+    })();
+  }
+
+  /* ---------- L24: the console answers back ---------- */
+  function consoleArt() {
+    try {
+      var m = window.Qevr.matrix("Default");
+      var C = window.Qevr.CROP;
+      var lines = [];
+      for (var y = 0; y < C.h; y++) {
+        var line = "";
+        for (var x = 0; x < C.w; x++) {
+          var v = m.cells[(y + C.y0) * m.n + (x + C.x0)];
+          line += v === 1 ? "██" : (v === 2 ? "▓▓" : "  ");
+        }
+        lines.push(line);
+      }
+      console.log(lines.join("\n"));
+      console.log((COPY ? COPY.stamp : "NOS VEMOS NA PISTA") + " " + (COPY ? COPY.stampSmiley : ":)"));
+    } catch (e) {}
+  }
+
+  /* ---------- the scroll cue: a stepped arrow plus the word ---------- */
+  function wireScrollCue() {
+    document.getElementById("scrollWord").textContent = COPY.arrival.scrollLabel || "SCROLL";
+    document.getElementById("arrivalCity").textContent = COPY.city;
+    var cv = document.getElementById("scrollArrow");
+    var ctx = cv.getContext("2d");
+    var cells = [[2, 0], [2, 1], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [1, 3], [2, 3], [3, 3], [2, 4]];
+    var offset = 0;
+    function draw() {
+      ctx.clearRect(0, 0, 15, 15);
+      ctx.fillStyle = mutedColor();
+      cells.forEach(function (p) {
+        var y = (p[1] + offset) % 5;
+        ctx.fillRect(p[0] * 3, y * 3, 3, 3);
+      });
+    }
+    draw();
+    if (reduce) return;
+    setInterval(function () { offset = (offset + 1) % 5; draw(); }, 420);
+  }
+
+  /* ---------- boot ---------- */
   drawAllCells();
 
+  var inlineDeck = null;
+  try { inlineDeck = JSON.parse(document.getElementById("deck-pt").textContent); } catch (e) {}
+
+  var copyPromise = (LANG === "pt" && inlineDeck)
+    ? Promise.resolve(inlineDeck)
+    : fetch("assets/manifesto." + LANG + ".json").then(function (r) { return r.json(); });
+
   Promise.all([
-    fetch("assets/manifesto." + LANG + ".json").then(function (r) { return r.json(); }),
+    copyPromise,
     window.Qevr.load("assets/qevr-expressions.json")
   ]).then(function (res) {
     COPY = res[0];
@@ -505,32 +1294,67 @@
       document.querySelector("#arrivalPink span").textContent = COPY.ui.pink;
     }
     syncTitles();
-    buildDoors(); buildWorld(); buildPeople(); buildStances(); buildNevers(); buildGift();
+    buildDoors(); buildWorld(); buildPeople(); buildStances(); buildPoster(); buildGift();
     drawAllCells();
     unifyToggleHeadings();
     wireCascade();
     wireToggles();
+    wireScrollCue();
+    giftTag();
+    paintStamp();
     onScroll();
+    consoleArt();
+    wireFavicon();
 
     var btn = document.getElementById("mascotBtn");
     mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
       host: btn, cell: cellFor(), face: "Default"
     });
-    btn.addEventListener("click", function () { mascot.poke(); });
+    wireHold(btn);
     placeMascot();
-    /* his entrance is scripted, always the same three: DEFAULT, then ANIME,
-       then TE AMO (Kissing). only after that the brain takes over. reduced
-       motion skips the show and goes straight to the still. */
-    var reduceEntrance = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceEntrance) {
+
+    /* A18: every arrival is an entrance. a quick loading bar, then he builds
+       himself in, then the ritual: DEFAULT, ANIME, FELIZ DA VIDA, then the
+       brain takes over on São Paulo time. reduced motion goes straight in. */
+    var bootBar = document.getElementById("bootBar");
+    var bootFill = bootBar.querySelector("i");
+    if (reduce) {
+      bootBar.style.display = "none";
+      mascot.setFace(hourFace(), true);
       mascot.start(boundsFor());
     } else {
-      setTimeout(function () { mascot.setFace("Anime"); }, 1300);
-      setTimeout(function () { mascot.setFace("Kissing"); }, 2800);
-      setTimeout(function () { mascot.start(boundsFor()); }, 4200);
+      /* start empty: he is not there yet */
+      var savedRender = new Uint8Array(mascot.render);
+      mascot.render.fill(0);
+      mascot.paint();
+      var lp = 0;
+      (function bootStep() {
+        lp += 25;
+        bootFill.style.width = Math.min(100, lp) + "%";
+        if (lp < 100) { setTimeout(bootStep, 90); return; }
+        bootBar.style.display = "none";
+        /* he builds in: cells arriving in stepped random chunks */
+        var idx = [];
+        for (var i = 0; i < savedRender.length; i++) if (savedRender[i]) idx.push(i);
+        for (var j = idx.length - 1; j > 0; j--) {
+          var k = Math.floor(Math.random() * (j + 1));
+          var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
+        }
+        var frames = 6, per = Math.ceil(idx.length / frames), p = 0;
+        (function build() {
+          for (var n = 0; n < per && p < idx.length; n++, p++) mascot.render[idx[p]] = savedRender[idx[p]];
+          mascot.paint();
+          if (p < idx.length) { setTimeout(build, 55); return; }
+          setTimeout(function () { mascot.setFace("Anime"); }, 700);
+          setTimeout(function () { mascot.setFace("Joy"); }, 2000);
+          setTimeout(function () {
+            mascot.start(boundsFor());
+            mascot.setFace(hourFace());
+          }, 3300);
+        })();
+      })();
     }
 
-    /* he notices you. 60 percent of the time it was nothing. */
     window.addEventListener("pointermove", function (e) {
       var r = btn.getBoundingClientRect();
       var cx = r.left + r.width / 2;
@@ -541,10 +1365,10 @@
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        drawAllCells(); unifyToggleHeadings(); placeMascot();
+        drawAllCells(); unifyToggleHeadings(); paintStamp(); placeMascot();
       });
     }
-  }).catch(function (err) { console.error("[qevr] boot failed", err); });
+  }).catch(function (err) { console.error("[qiqi] boot failed", err); });
 
   window.addEventListener("scroll", onScroll, { passive: true });
   var rt;
@@ -552,10 +1376,12 @@
     clearTimeout(rt);
     rt = setTimeout(function () {
       [].forEach.call(document.querySelectorAll(".heading--toggle canvas"), function (c) { c.removeAttribute("data-force-cell"); });
-      drawAllCells(); unifyToggleHeadings(); onScroll(); placeMascot();
+      closeBay();
+      drawAllCells(); unifyToggleHeadings(); paintStamp(); onScroll(); placeMascot(); syncJump();
     }, 150);
   });
 })();
 </script>
+<script type="module" src="assets/qa.mjs"></script>
 </body>
 </html>

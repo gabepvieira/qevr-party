@@ -126,3 +126,28 @@
   .stage__name { font-size: 24px; }
   .stage__controls .ctl { padding-block: 8px; }
 }
+
+/* ---------- seventh voice: galeria additions ---------- */
+
+/* long labels wrap instead of cutting the joke */
+.face__name {
+  white-space: normal; text-overflow: clip;
+  font-size: 8.5px; line-height: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* the stage name is drawn in his own cells, so it glitches with him */
+.stage__name canvas { display: block; image-rendering: pixelated; max-width: 100%; }
+
+/* the hung face credits its maker: a name, never a number */
+.stage__credit { color: var(--qevr-light); font-weight: 700; font-size: clamp(13px, 1.4vw, 18px); letter-spacing: .06em; }
+.stage__credit small { display: block; color: var(--qevr-muted); font-weight: 400; font-size: 9px; letter-spacing: .18em; margin-top: 3px; }
+.stage__credit:empty { display: none; }
+
+@media (max-width: 720px) {
+  /* the controls wrap to two rows; the fun one gets the full second row */
+  .stage__controls { flex-wrap: wrap; }
+  .ctlset { flex: 1 1 40%; }
+  .ctlset--glitch { flex: 1 1 100%; }
+  .ctlset--wall { flex: 1 1 100%; }
+}

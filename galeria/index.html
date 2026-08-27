@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QIQI / A GALERIA</title>
+<meta name="description" content="OS 23 PROTÓTIPOS DO QIQI. UMA SÓ SILHUETA.">
+<meta name="theme-color" content="#09090B">
+<meta property="og:title" content="QIQI / A GALERIA">
+<meta property="og:description" content="OS 23 PROTÓTIPOS DO QIQI. UMA SÓ SILHUETA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://qevr.party/galeria/">
+<meta property="og:image" content="https://qevr.party/assets/og-galeria.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../assets/fonts/spacemono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/spacemono-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png" id="favicon32">
+<link rel="icon" href="../assets/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="galeria.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__in">
+    <a class="bar__mark" href="../" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="../#manifesto" id="barManifesto">O MANIFESTO</a>
+      <a href="../estudio/" id="barEstudio">O ESTÚDIO</a>
+      <a href="./" aria-current="page" id="barGaleria">A GALERIA</a>
+    </nav>
+  </div>
+</header>
+
+<div class="lang" role="group" aria-label="PT / EN">
+  <button id="langPt" type="button" aria-pressed="true">PT</button>
+  <button id="langEn" type="button" aria-pressed="false">EN</button>
+</div>
+
+<main class="studio">
+  <div class="frame" id="frame">
+    <div class="lane" id="lane"></div>
+    <div class="strip strip--top" id="stripTop"></div>
+
+    <section class="plate" aria-labelledby="stageName">
+      <div class="stage__art">
+        <button class="mascot" id="stageBtn" aria-label="QIQI"><canvas id="stageCanvas"></canvas></button>
+      </div>
+      <div class="plate__panel">
+        <div class="stage__read">
+          <div class="stage__name" id="stageName" role="img" aria-label="NORMAL"><canvas id="stageNameCanvas"></canvas></div>
+          <div class="stage__credit" id="stageCredit"></div>
+        </div>
+        <div class="stage__controls">
+          <div class="ctlset">
+            <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short" id="moveLabelShort">SE MEXE?</span></div>
+            <div class="ctlrow">
+              <button class="ctl" id="ctlLive" type="button" aria-pressed="true">SIM</button>
+              <button class="ctl" id="ctlHold" type="button" aria-pressed="false">NÃO</button>
+            </div>
+          </div>
+          <div class="ctlset">
+            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">COR</span><span class="lbl-short" id="colorLabelShort">COR</span></div>
+            <div class="ctlrow">
+              <button class="ctl ctl--swatch ctl--green" id="ctlGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
+              <button class="ctl ctl--swatch ctl--pink" id="ctlPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
+            </div>
+          </div>
+          <div class="ctlset ctlset--glitch">
+            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">QUER VER UMA COISA?</span><span class="lbl-short" id="glitchLabelShort">QUER VER UMA COISA?</span></div>
+            <div class="ctlrow"><button class="ctl" id="ctlGlitch" type="button">GLITCH</button></div>
+          </div>
+          <div class="ctlset ctlset--wall">
+            <div class="ctlset__label"><span class="lbl-long" id="wallLabel">WALLPAPER</span><span class="lbl-short" id="wallLabelShort">WALLPAPER</span></div>
+            <div class="ctlrow"><button class="ctl" id="ctlWall" type="button">WALLPAPER</button></div>
+          </div>
+        </div>
+        <div class="stage__meta"><span class="stage__meta-title" id="stageMetaTitle"></span><span id="stageMetaLines"></span></div>
+      </div>
+    </section>
+
+    <div class="strip strip--bottom" id="stripBottom"></div>
+  </div>
+</main>
+
+<script src="../assets/pixelfont.js"></script>
+<script src="../assets/qevr.js"></script>
+<script src="../assets/cascade.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var MODE_KEY = "qevr.mode";
+  var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
+  function readModePreference() {
+    try {
+      var mode = localStorage.getItem(MODE_KEY);
+      return mode === "day" || mode === "party" ? mode : null;
+    } catch (e) { return null; }
+  }
+  function writeModePreference(mode) {
+    if (mode !== "day" && mode !== "party") return;
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+  }
+  document.documentElement.setAttribute("data-mode", forced || readModePreference() || "day");
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var LANG_KEY = "qevr.lang";
+  function readLang() {
+    var forcedLang = (location.search.match(/[?&]lang=(pt|en)(?:&|$)/) || [])[1];
+    if (forcedLang) return forcedLang;
+    try { var l = localStorage.getItem(LANG_KEY); if (l === "pt" || l === "en") return l; } catch (e) {}
+    return "pt";
+  }
+  var LANG = readLang();
+  document.documentElement.lang = LANG === "en" ? "en" : "pt-BR";
+  function chooseLang(next) {
+    if (next === LANG) return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    window.QevrCascade.through(function () {
+      if (location.search || location.hash) location.href = location.pathname;
+      else location.reload();
+    });
+  }
+  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
+  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
+  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
+  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
+
+  var stage = null;
+  var live = true;
+  var current = "Default";
+  var names = [];
+  var chips = [];
+  var framePaused = false;
+  var C = window.Qevr.CROP;
+  var ASPECT = C.w / C.h;
+  var GAP = 3;
+  var NAME_H = 20;
+  var LANE_SPEED = 12;
+  var STRIP_SPEED = 10;
+  var TICK_MS = 80;
+  var lane = { S: 0, cellH: 0, W: 0, H: 0, phase: 0, count: 23, slotSec: 1, runs: [] };
+  var phoneMounted = null;
+  var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+  var COPY = null;
+
+  /* Canonical codes stay untouched; these are display labels only.
+     PT labels are GP's ruled set (2026-08-26): spoken words, never dictionary. */
+  var PT = {
+    "Default": "NORMAL", "Happy": "TÔ BEM", "Eyes Closed": "APAGUEI :x",
+    "Dead": "MORRI", "Joy": "FELIZ DA VIDA", "Anime": "ANIME", "Adoring": "AMEIIII",
+    "Laughing": "KKKKKK", "Content": "DE BOA", "Blissful": "PLENO", "Love": "IN LOVE",
+    "Love Kissing": "BEIJINHOS", "Lovely": "Q BOM", "Naughty": "APRONTANDO HIHI",
+    "Kissing": "TE AMO", "Death": "MORTO (AGR DE VERDADE)", "Stars": "BRILHANDO",
+    "Surprised": "EITA", "Shocked": "TÔ GAG", "Sad": "NA BAD",
+    "Unamused": "SEM GRAÇA", "Angry": "PUTO", "Bored": "TÉDIO"
+  };
+  var EN = {
+    "Default": "NORMAL", "Happy": "DOING FINE", "Eyes Closed": "PASSED OUT :x",
+    "Dead": "I DIED", "Joy": "SO HAPPY", "Anime": "ANIME", "Adoring": "LOVE ITTT",
+    "Laughing": "LMAOOO", "Content": "CHILL", "Blissful": "AT PEACE", "Love": "IN LOVE",
+    "Love Kissing": "LIL KISSES", "Lovely": "SO NICE", "Naughty": "UP TO SMTH HIHI",
+    "Kissing": "LOVE U", "Death": "DEAD (FOR REAL THIS TIME)", "Stars": "SHINING",
+    "Surprised": "WOAH", "Shocked": "I'M GAGGED", "Sad": "IN MY BAD",
+    "Unamused": "MEH", "Angry": "PISSED", "Bored": "BORED"
+  };
+  var LABELS = LANG === "en" ? EN : PT;
+
+  function label(name) { return LABELS[name] || name.toUpperCase(); }
+  function cssVar(name, fallback) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  }
+  function inkColor() { return cssVar("--qevr-ink", "#09090B"); }
+  function brandColor() { return cssVar("--brand", "#CCFF00"); }
+  function isPhone() { return window.matchMedia("(max-width: 720px)").matches; }
+
+  /* ---------- L19: the stage name in his own cells ---------- */
+  function paintStageName(shear) {
+    var host = document.getElementById("stageName");
+    var canvas = document.getElementById("stageNameCanvas");
+    var text = label(current);
+    var m = window.QevrType.textMatrix(text);
+    var room = host.clientWidth || 300;
+    var cell = Math.max(2, Math.min(4, Math.floor(room / m.w)));
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
+    canvas.style.width = (m.w * cell) + "px"; canvas.style.height = (m.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, m.w * cell, m.h * cell);
+    ctx.fillStyle = brandColor();
+    for (var y = 0; y < m.h; y++) {
+      var s = shear && shear[y] ? shear[y] : 0;
+      for (var x = 0; x < m.w; x++) {
+        if (m.cells[y * m.w + x]) ctx.fillRect((x + s) * cell, y * cell, cell, cell);
+      }
+    }
+    host.setAttribute("aria-label", text);
+  }
+  /* one shared glitch: his face and his name shear together */
+  function glitchBoth() {
+    stage.glitch();
+    if (reduce) return;
+    var band = 2 + Math.floor(Math.random() * 5);
+    var shear = {}; shear[band] = 1; shear[band + 1] = 1;
+    paintStageName(shear);
+    setTimeout(function () { paintStageName(); }, 100);
+  }
+
+  /* ---------- A06: the hung face credits its maker ---------- */
+  function syncCredit() {
+    var host = document.getElementById("stageCredit");
+    host.innerHTML = "";
+    var data = window.Qevr.matrix(current);
+    var expr = (window.__exprByName || {})[current];
+    if (!expr || !expr.credit || !expr.credit.name) return;
+    var pattern = (COPY && COPY.galeria && COPY.galeria.creditPattern) || "QIQI {DE} {NOME}";
+    var line = pattern.replace("{DE}", expr.credit.de || (LANG === "en" ? "BY" : "DE")).replace("{NOME}", String(expr.credit.name).toUpperCase());
+    host.appendChild(document.createTextNode(line));
+    var small = document.createElement("small");
+    var protoWord = (COPY && COPY.galeria && COPY.galeria.protoWord) || "PROTÓTIPO";
+    small.textContent = protoWord + " " + (names.indexOf(current) + 1);
+    host.appendChild(small);
+  }
+
+  function setCurrent(name) {
+    current = name;
+    paintStageName();
+    syncCredit();
+    [].forEach.call(document.querySelectorAll(".face"), function (face) {
+      face.setAttribute("aria-pressed", String(face.getAttribute("data-name") === name));
+    });
+    /* L20: a face has an address. picking one updates the URL, no reload. */
+    try {
+      var qs = "?face=" + encodeURIComponent(name);
+      history.replaceState(null, "", location.pathname + qs + location.hash);
+    } catch (e) {}
+  }
+
+  function setLive(on) {
+    live = on;
+    document.getElementById("ctlLive").setAttribute("aria-pressed", String(on));
+    document.getElementById("ctlHold").setAttribute("aria-pressed", String(!on));
+    if (!stage) return;
+    if (on) {
+      if (!stage._running) stage.start({ x: 18, y: 14 });
+    } else {
+      stage._running = false;
+      stage.pos.x = 0;
+      stage.pos.y = 0;
+      stage.squash = 1;
+      stage.applyTransform();
+    }
+  }
+
+  function paintChipBox(canvas, name, w) {
+    var matrix = window.Qevr.matrix(name);
+    if (!matrix) return;
+    w = Math.max(8, Math.round(w));
+    var h = Math.round(w / ASPECT);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var body = brandColor();
+    var ink = inkColor();
+    var n = matrix.n;
+    for (var gy = 0; gy < C.h; gy++) {
+      var y0 = Math.round(gy * h / C.h);
+      var y1 = Math.round((gy + 1) * h / C.h);
+      for (var gx = 0; gx < C.w; gx++) {
+        var value = matrix.cells[(gy + C.y0) * n + (gx + C.x0)];
+        if (!value) continue;
+        var x0 = Math.round(gx * w / C.w);
+        var x1 = Math.round((gx + 1) * w / C.w);
+        ctx.fillStyle = value === 2 ? ink : body;
+        ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+      }
+    }
+  }
+
+  function makeChip(name) {
+    var button = document.createElement("button");
+    button.className = "face";
+    button.type = "button";
+    button.setAttribute("data-name", name);
+    button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-label", label(name));
+    var art = document.createElement("span");
+    art.className = "face__art";
+    art.appendChild(document.createElement("canvas"));
+    button.appendChild(art);
+    var title = document.createElement("span");
+    title.className = "face__name";
+    title.textContent = label(name);
+    button.appendChild(title);
+    return button;
+  }
+
+  function makeChips() {
+    chips = names.map(function (name) { return { name: name, el: makeChip(name) }; });
+  }
+
+  function paintChips(w) {
+    chips.forEach(function (chip) {
+      paintChipBox(chip.el.querySelector("canvas"), chip.name, w);
+      chip.el.style.width = Math.round(w) + "px";
+    });
+  }
+
+  function laneCellH(S) { return S / ASPECT + NAME_H; }
+
+  function laneSlots(W, H, S) {
+    var cellH = laneCellH(S);
+    return 2 * (W + S) / (S + GAP) + 2 * (H + cellH) / (cellH + GAP);
+  }
+
+  function solveChipSize(W, H, count) {
+    var lo = 80, hi = 700, best = 80;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      var fits = H - 2 * (laneCellH(mid) + GAP) >= 300 && laneSlots(W, H, mid) >= count;
+      if (fits) { best = mid; lo = mid + 1; } else { hi = mid - 1; }
+    }
+    return best;
+  }
+
+  function lanePoint(tau) {
+    var runs = lane.runs;
+    for (var r = 0; r < runs.length - 1; r++) {
+      if (tau < runs[r].slots) break;
+      tau -= runs[r].slots;
+    }
+    var run = runs[r];
+    var p = run.point(tau * run.pitch);
+    p.front = run.front;
+    return p;
+  }
+
+  function placeChips() {
+    for (var i = 0; i < chips.length; i++) {
+      var p = lanePoint((i + lane.phase) % lane.count);
+      var el = chips[i].el;
+      el.style.zIndex = p.front ? "2" : "1";
+      el.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y) + "px)";
+    }
+  }
+
+  function buildFrame() {
+    var frame = document.getElementById("frame");
+    var laneHost = document.getElementById("lane");
+    var top = document.getElementById("stripTop");
+    var bottom = document.getElementById("stripBottom");
+    if (!chips.length) return;
+
+    if (isPhone()) {
+      if (phoneMounted !== true) {
+        laneHost.innerHTML = ""; top.innerHTML = ""; bottom.innerHTML = "";
+        chips.forEach(function (chip, i) {
+          chip.el.style.transform = "";
+          chip.el.style.visibility = "";
+          (i < 12 ? top : bottom).appendChild(chip.el);
+        });
+        phoneMounted = true;
+      }
+      var W = frame.clientWidth || window.innerWidth;
+      var artW = Math.max(84, Math.min(120, W / 3.4));
+      var stripH = Math.round(artW / ASPECT + NAME_H);
+      document.documentElement.style.setProperty("--chip-w", Math.round(artW) + "px");
+      document.documentElement.style.setProperty("--strip-h", stripH + "px");
+      paintChips(artW);
+    } else {
+      if (phoneMounted !== false) {
+        laneHost.innerHTML = ""; top.innerHTML = ""; bottom.innerHTML = "";
+        chips.forEach(function (chip) { laneHost.appendChild(chip.el); });
+        ["top", "bottom"].forEach(function (pos) {
+          var cover = document.createElement("div");
+          cover.className = "lane__cover lane__cover--" + pos;
+          laneHost.appendChild(cover);
+        });
+        phoneMounted = false;
+      }
+      var fw = frame.clientWidth || window.innerWidth;
+      var fh = frame.clientHeight || Math.max(480, window.innerHeight - 52);
+      lane.count = chips.length;
+      lane.S = solveChipSize(fw, fh, lane.count);
+      lane.cellH = laneCellH(lane.S);
+      lane.W = fw; lane.H = fh;
+      var scale = laneSlots(fw, fh, lane.S) / lane.count;
+      var pitchH = (lane.S + GAP) * scale;
+      var pitchV = (lane.cellH + GAP) * scale;
+      var hw = fw + lane.S, vv = fh + lane.cellH;
+      lane.runs = [
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: d - lane.S, y: 0 }; } },
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: lane.W - lane.S, y: d - lane.cellH }; } },
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: lane.W - d, y: lane.H - lane.cellH }; } },
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: 0, y: lane.H - d }; } }
+      ];
+      lane.runs.forEach(function (run) { run.slots = run.len / run.pitch; });
+      lane.slotSec = pitchH / LANE_SPEED;
+      document.documentElement.style.setProperty("--band-w", Math.round(lane.S + GAP) + "px");
+      document.documentElement.style.setProperty("--band-h", Math.round(lane.cellH + GAP) + "px");
+      paintChips(lane.S);
+      placeChips();
+    }
+  }
+
+  var laneTimer = 0;
+  var stripHold = 0;
+  var stripDir = { top: 1, bottom: -1 };
+  var stripAcc = { top: null, bottom: null };
+  function stopLane() { if (laneTimer) { clearInterval(laneTimer); laneTimer = 0; } }
+  function startLane() {
+    stopLane();
+    if (motionQuery.matches) return;
+    var last = Date.now();
+    laneTimer = setInterval(function () {
+      var now = Date.now();
+      var dt = Math.min(0.5, (now - last) / 1000);
+      last = now;
+      if (document.hidden) return;
+      if (isPhone()) {
+        if (stripHold && now - stripHold < 2500) return;
+        stripHold = 0;
+        ["top", "bottom"].forEach(function (key) {
+          var el = document.getElementById(key === "top" ? "stripTop" : "stripBottom");
+          if (!el || el.scrollWidth <= el.clientWidth) return;
+          var cur = el.scrollLeft;
+          var acc = stripAcc[key];
+          if (acc === null || Math.abs(acc - cur) > 2) acc = cur;
+          acc += stripDir[key] * STRIP_SPEED * dt;
+          var max = el.scrollWidth - el.clientWidth;
+          if (acc >= max - 1) { acc = max - 1; stripDir[key] = -1; }
+          if (acc <= 1) { acc = 1; stripDir[key] = 1; }
+          stripAcc[key] = acc;
+          var next = Math.round(acc);
+          if (next !== cur) el.scrollLeft = next;
+        });
+      } else {
+        if (framePaused) return;
+        lane.phase = (lane.phase + dt / lane.slotSec) % lane.count;
+        placeChips();
+      }
+    }, TICK_MS);
+  }
+
+  function drawBarMark(canvas) {
+    var matrix = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var fitMax = parseFloat(canvas.getAttribute("data-fit")) || 108;
+    var room = canvas.parentElement.clientWidth || fitMax;
+    var cell = Math.max(2, Math.floor(Math.min(room, fitMax) / matrix.w));
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = matrix.w * cell * dpr;
+    canvas.height = matrix.h * cell * dpr;
+    canvas.style.width = (matrix.w * cell) + "px";
+    canvas.style.height = (matrix.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, matrix.w * cell, matrix.h * cell);
+    ctx.fillStyle = brandColor();
+    for (var y = 0; y < matrix.h; y++) {
+      for (var x = 0; x < matrix.w; x++) {
+        if (matrix.cells[y * matrix.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", canvas.getAttribute("data-cells"));
+  }
+
+  function fitStage() {
+    if (!stage) return;
+    var plate = document.querySelector(".plate");
+    var pw = plate.clientWidth || window.innerWidth;
+    var ph = plate.clientHeight || 320;
+    var cell;
+    if (isPhone()) {
+      var panel = plate.querySelector(".plate__panel");
+      var free = ph - (panel ? panel.offsetHeight : 210) - 30;
+      cell = Math.min(10, Math.floor((pw - 32) / C.w), Math.floor(free / C.h));
+    } else {
+      cell = Math.floor(Math.min((ph - 24) / C.h, (pw * 0.46) / C.w));
+    }
+    stage.setCell(Math.max(4, cell));
+  }
+
+  function syncColorControls() {
+    var party = document.documentElement.getAttribute("data-mode") === "party";
+    document.getElementById("ctlGreen").setAttribute("aria-pressed", String(!party));
+    document.getElementById("ctlPink").setAttribute("aria-pressed", String(party));
+  }
+
+  function relayout() {
+    [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawBarMark);
+    buildFrame();
+    fitStage();
+    if (stage) stage.paint();
+    paintStageName();
+  }
+
+  function setColor(which) {
+    var mode = which === "pink" || which === "party" ? "party" : "day";
+    if (document.documentElement.getAttribute("data-mode") === mode) return;
+    window.QevrCascade.through(function () {
+      document.documentElement.setAttribute("data-mode", mode);
+      writeModePreference(mode);
+      syncColorControls();
+      relayout();
+    });
+  }
+
+  syncColorControls();
+
+  /* ---------- A11: take the face home as a lock screen ---------- */
+  function downloadWallpaper() {
+    var matrix = window.Qevr.matrix(current);
+    if (!matrix) return;
+    var W = 1170, H = 2532;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = inkColor();
+    ctx.fillRect(0, 0, W, H);
+    var cell = Math.floor((W - 240) / C.w);
+    var fw = C.w * cell, fh = C.h * cell;
+    var ox = Math.floor((W - fw) / 2), oy = Math.floor((H - fh) / 2) + 60;
+    var body = brandColor(), ink = inkColor();
+    for (var gy = 0; gy < C.h; gy++) {
+      for (var gx = 0; gx < C.w; gx++) {
+        var v = matrix.cells[(gy + C.y0) * matrix.n + (gx + C.x0)];
+        if (!v) continue;
+        ctx.fillStyle = v === 2 ? ink : body;
+        ctx.fillRect(ox + gx * cell, oy + gy * cell, cell, cell);
+      }
+    }
+    /* the label under the art, the city at the foot: a flyer, not an ad */
+    ctx.fillStyle = body;
+    ctx.font = "700 44px 'Space Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(label(current), W / 2, oy + fh + 110);
+    ctx.fillStyle = "#9A9AA5";
+    ctx.font = "26px 'Space Mono', monospace";
+    ctx.fillText((COPY && COPY.city) || "SÃO PAULO", W / 2, H - 120);
+    var a = document.createElement("a");
+    a.download = "qiqi-" + current.toLowerCase().replace(/\s+/g, "-") + ".png";
+    a.href = canvas.toDataURL("image/png");
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  /* ---------- A18: when the canon grows, the arrival is staged once ---------- */
+  var SEEN_KEY = "qiqi.protoCount";
+  function maybeCeremony() {
+    var seen = null;
+    try { seen = parseInt(localStorage.getItem(SEEN_KEY), 10); } catch (e) {}
+    try { localStorage.setItem(SEEN_KEY, String(names.length)); } catch (e) {}
+    if (!seen || isNaN(seen) || seen >= names.length || reduce) return;
+    /* the newest face arrives on stage out of NORMAL, then takes its seat */
+    var newest = names[names.length - 1];
+    setLive(false);
+    stage.setFace("Default", true);
+    setTimeout(function () {
+      stage.setFace(newest);
+      setCurrent(newest);
+      setTimeout(function () { setLive(true); }, 2600);
+    }, 900);
+  }
+
+  /* ---------- L21: even reduced motion keeps his blink ---------- */
+  function reducedBlinkLoop() {
+    if (!reduce) return;
+    (function loop() {
+      setTimeout(function () {
+        if (stage && stage.face && stage.face.name !== "Eyes Closed") {
+          var was = stage.face.name;
+          var closed = window.Qevr.matrix("Eyes Closed");
+          stage.render.set(closed.cells);
+          stage.paint();
+          setTimeout(function () {
+            var back = window.Qevr.matrix(was);
+            stage.render.set(back.cells);
+            stage.paint();
+          }, 110);
+        }
+        loop();
+      }, 2800 + Math.random() * 3600);
+    })();
+  }
+
+  /* ---------- A13: the gallery keeps São Paulo hours too ---------- */
+  function hourFace() {
+    try {
+      var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Sao_Paulo", hour: "2-digit", hourCycle: "h23", weekday: "short" }).formatToParts(new Date());
+      var h = 12, wd = "";
+      parts.forEach(function (p) { if (p.type === "hour") h = parseInt(p.value, 10); if (p.type === "weekday") wd = p.value; });
+      if (wd === "Sun" && h === 8) return "Dead";
+      if (h >= 13 && h < 16) return "Eyes Closed";
+      if (h >= 8 && h < 13) return "Bored";
+      if (h >= 16 && h < 19) return "Content";
+      if (h >= 19 && h < 23) return "Happy";
+      if (h >= 23 || h < 5) return "Stars";
+      return "Blissful";
+    } catch (e) { return "Default"; }
+  }
+
+  Promise.all([
+    fetch("../assets/manifesto." + LANG + ".json").then(function (response) { return response.json(); }).catch(function () { return null; }),
+    window.Qevr.load("../assets/qevr-expressions.json"),
+    fetch("../assets/qevr-expressions.json").then(function (r) { return r.json(); }).catch(function () { return null; })
+  ]).then(function (result) {
+    COPY = result[0];
+    names = result[1];
+    /* keep the raw entries around: an expression may carry a maker credit */
+    window.__exprByName = {};
+    if (result[2] && result[2].expressions) {
+      result[2].expressions.forEach(function (e) { window.__exprByName[e.name] = e; });
+    }
+    var deck = COPY && (COPY.galeria || COPY.studio);
+    if (COPY && COPY.ui) {
+      document.getElementById("ctlLive").textContent = COPY.ui.yes;
+      document.getElementById("ctlHold").textContent = COPY.ui.no;
+      document.querySelector("#ctlGreen span").textContent = COPY.ui.green;
+      document.querySelector("#ctlPink span").textContent = COPY.ui.pink;
+    }
+    if (COPY && COPY.doors) {
+      document.title = COPY.brand + " / " + COPY.doors.galeria.label;
+      document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
+      document.getElementById("barEstudio").textContent = COPY.doors.estudio.label;
+      document.getElementById("barGaleria").textContent = COPY.doors.galeria.label;
+    }
+    if (deck) {
+      document.getElementById("moveLabel").textContent = deck.moveLabel;
+      document.getElementById("moveLabelShort").textContent = deck.moveLabelShort || deck.moveLabel;
+      document.getElementById("colorLabel").textContent = deck.colorLabel;
+      document.getElementById("colorLabelShort").textContent = deck.colorLabelShort || deck.colorLabel;
+      document.getElementById("glitchLabel").textContent = deck.glitchLabel;
+      document.getElementById("glitchLabelShort").textContent = deck.glitchLabel;
+      document.getElementById("wallLabel").textContent = deck.wallpaperLabel || "WALLPAPER";
+      document.getElementById("wallLabelShort").textContent = deck.wallpaperLabel || "WALLPAPER";
+      document.getElementById("ctlWall").textContent = deck.wallpaperLabel || "WALLPAPER";
+      document.getElementById("stageMetaTitle").textContent = deck.metaTitle || "";
+      /* the count reads from the data, never from a hardcoded line */
+      document.getElementById("stageMetaLines").textContent =
+        (deck.metaLines || []).map(function (l) { return l.replace("{N}", names.length); }).join(" / ");
+    }
+
+    stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
+      host: document.getElementById("stageBtn"), cell: 8, face: "Default"
+    });
+
+    /* L20: ?face= selects on load (canonical code, case-insensitive) */
+    var wanted = (location.search.match(/[?&]face=([^&]+)/) || [])[1];
+    var startFace = "Default";
+    if (wanted) {
+      try { wanted = decodeURIComponent(wanted).toLowerCase(); } catch (e) { wanted = null; }
+      if (wanted) {
+        names.forEach(function (n) { if (n.toLowerCase() === wanted) startFace = n; });
+      }
+    } else {
+      startFace = hourFace();
+    }
+    stage.setFace(startFace, true);
+    setCurrent(startFace);
+    setLive(true);
+    reducedBlinkLoop();
+
+    document.getElementById("stageBtn").addEventListener("click", function () {
+      stage.poke().then(function () { setCurrent(stage.face.name); });
+    });
+
+    var frame = document.getElementById("frame");
+    frame.addEventListener("click", function (event) {
+      var face = event.target;
+      while (face && face !== frame && !(face.classList && face.classList.contains("face"))) face = face.parentElement;
+      if (!face || face === frame) return;
+      var name = face.getAttribute("data-name");
+      if (!name) return;
+      setLive(false);
+      stage.setFace(name);
+      setCurrent(name);
+    });
+    frame.addEventListener("pointerenter", function () { framePaused = true; });
+    frame.addEventListener("pointerleave", function () { framePaused = frame.contains(document.activeElement); });
+    frame.addEventListener("focusin", function () { framePaused = true; });
+    frame.addEventListener("focusout", function () {
+      setTimeout(function () { framePaused = frame.contains(document.activeElement); }, 0);
+    });
+
+    window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
+    document.getElementById("ctlLive").addEventListener("click", function () { setLive(true); });
+    document.getElementById("ctlHold").addEventListener("click", function () { setLive(false); });
+    document.getElementById("ctlGlitch").addEventListener("click", glitchBoth);
+    document.getElementById("ctlGreen").addEventListener("click", function () { setColor("green"); });
+    document.getElementById("ctlPink").addEventListener("click", function () { setColor("pink"); });
+    document.getElementById("ctlWall").addEventListener("click", downloadWallpaper);
+
+    makeChips();
+    relayout();
+    startLane();
+    maybeCeremony();
+    setTimeout(relayout, 250);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+
+    ["stripTop", "stripBottom"].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.addEventListener("pointerdown", function () { stripHold = Date.now(); }, { passive: true });
+      el.addEventListener("wheel", function () { stripHold = Date.now(); }, { passive: true });
+      el.addEventListener("touchmove", function () { stripHold = Date.now(); }, { passive: true });
+    });
+
+    setInterval(function () {
+      if (live && stage && stage.face && stage.face.name !== current) setCurrent(stage.face.name);
+    }, 400);
+
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(relayout, 150);
+    });
+  }).catch(function (error) { console.error("[galeria] boot failed", error); });
+
+  function syncMotionPreference() {
+    if (motionQuery.matches) stopLane();
+    else startLane();
+  }
+  if (motionQuery.addEventListener) motionQuery.addEventListener("change", syncMotionPreference);
+  else if (motionQuery.addListener) motionQuery.addListener(syncMotionPreference);
+})();
+</script>
+<script type="module" src="../assets/qa.mjs"></script>
+</body>
+</html>
