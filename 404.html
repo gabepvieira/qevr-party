@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QIQI / 404</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#09090B">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .wrong {
+    min-height: calc(100svh - var(--bar));
+    max-width: var(--wrap); margin-inline: auto;
+    padding: clamp(18px, 3.4vh, 38px) var(--gut);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(16px, 3vh, 30px); text-align: center;
+  }
+  .wrong__code canvas { display: block; image-rendering: pixelated; }
+  .wrong__line { font-size: clamp(13px, 1.4vw, 18px); letter-spacing: .1em; color: var(--qevr-light); }
+  .wrong__door {
+    display: inline-block; text-decoration: none; color: var(--qevr-light);
+    border: var(--rule) solid var(--qevr-hair); padding: 13px 18px;
+    font-size: 12px; letter-spacing: .16em;
+  }
+  .wrong__door:hover, .wrong__door:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); outline: none; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__in">
+    <a class="bar__mark" href="/" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="/#manifesto" id="barManifesto">O MANIFESTO</a>
+      <a href="/estudio/" id="barEstudio">O ESTÚDIO</a>
+      <a href="/galeria/" id="barGaleria">A GALERIA</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrong">
+    <span class="wrong__code"><canvas id="codeWord" data-cells="404" data-fit="300"></canvas></span>
+    <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
+    <div class="wrong__line" id="wrongLine">ESSA PÁGINA NÃO EXISTE :(</div>
+    <a class="wrong__door" href="/#manifesto" id="wrongDoor">O MANIFESTO</a>
+  </section>
+</main>
+
+<script src="/assets/pixelfont.js"></script>
+<script src="/assets/qevr.js"></script>
+<script src="/assets/cascade.js"></script>
+<script>
+(function () {
+  "use strict";
+  var MODE_KEY = "qevr.mode";
+  try {
+    var mode = localStorage.getItem(MODE_KEY);
+    if (mode === "party") document.documentElement.setAttribute("data-mode", "party");
+  } catch (e) {}
+  var LANG = "pt";
+  try { var l = localStorage.getItem("qevr.lang"); if (l === "en") LANG = "en"; } catch (e) {}
+  if (LANG === "en") {
+    document.documentElement.lang = "en";
+    document.getElementById("wrongLine").textContent = "THIS PAGE DOESN'T EXIST :(";
+  }
+
+  function brandColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00";
+  }
+  function drawWord(canvas) {
+    var m = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var fit = parseFloat(canvas.getAttribute("data-fit")) || 300;
+    var room = canvas.parentElement.clientWidth || window.innerWidth;
+    var cell = Math.max(3, Math.floor(Math.min(room, fit) / m.w));
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
+    canvas.style.width = (m.w * cell) + "px"; canvas.style.height = (m.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = brandColor();
+    for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) {
+      if (m.cells[y * m.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+    }
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", canvas.getAttribute("data-cells"));
+  }
+  [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawWord);
+
+  /* even the wrong room is his room: he shows up big, dead, and still pokeable */
+  window.Qevr.load("/assets/qevr-expressions.json").then(function () {
+    var btn = document.getElementById("mascotBtn");
+    var cell = Math.max(8, Math.min(14, Math.floor((window.innerHeight * 0.4) / window.Qevr.CROP.h)));
+    var mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
+      host: btn, cell: cell, face: "Shocked"
+    });
+    /* shocked, a beat, then dead. the stare arc of walking into the wrong room. */
+    setTimeout(function () { mascot.setFace("Dead"); }, 1400);
+    btn.addEventListener("click", function () { mascot.poke(); });
+    window.QevrCascade.wireLinks(".bar__nav a, .bar__mark, .wrong__door");
+  }).catch(function (e) { console.error("[qiqi 404]", e); });
+})();
+</script>
+</body>
+</html>

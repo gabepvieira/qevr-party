@@ -1,16 +1,20 @@
 {
   "lang": "en",
-  "brand": "QEVR",
+  "brand": "QIQI",
   "city": "SÃO PAULO",
   "note": "COPY DECK, ENGLISH. ALL CAPS always. No em dashes, no exclamation marks, no emoji. THE REGISTER IS SPOKEN: the way a partier texts a friend, never marketing. Mirror the PT deck beat for beat; where PT uses VC/TBM texting forms, EN may use U and contractions. Read every line out loud before committing. The stamp is the last line of A GIFT, not a separate footer.",
   "doors": {
     "manifesto": {
       "label": "THE MANIFESTO",
-      "sub": "WHAT IT IS AND WHY IT EXISTS"
+      "sub": "WHAT QIQI IS"
     },
-    "studio": {
+    "estudio": {
       "label": "THE STUDIO",
-      "sub": ""
+      "sub": "MAKE YOUR QIQI"
+    },
+    "galeria": {
+      "label": "THE GALLERY",
+      "sub": "THE 23 EXISTING PROTOTYPES"
     }
   },
   "ui": {
@@ -21,13 +25,13 @@
   },
   "world": {
     "title": "THE FLOOR",
-    "sub": "WHERE QEVR CAME FROM",
+    "sub": "WHERE QIQI CAME FROM",
     "face": "Content",
     "paragraphs": [
-      "QEVR WAS BORN ON THE FLOOR AND BELONGS TO THE FLOOR.",
+      "QIQI WAS BORN ON THE FLOOR AND BELONGS TO THE FLOOR.",
       "FREE PARTIES IN ABANDONED WAREHOUSES.",
       "SOME NIGHTS YOU'RE ON THE FLOOR WITH FRIENDS.",
-      "SOME NIGHTS THE FLOOR IS JUST YOU. THAT'S PART OF IT. QEVR DIDN'T COME TO FIX THAT."
+      "SOME NIGHTS THE FLOOR IS JUST YOU. THAT'S PART OF IT. QIQI DIDN'T COME TO FIX THAT."
     ]
   },
   "people": {
@@ -55,11 +59,11 @@
     "close": [
       "PARTIES, LONELINESS, PEOPLE. ALL PART OF A MOMENT.",
       "AND THE MOMENT PASSED. THAT'S WHAT MADE IT A MOMENT.",
-      "QEVR WILL NEVER BRING IT BACK. AND IT WILL NEVER LET YOU PRETEND IT DIDN'T HAPPEN."
+      "QIQI WILL NEVER BRING IT BACK. AND IT WILL NEVER LET YOU PRETEND IT DIDN'T HAPPEN."
     ]
   },
   "stances": {
-    "title": "QEVR",
+    "title": "QIQI",
     "sub": "HOW IT WORKS",
     "items": [
       {
@@ -157,26 +161,49 @@
     "sub": "WHO IT'S FOR",
     "face": "Stars",
     "paragraphs": [
-      "QEVR IS A GIFT FROM ME TO EVERYONE I EVER MET ON THE FLOOR. AND TO EVERYONE I NEVER WILL.",
+      "QIQI IS A GIFT FROM ME TO EVERYONE I EVER MET ON THE FLOOR. AND TO EVERYONE I NEVER WILL.",
       "AN APP TO USE WITH FRIENDS. OR ALONE."
-    ]
+    ],
+    "appLine": "THE APP IS BEING BUILT. WHEN IT'S READY, IT TELLS YOU."
   },
-  "stamp": "SEE YOU ON THE FLOOR.",
-  "studio": {
+  "stamp": "SEE YOU ON THE FLOOR",
+  "stampSmiley": ":)",
+  "galeria": {
     "moveLabel": "DOES IT MOVE ON ITS OWN?",
     "moveLabelShort": "MOVES?",
     "colorLabel": "COLOR",
     "colorLabelShort": "COLOR",
     "glitchLabel": "WANNA SEE SOMETHING?",
+    "wallpaperLabel": "WALLPAPER",
     "metaTitle": "ITS ONE RULE",
     "metaLines": [
       "34 X 34 GRID",
-      "23 FACES",
+      "{N} PROTOTYPES",
       "ONLY THE FACE CHANGES"
-    ]
+    ],
+    "protoWord": "PROTOTYPE",
+    "creditPattern": "QIQI BY {NOME}"
+  },
+  "estudio": {
+    "title": "THE STUDIO",
+    "hint": "ONLY THE FACE MOVES. THE REST IS HIM.",
+    "nameLabel": "GIVE IT A NAME",
+    "codeLabel": "YOUR CODE",
+    "undo": "UNDO",
+    "reset": "CLEAR ALL",
+    "copyLink": "COPY LINK",
+    "copied": "COPIED",
+    "card": "GET THE CARD",
+    "send": "SEND IT TO QIQI",
+    "sendHint": "PASTE THE LINK IN QIQI'S DMS. THE REPLY LANDS IN THAT SAME CHAT."
+  },
+  "notFound": {
+    "line": "THIS PAGE DOESN'T EXIST :("
   },
   "arrival": {
     "mascotHint": "GO ON, CLICK ME",
-    "colorQuestion": "I CHANGE COLORS TOO :3"
+    "colorQuestion": "I CHANGE COLORS TOO :3",
+    "scrollLabel": "SCROLL",
+    "fromPattern": "{NOME} GAVE YOU THIS."
   }
 }

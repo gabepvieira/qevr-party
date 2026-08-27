@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>QIQI / O ESTÚDIO</title>
+<meta name="description" content="CRIA O SEU QIQI. SÓ O ROSTO MUDA.">
+<meta name="theme-color" content="#09090B">
+<meta property="og:title" content="QIQI / O ESTÚDIO">
+<meta property="og:description" content="CRIA O SEU QIQI. SÓ O ROSTO MUDA.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://qevr.party/estudio/">
+<meta property="og:image" content="https://qevr.party/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../assets/fonts/spacemono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/spacemono-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="estudio.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__in">
+    <a class="bar__mark" href="../" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="../#manifesto" id="barManifesto">O MANIFESTO</a>
+      <a href="./" aria-current="page" id="barEstudio">O ESTÚDIO</a>
+      <a href="../galeria/" id="barGaleria">A GALERIA</a>
+    </nav>
+  </div>
+</header>
+
+<div class="lang" role="group" aria-label="PT / EN">
+  <button id="langPt" type="button" aria-pressed="true">PT</button>
+  <button id="langEn" type="button" aria-pressed="false">EN</button>
+</div>
+
+<main class="maker">
+  <div class="maker__frame">
+    <div class="maker__art">
+      <div class="maker__canvasbox" id="canvasBox">
+        <canvas class="maker__canvas" id="editor" aria-label="EDITOR"></canvas>
+        <div class="loupe" id="loupe"><canvas id="loupeCanvas"></canvas></div>
+      </div>
+      <div class="maker__caption" id="makerHint"></div>
+    </div>
+
+    <div class="maker__tools">
+      <div class="maker__section maker__topname">
+        <label class="maker__label" for="nameField" id="nameLabel">DÁ UM NOME</label>
+        <input class="maker__name" id="nameField" type="text" maxlength="20" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="maker__section maker__zoom">
+        <div class="maker__row">
+          <button class="ctl" id="zoomWhole" type="button" aria-pressed="true">INTEIRO</button>
+          <button class="ctl" id="zoomBand" type="button" aria-pressed="false">SÓ A CARA</button>
+        </div>
+      </div>
+
+      <div class="maker__section">
+        <div class="maker__row">
+          <button class="ctl" id="btnUndo" type="button">DESFAZER</button>
+          <button class="ctl" id="btnReset" type="button">APAGAR TUDO</button>
+        </div>
+      </div>
+
+      <div class="maker__section">
+        <div class="maker__previews">
+          <div class="preview">
+            <canvas id="prevChip"></canvas>
+            <span class="preview__chipname" id="prevChipName"></span>
+          </div>
+          <div class="preview">
+            <canvas id="prevComp"></canvas>
+            <span class="preview__tag" id="prevCompTag"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="maker__section">
+        <span class="maker__label" id="codeLabel">SEU CÓDIGO</span>
+        <div class="maker__code" id="codeOut"></div>
+      </div>
+
+      <div class="maker__section">
+        <div class="maker__row">
+          <button class="ctl" id="btnLink" type="button">COPIAR LINK</button>
+          <button class="ctl" id="btnCard" type="button">BAIXAR CARD</button>
+          <button class="ctl" id="btnSend" type="button">MANDAR PRO QIQI</button>
+        </div>
+        <div class="maker__hint" id="sendHint" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../assets/pixelfont.js"></script>
+<script src="../assets/qevr.js"></script>
+<script src="../assets/cascade.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var MODE_KEY = "qevr.mode";
+  var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
+  try {
+    var stored = localStorage.getItem(MODE_KEY);
+    document.documentElement.setAttribute("data-mode", forced || (stored === "party" ? "party" : "day"));
+  } catch (e) { document.documentElement.setAttribute("data-mode", forced || "day"); }
+
+  var LANG_KEY = "qevr.lang";
+  function readLang() {
+    var f = (location.search.match(/[?&]lang=(pt|en)(?:&|$)/) || [])[1];
+    if (f) return f;
+    try { var l = localStorage.getItem(LANG_KEY); if (l === "pt" || l === "en") return l; } catch (e) {}
+    return "pt";
+  }
+  var LANG = readLang();
+  document.documentElement.lang = LANG === "en" ? "en" : "pt-BR";
+  function chooseLang(next) {
+    if (next === LANG) return;
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+    window.QevrCascade.through(function () {
+      if (location.search || location.hash) location.href = location.pathname;
+      else location.reload();
+    });
+  }
+  document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
+  document.getElementById("langEn").setAttribute("aria-pressed", String(LANG === "en"));
+  document.getElementById("langPt").addEventListener("click", function () { chooseLang("pt"); });
+  document.getElementById("langEn").addEventListener("click", function () { chooseLang("en"); });
+
+  /* ---------- constants, verified in docs/design-research/estudio-math-2026-08.md ---------- */
+  var GRID = 34;
+  var CROP = { x0: 6, y0: 5, w: 23, h: 25 };
+  var BAND = { x0: 7, y0: 14, w: 20, h: 11 };
+  var CELLS = 220, CODE_LEN = 37;
+  var LIME = 1, INK = 2;
+  var NAME_MAX = 20;
+  var UNDO_CAP = 100;
+  var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function cssVar(n, fb) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb; }
+  function brandColor() { return cssVar("--brand", "#CCFF00"); }
+  function inkColor() { return cssVar("--qevr-ink", "#09090B"); }
+
+  var COPY = null, DECK = null;
+  var work = null;              /* Uint8Array 34*34, the working grid */
+  var bandMode = false;         /* phone zoom: band only */
+  var editor = document.getElementById("editor");
+  var cellDev = 1, dpr = 1;
+
+  function isPhone() { return window.matchMedia("(max-width: 720px)").matches; }
+
+  /* ---------- the code: 220 bits, base64url, 37 chars ---------- */
+  function encode() {
+    var bits = [];
+    for (var y = BAND.y0; y < BAND.y0 + BAND.h; y++) {
+      for (var x = BAND.x0; x < BAND.x0 + BAND.w; x++) {
+        bits.push(work[y * GRID + x] === INK ? 1 : 0);
+      }
+    }
+    bits.push(0, 0);
+    var out = "";
+    for (var i = 0; i < bits.length; i += 6) {
+      var v = 0;
+      for (var j = 0; j < 6; j++) v = (v << 1) | (bits[i + j] || 0);
+      out += ALPHABET[v];
+    }
+    return out;
+  }
+  function decode(code) {
+    if (!code || code.length !== CODE_LEN) return null;
+    var bits = [];
+    for (var i = 0; i < code.length; i++) {
+      var v = ALPHABET.indexOf(code[i]);
+      if (v < 0) return null;
+      for (var j = 5; j >= 0; j--) bits.push((v >> j) & 1);
+    }
+    return bits.slice(0, CELLS);
+  }
+
+  /* ---------- painting: integer device pixels per cell ---------- */
+  function viewCols() { return bandMode ? BAND.w : CROP.w; }
+  function viewRows() { return bandMode ? BAND.h : CROP.h; }
+  function viewOrigin() { return bandMode ? { x: BAND.x0, y: BAND.y0 } : { x: CROP.x0, y: CROP.y0 }; }
+
+  function sizeEditor() {
+    var box = document.getElementById("canvasBox");
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var cols = viewCols(), rows = viewRows();
+    var cellCss;
+    if (isPhone()) {
+      var w = (box.clientWidth || vw - 24);
+      var h = (box.clientHeight || vh - 400);
+      cellCss = Math.max(8, Math.min(Math.floor(w / cols), Math.floor(h / rows)));
+    } else {
+      var availW = box.clientWidth || (vw * 0.5);
+      var availH = box.clientHeight || (vh - 140);
+      cellCss = Math.max(6, Math.min(Math.floor(availW / cols), Math.floor(availH / rows)));
+    }
+    dpr = window.devicePixelRatio || 1;
+    cellDev = Math.max(1, Math.round(cellCss * dpr));
+    editor.width = cols * cellDev;
+    editor.height = rows * cellDev;
+    editor.style.width = (cols * cellDev / dpr) + "px";
+    editor.style.height = (rows * cellDev / dpr) + "px";
+    var ctx = editor.getContext("2d");
+    ctx.setTransform(cellDev, 0, 0, cellDev, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+  }
+
+  function paintEditor() {
+    var ctx = editor.getContext("2d");
+    var cols = viewCols(), rows = viewRows(), o = viewOrigin();
+    ctx.clearRect(0, 0, cols, rows);
+    var body = brandColor(), ink = inkColor();
+    for (var vy = 0; vy < rows; vy++) {
+      for (var vx = 0; vx < cols; vx++) {
+        var v = work[(vy + o.y) * GRID + (vx + o.x)];
+        if (!v) continue;
+        ctx.fillStyle = v === INK ? ink : body;
+        ctx.fillRect(vx, vy, 1, 1);
+      }
+    }
+    /* the workbench frame: a hair inset marking the band */
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.strokeStyle = cssVar("--qevr-hair", "#27272A");
+    ctx.lineWidth = Math.max(1, Math.round(dpr));
+    var bx = (BAND.x0 - o.x) * cellDev, by = (BAND.y0 - o.y) * cellDev;
+    ctx.strokeRect(bx + 0.5, by + 0.5, BAND.w * cellDev - 1, BAND.h * cellDev - 1);
+    ctx.restore();
+    paintPreviews();
+    syncCode();
+  }
+
+  /* ---------- previews: the gallery chip and the corner companion ---------- */
+  function paintScaled(canvas, wCss) {
+    var hCss = Math.round(wCss / (CROP.w / CROP.h));
+    var d = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(wCss * d); canvas.height = Math.round(hCss * d);
+    canvas.style.width = wCss + "px"; canvas.style.height = hCss + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.clearRect(0, 0, wCss, hCss);
+    var body = brandColor(), ink = inkColor();
+    for (var gy = 0; gy < CROP.h; gy++) {
+      var y0 = Math.round(gy * hCss / CROP.h), y1 = Math.round((gy + 1) * hCss / CROP.h);
+      for (var gx = 0; gx < CROP.w; gx++) {
+        var v = work[(gy + CROP.y0) * GRID + (gx + CROP.x0)];
+        if (!v) continue;
+        var x0 = Math.round(gx * wCss / CROP.w), x1 = Math.round((gx + 1) * wCss / CROP.w);
+        ctx.fillStyle = v === INK ? ink : body;
+        ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+      }
+    }
+  }
+  function paintPreviews() {
+    paintScaled(document.getElementById("prevChip"), 110);
+    var compCell = isPhone() ? 3 : 4;
+    var comp = document.getElementById("prevComp");
+    var d = Math.min(window.devicePixelRatio || 1, 2);
+    comp.width = CROP.w * compCell * d; comp.height = CROP.h * compCell * d;
+    comp.style.width = (CROP.w * compCell) + "px"; comp.style.height = (CROP.h * compCell) + "px";
+    var ctx = comp.getContext("2d");
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.clearRect(0, 0, CROP.w * compCell, CROP.h * compCell);
+    var body = brandColor(), ink = inkColor();
+    for (var gy = 0; gy < CROP.h; gy++) for (var gx = 0; gx < CROP.w; gx++) {
+      var v = work[(gy + CROP.y0) * GRID + (gx + CROP.x0)];
+      if (!v) continue;
+      ctx.fillStyle = v === INK ? ink : body;
+      ctx.fillRect(gx * compCell, gy * compCell, compCell, compCell);
+    }
+  }
+
+  /* ---------- name ---------- */
+  var ALLOWED = /[^A-Z0-9 .,'\/:\-?()ÁÀÃÂÉÊÍÓÕÔÚÇ]/g;
+  function cleanName(v) {
+    return v.toUpperCase().replace(ALLOWED, "").slice(0, NAME_MAX);
+  }
+  function nameValue() { return cleanName(document.getElementById("nameField").value); }
+
+  function syncCode() {
+    var code = encode();
+    document.getElementById("codeOut").textContent = code;
+    document.getElementById("prevChipName").textContent = nameValue() || "";
+    try {
+      var qs = "?f=" + code;
+      var n = nameValue();
+      if (n) qs += "&n=" + encodeURIComponent(n);
+      history.replaceState(null, "", location.pathname + qs);
+    } catch (e) {}
+    return code;
+  }
+  function shareURL() {
+    var code = encode();
+    var n = nameValue();
+    return location.origin + location.pathname + "?f=" + code + (n ? "&n=" + encodeURIComponent(n) : "");
+  }
+
+  /* ---------- the stroke: paint on down, mode-locked, one undo per stroke ---------- */
+  var undoStack = [];
+  var stroke = null;
+  function cellFromEvent(e) {
+    var rect = editor.getBoundingClientRect();
+    var cols = viewCols(), rows = viewRows(), o = viewOrigin();
+    var col = Math.floor((e.clientX - rect.left) / (rect.width / cols));
+    var row = Math.floor((e.clientY - rect.top) / (rect.height / rows));
+    col = Math.max(0, Math.min(cols - 1, col));
+    row = Math.max(0, Math.min(rows - 1, row));
+    var gx = col + o.x, gy = row + o.y;
+    return { gx: gx, gy: gy, inBand: gx >= BAND.x0 && gx < BAND.x0 + BAND.w && gy >= BAND.y0 && gy < BAND.y0 + BAND.h,
+             px: e.clientX - rect.left, py: e.clientY - rect.top, rect: rect };
+  }
+  function snapToBand(c) {
+    /* a down within 4 css px of the band edge snaps in; a move within a
+       quarter cell keeps the stroke alive along the border */
+    var cellCss = c.rect.width / viewCols();
+    var slop = stroke ? cellCss * 0.25 : 4;
+    var bx0 = (BAND.x0 - viewOrigin().x) * cellCss, by0 = (BAND.y0 - viewOrigin().y) * cellCss;
+    var bx1 = bx0 + BAND.w * cellCss, by1 = by0 + BAND.h * cellCss;
+    if (c.px < bx0 - slop || c.px > bx1 + slop || c.py < by0 - slop || c.py > by1 + slop) return null;
+    var gx = Math.max(BAND.x0, Math.min(BAND.x0 + BAND.w - 1, c.gx));
+    var gy = Math.max(BAND.y0, Math.min(BAND.y0 + BAND.h - 1, c.gy));
+    return { gx: gx, gy: gy };
+  }
+  function applyCell(gx, gy) {
+    var idx = gy * GRID + gx;
+    if (work[idx] === stroke.brush) return;
+    stroke.changes.push({ idx: idx, from: work[idx], to: stroke.brush });
+    work[idx] = stroke.brush;
+  }
+  function lineWalk(a, b, fn) {
+    var x0 = a.gx, y0 = a.gy, x1 = b.gx, y1 = b.gy;
+    var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+    var sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    var err = dx - dy;
+    while (true) {
+      fn(x0, y0);
+      if (x0 === x1 && y0 === y1) break;
+      var e2 = 2 * err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+    }
+  }
+
+  /* the loupe: phone drags only, 3x, pinned away from the finger */
+  var loupe = document.getElementById("loupe");
+  var loupeCanvas = document.getElementById("loupeCanvas");
+  function paintLoupe(gx, gy, px) {
+    if (!isPhone()) return;
+    var LC = 7, LR = 5, S = 20;
+    var d = Math.min(window.devicePixelRatio || 1, 2);
+    loupeCanvas.width = LC * S * d; loupeCanvas.height = LR * S * d;
+    loupeCanvas.style.width = (LC * S) + "px"; loupeCanvas.style.height = (LR * S) + "px";
+    var ctx = loupeCanvas.getContext("2d");
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.clearRect(0, 0, LC * S, LR * S);
+    var body = brandColor(), ink = inkColor();
+    for (var vy = 0; vy < LR; vy++) for (var vx = 0; vx < LC; vx++) {
+      var wx = gx - 3 + vx, wy = gy - 2 + vy;
+      var v = (wx >= 0 && wx < GRID && wy >= 0 && wy < GRID) ? work[wy * GRID + wx] : 0;
+      ctx.fillStyle = v === INK ? ink : (v === LIME ? body : "#000000");
+      ctx.fillRect(vx * S, vy * S, S, S);
+    }
+    ctx.strokeStyle = cssVar("--qevr-light", "#FFFFFF");
+    ctx.lineWidth = 2;
+    ctx.strokeRect(3 * S + 1, 2 * S + 1, S - 2, S - 2);
+    /* pin top-left; hop to the right side when the finger is in that quadrant */
+    var rect = editor.getBoundingClientRect();
+    var box = document.getElementById("canvasBox").getBoundingClientRect();
+    var left = (px < rect.width / 2) ? (rect.right - box.left - LC * S) : (rect.left - box.left);
+    loupe.style.left = Math.max(0, left) + "px";
+    loupe.style.top = (rect.top - box.top) + "px";
+    loupe.classList.add("on");
+  }
+  function hideLoupe() { loupe.classList.remove("on"); }
+
+  var lastCell = null, downPoint = null, moved = false;
+  editor.addEventListener("pointerdown", function (e) {
+    if (stroke) return;
+    e.preventDefault();
+    var c = cellFromEvent(e);
+    var hit = snapToBand(c);
+    if (!hit) return;
+    editor.setPointerCapture(e.pointerId);
+    var idx = hit.gy * GRID + hit.gx;
+    var brush = work[idx] === INK ? LIME : INK;
+    stroke = { id: e.pointerId, brush: brush, changes: [] };
+    downPoint = { x: e.clientX, y: e.clientY };
+    moved = false;
+    applyCell(hit.gx, hit.gy);
+    lastCell = hit;
+    paintEditor();
+  });
+  editor.addEventListener("pointermove", function (e) {
+    if (!stroke || e.pointerId !== stroke.id) return;
+    var c = cellFromEvent(e);
+    var hit = snapToBand(c);
+    if (Math.abs(e.clientX - downPoint.x) + Math.abs(e.clientY - downPoint.y) > 6) moved = true;
+    if (!hit) return;
+    lineWalk(lastCell, hit, function (gx, gy) {
+      if (gx >= BAND.x0 && gx < BAND.x0 + BAND.w && gy >= BAND.y0 && gy < BAND.y0 + BAND.h) applyCell(gx, gy);
+    });
+    lastCell = hit;
+    paintEditor();
+    if (moved) paintLoupe(hit.gx, hit.gy, c.px);
+  });
+  function endStroke(e) {
+    if (!stroke || (e && e.pointerId !== stroke.id)) return;
+    if (stroke.changes.length) {
+      undoStack.push(stroke.changes);
+      if (undoStack.length > UNDO_CAP) undoStack.shift();
+    }
+    stroke = null; lastCell = null;
+    hideLoupe();
+  }
+  editor.addEventListener("pointerup", endStroke);
+  editor.addEventListener("pointercancel", endStroke);
+
+  function undo() {
+    var changes = undoStack.pop();
+    if (!changes) return;
+    for (var i = changes.length - 1; i >= 0; i--) work[changes[i].idx] = changes[i].from;
+    paintEditor();
+  }
+  document.getElementById("btnUndo").addEventListener("click", undo);
+  document.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
+  });
+  document.getElementById("btnReset").addEventListener("click", function () {
+    var def = window.Qevr.matrix("Default");
+    var changes = [];
+    for (var y = BAND.y0; y < BAND.y0 + BAND.h; y++) for (var x = BAND.x0; x < BAND.x0 + BAND.w; x++) {
+      var idx = y * GRID + x;
+      if (work[idx] !== def.cells[idx]) { changes.push({ idx: idx, from: work[idx], to: def.cells[idx] }); work[idx] = def.cells[idx]; }
+    }
+    if (changes.length) { undoStack.push(changes); if (undoStack.length > UNDO_CAP) undoStack.shift(); }
+    paintEditor();
+  });
+
+  /* zoom toggle: whole him, or just the face for fine work */
+  function setBandMode(on) {
+    bandMode = on;
+    document.getElementById("zoomWhole").setAttribute("aria-pressed", String(!on));
+    document.getElementById("zoomBand").setAttribute("aria-pressed", String(on));
+    sizeEditor(); paintEditor();
+  }
+  document.getElementById("zoomWhole").addEventListener("click", function () { setBandMode(false); });
+  document.getElementById("zoomBand").addEventListener("click", function () { setBandMode(true); });
+
+  /* ---------- A04 / A05: the card and the exits ---------- */
+  function flash(btn, text) {
+    var was = btn.textContent;
+    btn.textContent = text;
+    setTimeout(function () { btn.textContent = was; }, 1400);
+  }
+  function copyText(text, btn, okText) {
+    function ok() { if (btn) flash(btn, okText); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, ok);
+    } else { ok(); }
+  }
+  document.getElementById("btnLink").addEventListener("click", function () {
+    copyText(shareURL(), this, (DECK && DECK.copied) || "COPIADO");
+  });
+  document.getElementById("btnSend").addEventListener("click", function () {
+    var url = shareURL();
+    if (navigator.share) {
+      navigator.share({ url: url }).catch(function () {});
+    } else {
+      copyText(url, this, (DECK && DECK.copied) || "COPIADO");
+    }
+  });
+
+  /* the card: a story-sized flyer. the face huge, the name in cell type,
+     the code visible as the fine print where a flyer puts the address. */
+  function drawTypeOn(ctx, text, ox, oy, cell, color) {
+    var m = window.QevrType.textMatrix(text);
+    ctx.fillStyle = color;
+    for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) {
+      if (m.cells[y * m.w + x]) ctx.fillRect(ox + x * cell, oy + y * cell, cell, cell);
+    }
+    return m;
+  }
+  document.getElementById("btnCard").addEventListener("click", function () {
+    var W = 1080, H = 1920;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "#09090B";
+    ctx.fillRect(0, 0, W, H);
+    var body = brandColor();
+    /* frame */
+    ctx.strokeStyle = body; ctx.lineWidth = 10;
+    ctx.strokeRect(30, 30, W - 60, H - 60);
+    /* him, huge */
+    var cell = Math.floor((W - 240) / CROP.w);
+    var fw = CROP.w * cell, fh = CROP.h * cell;
+    var ox = Math.floor((W - fw) / 2), oy = 300;
+    for (var gy = 0; gy < CROP.h; gy++) for (var gx = 0; gx < CROP.w; gx++) {
+      var v = work[(gy + CROP.y0) * GRID + (gx + CROP.x0)];
+      if (!v) continue;
+      ctx.fillStyle = v === INK ? "#09090B" : body;
+      ctx.fillRect(ox + gx * cell, oy + gy * cell, cell, cell);
+    }
+    /* the name, huge, in his own type */
+    var n = nameValue();
+    if (n) {
+      var m = window.QevrType.textMatrix(n);
+      var tCell = Math.max(4, Math.min(12, Math.floor((W - 160) / m.w)));
+      drawTypeOn(ctx, n, Math.floor((W - m.w * tCell) / 2), 130, tCell, body);
+    } else {
+      var mm = window.QevrType.textMatrix("QIQI");
+      drawTypeOn(ctx, "QIQI", Math.floor((W - mm.w * 12) / 2), 130, 12, body);
+    }
+    /* the code: real text, visible, the flyer's fine print */
+    ctx.fillStyle = "#9A9AA5";
+    ctx.font = "28px 'Space Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(encode(), W / 2, H - 190);
+    ctx.font = "24px 'Space Mono', monospace";
+    ctx.fillText((COPY && COPY.city) || "SÃO PAULO", W / 2, H - 120);
+    var a = document.createElement("a");
+    a.download = "qiqi-card.png";
+    a.href = canvas.toDataURL("image/png");
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  /* name input: uppercase-map the value itself; it goes into the URL and the card */
+  var nameField = document.getElementById("nameField");
+  nameField.addEventListener("input", function () {
+    var v = cleanName(nameField.value);
+    if (nameField.value !== v) nameField.value = v;
+    syncCode();
+  });
+
+  /* ---------- bar mark ---------- */
+  function drawBarMark(canvas) {
+    var matrix = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var fitMax = parseFloat(canvas.getAttribute("data-fit")) || 108;
+    var room = canvas.parentElement.clientWidth || fitMax;
+    var cell = Math.max(2, Math.floor(Math.min(room, fitMax) / matrix.w));
+    var d = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = matrix.w * cell * d; canvas.height = matrix.h * cell * d;
+    canvas.style.width = (matrix.w * cell) + "px"; canvas.style.height = (matrix.h * cell) + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.clearRect(0, 0, matrix.w * cell, matrix.h * cell);
+    ctx.fillStyle = brandColor();
+    for (var y = 0; y < matrix.h; y++) for (var x = 0; x < matrix.w; x++) {
+      if (matrix.cells[y * matrix.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+    }
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", canvas.getAttribute("data-cells"));
+  }
+
+  /* ---------- boot ---------- */
+  Promise.all([
+    fetch("../assets/manifesto." + LANG + ".json").then(function (r) { return r.json(); }).catch(function () { return null; }),
+    window.Qevr.load("../assets/qevr-expressions.json")
+  ]).then(function (res) {
+    COPY = res[0];
+    DECK = COPY && COPY.estudio;
+    if (COPY && COPY.doors) {
+      document.title = COPY.brand + " / " + COPY.doors.estudio.label;
+      document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
+      document.getElementById("barEstudio").textContent = COPY.doors.estudio.label;
+      document.getElementById("barGaleria").textContent = COPY.doors.galeria.label;
+    }
+    if (DECK) {
+      document.getElementById("makerHint").textContent = DECK.hint || "";
+      document.getElementById("nameLabel").textContent = DECK.nameLabel || "DÁ UM NOME";
+      document.getElementById("codeLabel").textContent = DECK.codeLabel || "SEU CÓDIGO";
+      document.getElementById("btnUndo").textContent = DECK.undo || "DESFAZER";
+      document.getElementById("btnReset").textContent = DECK.reset || "APAGAR TUDO";
+      document.getElementById("btnLink").textContent = DECK.copyLink || "COPIAR LINK";
+      document.getElementById("btnCard").textContent = DECK.card || "BAIXAR CARD";
+      document.getElementById("btnSend").textContent = DECK.send || "MANDAR PRO QIQI";
+      document.getElementById("sendHint").textContent = DECK.sendHint || "";
+    }
+    document.getElementById("prevCompTag").textContent = LANG === "en" ? "CORNER" : "CANTO";
+
+    /* he holds still while being worked on: the working grid starts as Default */
+    var def = window.Qevr.matrix("Default");
+    work = new Uint8Array(def.cells);
+
+    /* the URL is the file: hydrate from ?f= */
+    var f = (location.search.match(/[?&]f=([A-Za-z0-9_-]{37})(?:&|$)/) || [])[1];
+    if (f) {
+      var bits = decode(f);
+      if (bits) {
+        var i = 0;
+        for (var y = BAND.y0; y < BAND.y0 + BAND.h; y++) for (var x = BAND.x0; x < BAND.x0 + BAND.w; x++) {
+          work[y * GRID + x] = bits[i++] ? INK : LIME;
+        }
+      }
+    }
+    var n = (location.search.match(/[?&]n=([^&]+)/) || [])[1];
+    if (n) {
+      try { nameField.value = cleanName(decodeURIComponent(n.replace(/\+/g, " "))); } catch (e) {}
+    }
+
+    drawBarMark(document.querySelector(".bar__mark canvas"));
+    window.QevrCascade.wireLinks(".bar__nav a, .bar__mark");
+    sizeEditor();
+    paintEditor();
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        drawBarMark(document.querySelector(".bar__mark canvas"));
+        paintEditor();
+      });
+    }
+    var rt;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () { sizeEditor(); paintEditor(); }, 120);
+    });
+  }).catch(function (e) { console.error("[estudio] boot failed", e); });
+})();
+</script>
+</body>
+</html>

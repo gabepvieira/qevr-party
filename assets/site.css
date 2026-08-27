@@ -10,6 +10,28 @@
    - Lime fill = where you are. White fill = hover. Never the same treatment
      for both. */
 
+/* Space Mono lives on OUR domain. SEM REVENDA DE DADOS includes the fonts. */
+@font-face {
+  font-family: "Space Mono"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("fonts/spacemono-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Mono"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("fonts/spacemono-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Space Mono"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("fonts/spacemono-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Mono"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("fonts/spacemono-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   --qevr-ink: #09090B;
   --qevr-body: #CCFF00;
@@ -35,7 +57,8 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 
 * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
 
-html { background: var(--ground); scroll-behavior: smooth; scroll-padding-top: var(--bar); }
+/* the motion law is stepped and hard: anchor moves are cuts, never glides */
+html { background: var(--ground); scroll-behavior: auto; scroll-padding-top: var(--bar); }
 
 body {
   background: var(--ground);
@@ -304,3 +327,142 @@ main { padding-left: 10px; padding-top: var(--bar); }
   * { transition: none !important; animation: none !important; }
   .thermo.is-fire .thermo__fill { box-shadow: none; }
 }
+
+/* ================= seventh voice: the ruled build ================= */
+
+/* ---------- arrival floor: provenance + the scroll cue ---------- */
+.arrival { position: relative; }
+.arrival__floor {
+  position: absolute; left: var(--gut); right: var(--gut); bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  border-top: var(--rule) solid var(--qevr-hair); padding-top: 8px;
+}
+.arrival__city { font-size: 10px; letter-spacing: .26em; color: var(--qevr-muted); }
+.arrival__scroll { display: flex; align-items: center; gap: 8px; color: var(--qevr-muted); }
+.arrival__scroll span { font-size: 9px; letter-spacing: .26em; }
+.arrival__scroll canvas { display: block; image-rendering: pixelated; }
+/* the gift tag: one muted dedication line, read from the link, never stored */
+.arrival__from { font-size: 10px; letter-spacing: .2em; color: var(--qevr-muted); text-align: center; }
+.arrival__from:empty { display: none; }
+/* the quick loading bar of the entrance ritual */
+.arrival__loading { width: min(46vw, 220px); height: 8px; border: var(--rule) solid var(--qevr-hair); }
+.arrival__loading i { display: block; height: 100%; width: 0; background: var(--brand); }
+
+/* ---------- the error tag and loader above his head (poke ladder) ---------- */
+.arrival__mascot { position: relative; }
+.mascot__tag {
+  position: absolute; top: -6px; left: 50%; transform: translate(-50%, -100%);
+  font-size: 10px; letter-spacing: .3em; font-weight: 700; color: var(--qevr-pink);
+  padding: 4px 8px; border: var(--rule) solid var(--qevr-pink); background: var(--ground);
+  display: none; white-space: nowrap;
+}
+.mascot__tag.on { display: block; }
+.mascot__load {
+  position: absolute; top: -4px; left: 50%; transform: translate(-50%, -100%);
+  width: 90px; height: 6px; border: var(--rule) solid var(--qevr-hair); background: var(--ground);
+  display: none;
+}
+.mascot__load i { display: block; height: 100%; width: 0; background: var(--brand); }
+.mascot__load.on { display: block; }
+
+/* ---------- the read: expansion bay + full volume ---------- */
+/* tiles stay short; the opened body lives in a full-width band under its row */
+.stance__body { display: none !important; }
+.stances__bay {
+  grid-column: 1 / -1;
+  border-right: var(--rule) solid var(--qevr-hair);
+  border-bottom: var(--rule) solid var(--qevr-hair);
+  background: var(--qevr-surface);
+  padding: clamp(16px, 2.2vw, 26px);
+  display: flex; gap: clamp(14px, 2vw, 22px); align-items: flex-start;
+}
+.stances__bay-idx { color: var(--brand); font-size: 12px; font-weight: 700; flex: none; padding-top: 3px; }
+.stances__bay-copy { min-width: 0; flex: 1; }
+/* the doctrine answers at full volume: copy size, white */
+.stances__bay-copy p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; color: var(--qevr-light); max-width: 64ch; }
+.stances__bay-copy p + p { margin-top: 1em; }
+.stances__bay-copy .cursor { display: inline-block; width: 9px; height: 1em; vertical-align: -0.15em; background: var(--brand); margin-left: 3px; }
+
+/* ---------- AS PESSOAS: stanzas, not a pricing grid ---------- */
+.people__grid { grid-template-columns: minmax(0, 1fr); max-width: none; }
+.people__grid .stance--still { flex-direction: row; align-items: baseline; gap: clamp(12px, 1.6vw, 20px); padding: clamp(14px, 1.8vw, 22px); }
+.people__grid .stance__idx { margin-bottom: 0; flex: none; }
+.people__grid .stance__head { flex: none; min-width: clamp(120px, 16vw, 220px); }
+.people__grid .stance--still .stance__body { display: block !important; margin-top: 0; padding-top: 0; border-top: 0; min-width: 0; }
+.people__grid .stance--still .stance__body p { font-size: clamp(13.5px, 1.2vw, 17px); line-height: 1.7; color: var(--qevr-light); max-width: 64ch; }
+
+/* ---------- the companion enters the open block (desktop) ---------- */
+.block { position: relative; }
+.block__field { position: absolute; right: clamp(14px, 3vw, 60px); bottom: clamp(14px, 3vh, 40px); display: none; }
+@media (min-width: 1101px) { [data-open="true"] .block__field { display: block; } }
+
+/* ---------- the doors out: two bands at heading scale ---------- */
+.doors { margin-top: clamp(24px, 4vh, 44px); border-top: var(--rule) solid var(--qevr-hair); }
+.doorband {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: clamp(18px, 2.6vh, 30px) clamp(16px, 2vw, 26px);
+  border: var(--rule) solid var(--qevr-hair); border-top: 0;
+  text-decoration: none; color: var(--qevr-light); background: transparent;
+}
+.doorband canvas { display: block; image-rendering: pixelated; }
+.doorband span { font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .18em; text-align: right; }
+.doorband:hover, .doorband:focus-visible { background: var(--qevr-light); outline: none; }
+.doorband:hover span, .doorband:focus-visible span { color: var(--qevr-ink); }
+
+/* ---------- the stamp drawn in his cells ---------- */
+.stamp { border-top: 0; padding-top: 0; max-width: none; }
+.stamp__band { border-top: 3px solid var(--brand); padding-top: clamp(14px, 2.2vh, 24px); }
+.stamp canvas { display: block; image-rendering: pixelated; max-width: 100%; }
+
+/* ---------- AS REGRAS: the poster pop ---------- */
+.poster { position: fixed; inset: 0; z-index: 90; background: var(--qevr-ink); display: none; overflow: auto; }
+.poster.on { display: block; }
+.poster__in {
+  min-height: 100%; max-width: 880px; margin-inline: auto;
+  border-left: 6px solid var(--brand); border-right: 6px solid var(--brand);
+  padding: clamp(20px, 4vh, 48px) clamp(18px, 4vw, 56px);
+  display: flex; flex-direction: column; gap: clamp(16px, 2.6vh, 28px);
+}
+.poster__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.poster__title canvas { display: block; image-rendering: pixelated; }
+.poster__close {
+  font: inherit; text-transform: uppercase; cursor: pointer; letter-spacing: .14em;
+  background: transparent; color: var(--qevr-light); font-size: 11px;
+  border: var(--rule) solid var(--qevr-hair); padding: 10px 13px;
+}
+.poster__close:hover, .poster__close:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); outline: none; }
+.poster__body { display: flex; gap: clamp(18px, 3vw, 44px); align-items: flex-start; }
+.poster__art { flex: none; }
+.poster__art canvas { display: block; image-rendering: pixelated; }
+.poster__rules { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.poster__rule { border-bottom: var(--rule) solid var(--qevr-hair); padding: clamp(10px, 1.6vh, 16px) 0; }
+.poster__rule b { display: block; font-size: clamp(14px, 1.5vw, 19px); letter-spacing: .05em; }
+.poster__rule i { display: block; font-style: normal; margin-top: 5px; font-size: clamp(11px, 1vw, 13px); color: var(--qevr-muted); line-height: 1.6; }
+.poster__foot { font-size: 10px; letter-spacing: .24em; color: var(--qevr-muted); display: flex; justify-content: space-between; gap: 12px; }
+@media (max-width: 720px) { .poster__body { flex-direction: column; } .poster__in { border-width: 4px; } }
+
+/* ---------- the hold: charging into the secret room ---------- */
+.mascot__charge {
+  position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
+  width: 120px; height: 6px; border: var(--rule) solid var(--qevr-hair); background: var(--ground);
+  display: none;
+}
+.mascot__charge i { display: block; height: 100%; width: 0; background: var(--qevr-pink); }
+.mascot__charge.on { display: block; }
+
+/* ---------- phone: the reading gutter — he never sits on a word ---------- */
+@media (max-width: 720px) {
+  body.gutter .blocks { padding-right: 88px; }
+  body.gutter .stances__bay { padding-right: 12px; }
+  .arrival__floor { left: 16px; right: 16px; }
+  .people__grid .stance--still { flex-direction: column; gap: 6px; }
+  .people__grid .stance__head { min-width: 0; }
+  .doorband { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .doorband span { text-align: left; }
+  .stances__bay { padding: 14px; }
+}
+
+/* screen-reader-only heading: the document has a name even before the paint */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* L02: the page's one quick hit after HE molts */
+main.jolt { transform: translateX(6px); }

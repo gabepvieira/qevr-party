@@ -1,16 +1,20 @@
 {
   "lang": "pt-BR",
-  "brand": "QEVR",
+  "brand": "QIQI",
   "city": "SÃO PAULO",
-  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. O REGISTRO É FALADO: VC, TÁ, TÃO, TBM, TÔ, CÊ ficam. NUNCA 'corrigir' para VOCÊ, ESTÁ, ESTÃO, TAMBÉM: a voz é o produto. Consertar só erro real: acento, concordância, typo. Ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado.",
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. O REGISTRO É FALADO: VC, TÁ, TÃO, TBM, TÔ, CÊ ficam. NUNCA 'corrigir' para VOCÊ, ESTÁ, ESTÃO, TAMBÉM: a voz é o produto. Consertar só erro real: acento, concordância, typo. Ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado. Este arquivo é o canônico; index.html embute uma cópia dele no bloco deck-pt (editar OS DOIS).",
   "doors": {
     "manifesto": {
       "label": "O MANIFESTO",
-      "sub": "O QUE ELE É E POR QUE EXISTE"
+      "sub": "O QUE É O QIQI"
     },
-    "studio": {
+    "estudio": {
       "label": "O ESTÚDIO",
-      "sub": ""
+      "sub": "CRIA O SEU QIQI"
+    },
+    "galeria": {
+      "label": "A GALERIA",
+      "sub": "OS 23 PROTÓTIPOS EXISTENTES"
     }
   },
   "ui": {
@@ -21,13 +25,13 @@
   },
   "world": {
     "title": "A PISTA",
-    "sub": "DE ONDE O QEVR VEIO",
+    "sub": "DE ONDE O QIQI VEIO",
     "face": "Content",
     "paragraphs": [
-      "O QEVR NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
+      "O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.",
       "FESTAS LIVRES EM GALPÕES ABANDONADOS.",
       "TEM NOITES QUE VC TÁ NA PISTA COM AMIGOS.",
-      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QEVR NÃO VEIO RESOLVER ISSO."
+      "TEM NOITES QUE A PISTA É SÓ VC. FAZ PARTE. O QIQI NÃO VEIO RESOLVER ISSO."
     ]
   },
   "people": {
@@ -55,11 +59,11 @@
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",
-      "O QEVR NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
+      "O QIQI NUNCA VAI TRAZER ELE DE VOLTA, MAS TBM NUNCA VAI DEIXAR VC FINGIR QUE ELE NÃO ACONTECEU."
     ]
   },
   "stances": {
-    "title": "O QEVR",
+    "title": "O QIQI",
     "sub": "COMO ELE FUNCIONA",
     "items": [
       {
@@ -157,26 +161,49 @@
     "sub": "PRA QUEM ELE É",
     "face": "Stars",
     "paragraphs": [
-      "QEVR É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
+      "QIQI É UM PRESENTE MEU PRA TODAS AS PESSOAS QUE JÁ CONHECI NA PISTA. E PRA TODAS QUE NUNCA VOU CONHECER.",
       "UM APP PRA USAR COM OS AMIGOS. OU SOZINHO."
-    ]
+    ],
+    "appLine": "O APP TÁ SENDO FEITO. QUANDO TIVER PRONTO, ELE TE AVISA."
   },
-  "stamp": "NOS VEMOS NA PISTA.",
-  "studio": {
+  "stamp": "NOS VEMOS NA PISTA",
+  "stampSmiley": ":)",
+  "galeria": {
     "moveLabel": "ELE SE MEXE SOZINHO?",
     "moveLabelShort": "SE MEXE?",
     "colorLabel": "COR",
     "colorLabelShort": "COR",
     "glitchLabel": "QUER VER UMA COISA?",
+    "wallpaperLabel": "WALLPAPER",
     "metaTitle": "A REGRA DELE",
     "metaLines": [
       "GRADE 34 X 34",
-      "23 CARAS",
+      "{N} PROTÓTIPOS",
       "SÓ O ROSTO MUDA"
-    ]
+    ],
+    "protoWord": "PROTÓTIPO",
+    "creditPattern": "QIQI {DE} {NOME}"
+  },
+  "estudio": {
+    "title": "O ESTÚDIO",
+    "hint": "MEXE SÓ NO ROSTO. O RESTO É ELE.",
+    "nameLabel": "DÁ UM NOME",
+    "codeLabel": "SEU CÓDIGO",
+    "undo": "DESFAZER",
+    "reset": "APAGAR TUDO",
+    "copyLink": "COPIAR LINK",
+    "copied": "COPIADO",
+    "card": "BAIXAR CARD",
+    "send": "MANDAR PRO QIQI",
+    "sendHint": "COLA O LINK NO DIRECT DO QIQI. A RESPOSTA CHEGA NA MESMA CONVERSA."
+  },
+  "notFound": {
+    "line": "ESSA PÁGINA NÃO EXISTE :("
   },
   "arrival": {
     "mascotHint": "VAI, CLICA EM MIM",
-    "colorQuestion": "EU TBM MUDO DE COR :3"
+    "colorQuestion": "EU TBM MUDO DE COR :3",
+    "scrollLabel": "SCROLL",
+    "fromPattern": "{NOME} TE DEU ISSO."
   }
 }

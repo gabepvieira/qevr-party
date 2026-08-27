@@ -1,36 +1,62 @@
-# qevr.party — the public site
+# qiqi — the public site (live at qevr.party)
 
-First contact. A partier who has never heard of QEVR lands here. The landing is two
-screens: the first is ONLY him — QEVR huge and centered, `VAI, CLICA EM MIM` above,
-`EU TBM MUDO DE COR :3` and the VERDE/ROSA choice below, nothing else. Scrolling past
-the fold starts the read (A PISTA onward). On a phone the two screens are two PAGES:
-scroll snaps to him or to the read, never between them (GP's ruling — "no half pages");
-inside the read, scrolling is free. The bar keeps O MANIFESTO and O ESTÚDIO one
-tap away from anywhere; the one door on the page is the studio exit after the stamp.
+First contact. A partier who has never heard of QIQI lands here. The landing is two
+screens: the first is ONLY him — QIQI huge and centered, `VAI, CLICA EM MIM` above,
+`EU TBM MUDO DE COR :3` and the VERDE/ROSA choice below, `SÃO PAULO` and the SCROLL
+cue on the bottom edge. Scrolling past the fold starts the read (A PISTA onward). On
+a phone the two screens are two PAGES: scroll snaps to him or to the read, never
+between them (GP's ruling — "no half pages"); inside the read, scrolling is free.
 
-**Live at https://qevr.party** (GitHub Pages, repo `gabepvieira/qevr-party`).
+**THE NAME:** ruled 2026-08-26 — the brand is **QIQI** (was QEVR). The site copy and
+wordmark already say QIQI. Still pending in the rename cascade: the domain
+(qevr.party stays until GP moves it), repo names, internal file/key names
+(`qevr.js`, `qevr.mode`, canonical face codes) which are IDs, not display, and only
+change when GP orders the deep rename.
+
+**Live at https://qevr.party** (Cloudflare Pages, project `qevr-party`).
 
 Static files only. No build step, no framework, no dependencies. Everything runs from
 this folder exactly as it sits.
 
 ```
-index.html                     the manifesto page
-studio/index.html              the mascot studio, all 23 faces
-assets/manifesto.pt.json       ALL THE COPY (Portuguese). edit words here, never in HTML
-assets/manifesto.en.json       the English deck — SAME shape, mirrored beat for beat.
-                               PT is canonical; EN follows it. face labels for EN live
-                               in the EN map in studio/index.html (canonical codes
-                               never change)
-assets/qevr-expressions.json   copy of handoff/qevr-expressions.json (canonical faces)
+index.html                     the manifesto page. THE PT COPY DECK IS EMBEDDED
+                               INLINE in the deck-pt block (view-source carries the
+                               manifesto; the page boots without a fetch)
+galeria/index.html             A GALERIA: the 23 prototypes on the conveyor (was
+                               studio/; studio/ now redirects here, old QRs keep
+                               working)
+estudio/index.html             O ESTÚDIO: the face-maker. The visitor edits ONLY the
+                               face band (rows 14-24 × cols 7-26); drag-paint, undo,
+                               live previews, a 37-char code in the URL. Geometry
+                               spec: docs/design-research/estudio-math-2026-08.md
+sala/index.html                the secret room. NO link points here; entry is
+                               press-and-hold on the arrival QIQI (~2s). Three
+                               chambers: 07:00 (dawn), A LENDA (the lore + the canon
+                               on display), and the empty one.
+404.html                       the wrong room. Served by Cloudflare Pages on any
+                               missing path. Him, Shocked then Dead, still pokeable.
+assets/manifesto.pt.json       the PT deck FILE — canonical for galeria/estudio/404
+                               (ui, doors, galeria, estudio, notFound keys).
+                               ⚠ index.html embeds its own copy of the manifesto
+                               deck inline: EDIT BOTH when copy changes.
+assets/manifesto.en.json       the English deck. SAME shape, mirrored beat for beat.
+assets/qevr-expressions.json   copy of handoff/qevr-expressions.json (canonical
+                               prototypes). An entry MAY carry an optional
+                               "credit": { "de": "DA", "name": "AMANDA" } — the
+                               galeria then shows QIQI DA AMANDA / PROTÓTIPO N.
 assets/qevr.js                 mascot renderer + brain (behaviours, blinks, cascade)
-assets/pixelfont.js            5x7 cell type, so headings are made of mascot cells
-assets/site.css                VENOM. square, hard shadows, uppercase
-studio/studio.css              studio-only layout
-assets/favicon.svg             the mascot himself (Default face), generated from
-                               qevr-expressions.json. favicon-32 / -192 / -512,
-                               apple-touch-icon, and the root favicon.ico are renders
-                               of the same SVG (site.webmanifest points Android at the
-                               192/512 pair). never hand-draw an icon.
+assets/pixelfont.js            5x7 cell type (now including parentheses)
+assets/cascade.js              the QR room-change cascade
+assets/site.css                VENOM + self-hosted Space Mono (assets/fonts/)
+assets/fonts/                  Space Mono woff2, 400/700, latin + latin-ext.
+                               GOOGLE FONTS IS GONE: SEM REVENDA DE DADOS includes
+                               the fonts. Never re-add the googleapis links.
+assets/og-card.png             the share card (1200×630), RENDERED from canon by
+assets/og-galeria.png          scripts/render-og.mjs — never hand-drawn. Re-run the
+                               script and commit when the canon or wordmark changes.
+galeria/galeria.css            gallery layout (conveyor, strips, plate)
+estudio/estudio.css            maker layout (no-scroll on every device)
+assets/favicon.svg             the mascot (Default), generated from the canon.
 ```
 
 ## Run it locally
@@ -47,127 +73,137 @@ expanding a contraction for correctness is how the site died once already. Fix o
 errors: accents, agreement, actual typos. Read every line out loud; if it would not be
 said at a party, rewrite it. Write Portuguese, never translate English.
 
-A punchline has to mean something. "O ESCURO É O CHÃO. A COR É A LUZ CHEGANDO." sounded
-impactful and said nothing; its rewrite ("SÓ TEM COR QUANDO TEM COISA VIVA.") later died
-too, for insider-ness — it described a mechanic no visitor had ever seen. If a head only
-works after you read the body, or only after you have used the app, the head is wrong.
-The scene's own law (Mamba Negra): describe what the night DOES, never what it MEANS.
+## The register law (P03, ruled 2026-08-26 — scope: EVERYTHING)
 
-Everything else about the copy: CAIXA ALTA always, no em dashes, no exclamation points,
-no emoji, and it all lives in `assets/manifesto.pt.json` — never in markup.
+The voice law above governs **every user-facing string on every published surface** —
+site pages, labels, buttons, OG tags, console output, share cards, posters, secret
+rooms — not only the copy deck. For any agent writing PT:
+
+- **Write the thought in Portuguese from scratch.** If a line back-translates cleanly
+  into the English you started from, delete it and start again.
+- **Subject is ELE / VC / A GENTE or a concrete thing.** Never a section name
+  performing a metaphor (`A CHEGADA ENCENA...` is the canonical corpse).
+- **Kill-list, on sight:** ENCENA, ESCALA (for escalate), TESE, DECK, PALCO,
+  É SOBRE, `VISUAL —`, colon headlines, em dashes, exclamation points.
+- **Spoken beats written.** `O LOTE VIROU` grammar: a fact, an order, a vocative, a
+  spoken antithesis. Prefer the dumb line. Loanwords only if the pista already says
+  them (LINE UP, AFTER, CRUSH, GAG).
+- **The tests:** read it out loud; would someone text it at 3am? Then the
+  back-translation kill switch. Then GP's ruling — no PT display string ships
+  without it (P04). Every deploy includes a PT sweep of new strings.
+- The internal docs corpus is NOT a register source (P07): the only imitable PT is
+  the deck, the galeria labels, and GP-ruled strings.
+
+English register note (PT-3): working documents and artifact chrome stay plain and
+concrete — the dramatic register belongs to the manifesto, not to pages that ask
+for rulings.
 
 ## The alignment standard
 
-One rule, both pages, both breakpoints:
+One rule, all pages, both breakpoints:
 
-- Everything is **left-aligned** inside one shared container (`--wrap`), and the bar
-  mark, the wordmark, the block stack and the studio exit door all sit on the same
-  left edge. Desktop and phone agree; columns collapse, alignment never changes.
-- Two exceptions only: the arrival (the mascot's own full first screen — him, his
-  line, the colour choice) centers as a lockup, and a label that names a piece of art
-  (a chip name) centers with that art.
-- **Lime fill = where you are** (bar current page, the lead door). **White fill =
-  hover.** Never the same treatment for both — a hover that looks like the active
-  state is a lie.
+- Everything is **left-aligned** inside one shared container (`--wrap`); the bar
+  mark, the wordmark, the block stack and the doors all sit on the same left edge.
+- Exceptions: the arrival lockup centers; a label that names a piece of art centers
+  with that art (gallery chip names, the maker caption).
+- **Lime fill = where you are** (bar current page, active controls). **White fill =
+  hover.** Never the same treatment for both.
 
-## The section grammar
+## The section grammar (the read)
 
 The manifesto is an accordion of five blocks — A PISTA (open on arrival), AS PESSOAS,
-ELE É ASSIM, AS REGRAS, UM PRESENTE — one open at a time, all headings drawn at one
-shared cell size, each heading carrying a small descriptor that says what sits behind
-it (`sub` in the copy deck). A label that needs the click to explain itself is a bad
-label. (One sanctioned exception: the studio exit door carries no sub — GP's ruling;
-O ESTÚDIO stands alone.)
+O QIQI, AS REGRAS, UM PRESENTE — one open at a time. Ruled behavior (2026-08-26):
 
-Inside a block there are exactly two kinds of content:
+- **Closed headings render DIM (muted); only the open block's heading is lime.**
+  Opening IGNITES the heading — cells flip muted→brand in random chunks. Touching a
+  closed heading makes it flinch one shear beat (hover on desktop; the opening tap
+  carries the beat on phones).
+- **Tiles stay short.** Opening a tile slides its body into a full-width BAY under
+  that tile's row, at full reading size, in white — the doctrine answers at full
+  volume. The bay types in 3-4 hard chunks (~300ms), the block cursor blinks twice
+  and dies, and then the final period quietly disappears (GP's ruling: only the
+  period). The bay reserves its final height first so nothing below jumps.
+- **AS PESSOAS is not a pricing grid:** full-width stanzas, always open, body at
+  copy size in white. They are the heart, not a disclosure.
+- **AS REGRAS opens as the POSTER**, not a dropdown: angry QIQI beside the seven
+  rules, full-screen, FECHAR/Esc closes. (Same composition as the printable poster.)
+- **The companion JUMPS:** on desktop, opening a block moves the corner QIQI into
+  that block's empty right field wearing the block's face; closing sends him back.
+  On phones the read reserves a right gutter so he NEVER sits on a word.
+- The stamp is drawn in his own cells at the largest size on the page —
+  `NOS VEMOS NA PISTA :)` with the smiley in the current brand color — and
+  assembles once per visit on the first opening of UM PRESENTE.
+- After the stamp: TWO doors at heading scale (O ESTÚDIO / A GALERIA), full-width
+  bands, cell-type labels, hover floods white.
 
-- **Prose** — narrative paragraphs, max 64ch, left column.
-- **Deck** — any enumeration is numbered tiles: index, head, body, same borders, same
-  paddings, everywhere. The seven stances, the seven regras and the four people are the
-  same component. A deck always ends on a full row (7 = 3+3+1 with the last tile taking
-  the whole row, people 2×2); a deck with a hole in it is a bug. When the last tile
-  opens a row alone it spans the row — a wide closing tile, never a hole.
+## Motion law
 
-Interactive tiles open on tap (one at a time). The people tiles stay open — they are
-the heart of AS PESSOAS, not a disclosure.
+Stepped, hard, no easing — now with zero exceptions: anchor moves are hard cuts
+(`scroll-behavior: auto`), and the thermometer climbs in 14px cell steps; at the
+top it catches fire in three hard frames. The one glow stays ON FIRE.
 
-## Screen budget
+## The entrance (every landing)
 
-Scrolling is the enemy. The landing's first screen is exactly one viewport (him and
-the colour choice); the read below stays ~1.5 screens with one block open. The
-accordion is what keeps it there: opening a block closes the others. The studio
-never scrolls — on ANY device; a phone explores the face strips by swiping them
-sideways. If you add content, keep the budget.
+A quick stepped loading bar, then QIQI builds himself in from cells, then the
+ritual: DEFAULT → ANIME → FELIZ DA VIDA — then the brain takes over on **São Paulo
+time** (his resting face follows SP's clock for the whole world; MORRI at 8h on a
+Sunday). Reduced motion goes straight to the still, but he KEEPS BLINKING — a blink
+is a state swap, not motion.
 
-## The studio: one conveyor
+## The poke ladder
 
-The studio is one frame: the 23 faces crawling slowly clockwise around one big
-center cell where QEVR lives with his playground (name, code, the three controls,
-the meta line). Every chip is the SAME size — the size is solved from the viewport
-(`solveChipSize`), so a 4K monitor gets bigger faces, never mismatched ones. The
-top and bottom belts own the full width; the side belts sit inset between them,
-and at each corner a chip de-rezzes off one belt and re-rezzes on the next — the
-same glitch language as the cascade. Faces never teleport between seats.
+Poke him once: normal reaction. Keep poking fast: glitch, then rowwave, then he
+DIES — Dead face, a pink ERRO tag above his head, violent glitch — breaks into the
+floor row by row, a loading bar runs above his head, and the network re-rezzes him
+bottom-up. No gray anywhere: off states are structural, never colored.
 
-A phone gets no side belts and the page NEVER scrolls: one strip of faces up top
-(12), one below (11), the playground pinned between them. Each strip drifts
-slowly on its own and swipes left/right to explore; a finger on a strip owns it,
-and the crawl resumes a beat after it lets go.
+## The gallery: one conveyor
 
-- `LANE_SPEED` / `STRIP_SPEED` in `studio/index.html` set the crawl. A hand over
-  the frame (or focus in it) holds the desktop lane still; reduced motion turns
-  all drift off.
-- The selection highlight lives on the face itself and travels with it.
-- Face labels live in the `PT` map in `studio/index.html` — GP's voice, mapped
-  onto the canonical codes, which never change.
-- Dividers are 3px of ground; hover is a white inset frame; selected is brand.
-- The color choice (VERDE/ROSA) persists across pages via `localStorage`
-  `qevr.mode`; `?mode=` previews without persisting. The arrival question on
-  the manifesto writes the same key.
-- The language works the same way: the PT / EN tabs bleed off the RIGHT EDGE
-  just under the bar (GP's placement — never in the bar), stacked, on both
-  pages. They persist via `localStorage` `qevr.lang` (default pt); `?lang=`
-  previews without persisting. Switching runs the QR cascade and reloads with
-  the other deck. Lime fill = the language you are in. On the manifesto they
-  live on the arrival and scroll away with it; the studio never scrolls, so
-  there they simply stay.
+As before (one crawling conveyor, same-size chips, phone strips, never scrolls) with
+the ruled changes: PT labels are GP's spoken set (TÔ BEM, APAGUEI :x, AMEIIII,
+KKKKKK, DE BOA, PLENO, Q BOM, APRONTANDO HIHI, BRILHANDO, EITA, NA BAD, TÉDIO,
+TÔ GAG + the keepers), the stage name is drawn in cell type and glitches WITH him,
+labels wrap instead of truncating, `?face=NAME` deep-links a prototype and browsing
+updates the URL, the WALLPAPER control exports the current face+color as a
+lock-screen PNG, the meta line counts prototypes FROM THE DATA, and when the canon
+grows the newest face arrives once per visitor as a small ceremony.
+
+## The maker: O ESTÚDIO
+
+Only the face band is a tool target — the body is not a verb, and the page never
+explains that; you discover it by touching. Whole-him canvas with the band framed;
+phone gets an INTEIRO / SÓ A CARA zoom toggle plus a drag loupe. Drag paints,
+tap toggles, first cell locks the stroke's brush, one undo entry per stroke
+(Ctrl/Cmd+Z works). The URL is the file: `?f=CODE37&n=NAME` — 220 band bits in 37
+base64url chars (the code readout is the site's one sanctioned lowercase: it is
+data). COPIAR LINK / BAIXAR CARD (a 1080×1920 story flyer: face huge, name in cell
+type, the code visible as fine print) / MANDAR PRO QIQI (system share; fallback
+copies the link — the reply arrives in the DM where the code arrived: the site
+captures NOTHING). Full geometry: docs/design-research/estudio-math-2026-08.md.
+
+## The secret room
+
+No link anywhere. Hold the arrival QIQI ~2 seconds: he charges (Anime), the cascade
+runs, and `sala/` opens — the dawn chamber (07:00, the tender hour's only home),
+A LENDA (the voices' lore + the canon on display with per-face diff maps), and the
+empty room. Never promote it; "hold him and see what happens" travels by mouth.
 
 ## Rules this site keeps
 
-- Copy rules and voice: see **The voice** above. That section wins over any older note.
-- Square corners everywhere (`border-radius: 0` is forced globally).
-- Hard offset shadows only. The single glow is the thermometer at ON FIRE.
-- Four brand colours, locked. Nothing else.
+- Copy rules: **The voice** + **The register law** above win over any older note.
+- Square corners everywhere; hard offset shadows only; the single glow is ON FIRE.
+- Four brand colours, locked. Gray (#9A9AA5 / #27272A) is TEXT AND CHROME ONLY —
+  his body is never gray; off states are structural (fewer cells, collapse, de-rez).
 - Headings are drawn cell by cell from the same 5x7 grid the mascot is made of.
-- Face names in `qevr-expressions.json` are canonical and never renamed. The studio
-  shows a Portuguese label next to the canonical name.
-- Fill the box. A layout that sizes to its content and leaves the remainder black reads
-  as broken, not as breathing room.
-- Hierarchy follows importance. The closing stamp is the loudest type on the page.
-- Never hijack the scroll inside the read. The reader drives. One sanctioned exception
-  (GP's ruling): on a phone the landing snaps between its two pages — him, then the
-  read; nothing else ever snaps.
-
-## The time of day mechanic (built, currently off)
-
-When enabled, the page reads the visitor's local clock and nothing explains it:
-
-| Local time      | Mode    | What changes                            |
-| --------------- | ------- | --------------------------------------- |
-| 23:00 to 06:59  | `party` | Brand flips to pink. The room is open.   |
-| 07:00 to 07:59  | `dawn`  | Ground lifts, pink accents. The one tender hour. |
-| 08:00 to 22:59  | `day`   | Lime.                                    |
-
-Force a state while working on it: `?mode=day`, `?mode=party`, `?mode=dawn`.
-Lime only for now: `TIME_AWARE = false` at the top of the page script in both
-`index.html` and `studio/index.html`.
+- Face names in `qevr-expressions.json` are canonical and never renamed; PT labels
+  map onto them.
+- Fill the box. Hierarchy follows importance. The stamp is the loudest type.
+- Never hijack the scroll inside the read (the poster pop and the phone snap are
+  the two sanctioned exceptions, both GP-ruled).
+- The time-of-day palette mechanic was DELETED (L17-C). The dawn palette lives only
+  in `sala/`. `?mode=dawn` no longer exists on the main pages.
 
 ## Deploying to qevr.party
-
-**Since 2026-08-26 the live site is Cloudflare Pages** (project `qevr-party` on GP's
-Cloudflare account; ruling A19 of the sixth voice). The pages stay static exactly as
-before — Cloudflare was chosen so a future ruling (submission relay, email list) can
-add a small function at `qevr.party/api/...` without a migration.
 
 **Deploy = direct upload, then hash-verify:**
 
@@ -178,16 +214,18 @@ npx -y wrangler@latest pages deploy apps/web-site --project-name=qevr-party --br
 # then hash-verify https://qevr.party/<file> against this tree — live must equal tree
 ```
 
-A push to the public GitHub repo NO LONGER updates the live site. Keep the repo
+A push to the public GitHub repo does NOT update the live site. Keep the repo
 (`gabepvieira/qevr-party`) as the public record and fallback: after a Cloudflare
 deploy, rsync this folder over it (keep its `CNAME` + `.nojekyll`), commit, push.
 
 DNS: the `qevr.party` zone lives on Cloudflare (nameservers `dante`/`raegan`
-`.ns.cloudflare.com`); Porkbun is registrar only now. Both hostnames are proxied
+`.ns.cloudflare.com`); Porkbun is registrar only. Both hostnames are proxied
 CNAMEs to `qevr-party.pages.dev`.
 
 ## Not built yet
 
-- The Workshop screen from the original studio (a grid editor for authoring new faces).
-  It is an internal authoring tool, so it stayed out of the public site.
-- A shareable memory artifact, which is the thing item [25] says is the only advertisement.
+- The party finder (A14 — ruled, shape pending GP's pick of WALL / BOARD / DOOR).
+- The A04 card variants for sharing an existing prototype and for events (the
+  your-creation story card is live in O ESTÚDIO; the BAIXAR button in the AS
+  REGRAS poster covers the A09 print half).
+- PWA (A17) is parked by ruling.
