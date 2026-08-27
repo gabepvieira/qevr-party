@@ -1,7 +1,8 @@
 # qiqi — the public site (live at qevr.party)
 
-First contact. A partier who has never heard of QIQI lands here. The landing is two
-screens: the first is ONLY him — QIQI huge and centered, `VAI, CLICA EM MIM` above,
+First contact. A partier who has never heard of QIQI lands here. The first visible
+thing is the loading bar. It builds and glitches him in, then becomes `VAI, CLICA EM
+MIM`. The landing is two screens: the first is QIQI huge and centered, with that line above,
 `EU TBM MUDO DE COR :3` and the VERDE/ROSA choice below, `SÃO PAULO` and the SCROLL
 cue on the bottom edge. Scrolling past the fold starts the read (A PISTA onward). On
 a phone the two screens are two PAGES: scroll snaps to him or to the read, never
@@ -22,17 +23,17 @@ this folder exactly as it sits.
 index.html                     the manifesto page. THE PT COPY DECK IS EMBEDDED
                                INLINE in the deck-pt block (view-source carries the
                                manifesto; the page boots without a fetch)
-galeria/index.html             A GALERIA: the 23 prototypes on the conveyor (was
+galeria/index.html             GALERIA: the 23 prototypes on the conveyor (was
                                studio/; studio/ now redirects here, old QRs keep
                                working)
-estudio/index.html             O ESTÚDIO: the face-maker. The visitor edits ONLY the
+estudio/index.html             ESTÚDIO: the face-maker. The visitor edits ONLY the
                                face band (rows 14-24 × cols 7-26); drag-paint, undo,
                                live previews, a 37-char code in the URL. Geometry
                                spec: docs/design-research/estudio-math-2026-08.md
-sala/index.html                the secret room. NO link points here; entry is
-                               press-and-hold on the arrival QIQI (~2s). Three
-                               chambers: 07:00 (dawn), A LENDA (the lore + the canon
-                               on display), and the empty one.
+sala/index.html                three interactive rooms about his story, DNA and
+                               changes. Press-and-hold the arrival QIQI (~2s) enters.
+canon/index.html               the canonical 34×34 grid and per-face diff inspector;
+                               ESTÚDIO carries one quiet door here.
 404.html                       the wrong room. Served by Cloudflare Pages on any
                                missing path. Him, Shocked then Dead, still pokeable.
 assets/manifesto.pt.json       the PT deck FILE — canonical for galeria/estudio/404
@@ -55,7 +56,8 @@ assets/og-card.png             the share card (1200×630), RENDERED from canon b
 assets/og-galeria.png          scripts/render-og.mjs — never hand-drawn. Re-run the
                                script and commit when the canon or wordmark changes.
 galeria/galeria.css            gallery layout (conveyor, strips, plate)
-estudio/estudio.css            maker layout (no-scroll on every device)
+estudio/estudio.css            maker layout (large fixed workbench on desktop;
+                               full-width, scroll-safe workbench on phones)
 assets/favicon.svg             the mascot (Default), generated from the canon.
 ```
 
@@ -144,16 +146,18 @@ O QIQI, AS REGRAS, UM PRESENTE — one open at a time. Ruled behavior (2026-08-2
   period). The bay reserves its final height first so nothing below jumps.
 - **AS PESSOAS is not a pricing grid:** full-width stanzas, always open, body at
   copy size in white. They are the heart, not a disclosure.
-- **AS REGRAS opens as the POSTER**, not a dropdown: angry QIQI beside the seven
-  rules, full-screen, FECHAR/Esc closes. (Same composition as the printable poster.)
+- **AS REGRAS opens as the POSTER**, not a dropdown: a centered A4-shaped popup,
+  angry QIQI beside the seven rules; FECHAR/Esc closes. (Same composition as the
+  printable poster.)
 - **The companion JUMPS:** on desktop, opening a block moves the corner QIQI into
   that block's empty right field wearing the block's face; closing sends him back.
-  On phones the read reserves a right gutter so he NEVER sits on a word.
+  On phones the copy keeps its full width and he scans both edges for an empty
+  place, moving whenever he would cover a word, cell heading or language control.
 - The stamp is drawn in his own cells at the largest size on the page —
   `NOS VEMOS NA PISTA :)` with the smiley in the current brand color — and
   assembles once per visit on the first opening of UM PRESENTE.
-- After the stamp: TWO doors at heading scale (O ESTÚDIO / A GALERIA), full-width
-  bands, cell-type labels, hover floods white.
+- After the stamp: TWO doors on one line (ESTÚDIO / GALERIA), full-viewport bands,
+  cell-type labels, hover floods white.
 
 ## Motion law
 
@@ -163,7 +167,8 @@ top it catches fire in three hard frames. The one glow stays ON FIRE.
 
 ## The entrance (every landing)
 
-A quick stepped loading bar, then QIQI builds himself in from cells, then the
+A stepped loading bar is the only first frame. Then QIQI builds himself in from
+cells, the bar becomes `VAI, CLICA EM MIM`, then the
 ritual: DEFAULT → ANIME → FELIZ DA VIDA — then the brain takes over on **São Paulo
 time** (his resting face follows SP's clock for the whole world; MORRI at 8h on a
 Sunday). Reduced motion goes straight to the still, but he KEEPS BLINKING — a blink
@@ -171,26 +176,28 @@ is a state swap, not motion.
 
 ## The poke ladder
 
-Poke him once: normal reaction. Keep poking fast: glitch, then rowwave, then he
-DIES — Dead face, a pink ERRO tag above his head, violent glitch — breaks into the
-floor row by row, a loading bar runs above his head, and the network re-rezzes him
-bottom-up. No gray anywhere: off states are structural, never colored.
+Poke him once: normal reaction. He only dies after nine fast pokes. Before that he
+escalates through glitches, row waves and reactions. On nine: Dead face, unboxed
+pink ERRO text and a whole-page glitch; he breaks into the floor row by row, the
+phrase becomes the same loading bar, and the network re-rezzes him bottom-up before
+the phrase returns. No gray anywhere: off states are structural, never colored.
 
 ## The gallery: one conveyor
 
-As before (one crawling conveyor, same-size chips, phone strips, never scrolls) with
+As before (one crawling conveyor, same-size fully visible chips, phone strips, never scrolls) with
 the ruled changes: PT labels are GP's spoken set (TÔ BEM, APAGUEI :x, AMEIIII,
 KKKKKK, DE BOA, PLENO, Q BOM, APRONTANDO HIHI, BRILHANDO, EITA, NA BAD, TÉDIO,
 TÔ GAG + the keepers), the stage name is drawn in cell type and glitches WITH him,
-labels wrap instead of truncating, `?face=NAME` deep-links a prototype and browsing
-updates the URL, the WALLPAPER control exports the current face+color as a
-lock-screen PNG, the meta line counts prototypes FROM THE DATA, and when the canon
+labels wrap instead of truncating, `?face=NAME` deep-links and pins a prototype until
+the visitor picks another, the BAIXAR control exports the current face+color as a
+lock-screen PNG, and when the canon
 grows the newest face arrives once per visitor as a small ceremony.
 
 ## The maker: O ESTÚDIO
 
 Only the face band is a tool target — the body is not a verb, and the page never
-explains that; you discover it by touching. Whole-him canvas with the band framed;
+explains that; you discover it by touching. The editor dominates the available
+desktop space and fills phone width; phone gets a scroll-safe whole-him canvas with the band framed;
 phone gets an INTEIRO / SÓ A CARA zoom toggle plus a drag loupe. Drag paints,
 tap toggles, first cell locks the stroke's brush, one undo entry per stroke
 (Ctrl/Cmd+Z works). The URL is the file: `?f=CODE37&n=NAME` — 220 band bits in 37
@@ -200,12 +207,12 @@ type, the code visible as fine print) / MANDAR PRO QIQI (system share; fallback
 copies the link — the reply arrives in the DM where the code arrived: the site
 captures NOTHING). Full geometry: docs/design-research/estudio-math-2026-08.md.
 
-## The secret room
+## The three story rooms
 
-No link anywhere. Hold the arrival QIQI ~2 seconds: he charges (Anime), the cascade
-runs, and `sala/` opens — the dawn chamber (07:00, the tender hour's only home),
-A LENDA (the voices' lore + the canon on display with per-face diff maps), and the
-empty room. Never promote it; "hold him and see what happens" travels by mouth.
+Hold the arrival QIQI ~2 seconds: he charges (Anime), the cascade runs, and `sala/`
+opens. HISTÓRIA shows QEVR becoming QIQI, DNA lets the visitor inspect face changes,
+and MUDANÇAS lets the visitor drag through a transformation while the silhouette
+stays intact. The old dawn, lore dump and empty room are gone.
 
 ## Rules this site keeps
 

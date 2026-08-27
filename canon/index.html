@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QIQI / CANON</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#09090B">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .canon-page { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: calc(var(--bar) + 24px) var(--gut) 48px; }
+  .canon-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: var(--rule) solid var(--qevr-hair); }
+  .canon-head h1 { color: var(--brand); font-size: clamp(20px, 3vw, 48px); letter-spacing: .08em; }
+  .canon-head a { color: var(--qevr-muted); font-size: 10px; letter-spacing: .16em; text-decoration: none; }
+  .canon-work { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: clamp(20px, 4vw, 64px); padding-top: 24px; align-items: start; }
+  .canon-grid { min-width: 0; overflow: auto; border: var(--rule) solid var(--qevr-hair); padding: 10px; }
+  .canon-grid canvas { display: block; image-rendering: pixelated; margin-inline: auto; }
+  .canon-meta { display: grid; gap: 12px; }
+  .canon-name { color: var(--brand); font-size: clamp(18px, 2vw, 28px); font-weight: 700; }
+  .canon-row { display: flex; }
+  .canon-data { color: var(--qevr-muted); font-size: 10px; line-height: 1.8; letter-spacing: .1em; text-transform: none; overflow-wrap: anywhere; }
+  @media (max-width: 720px) {
+    .canon-work { grid-template-columns: 1fr; }
+    .canon-page { padding-inline: 12px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar__in">
+    <a class="bar__mark" href="../" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
+    <nav class="bar__nav">
+      <a href="../#manifesto">MANIFESTO</a>
+      <a href="../estudio/">ESTÚDIO</a>
+      <a href="../galeria/">GALERIA</a>
+    </nav>
+  </div>
+</header>
+<main class="canon-page">
+  <div class="canon-head"><h1>CANON</h1><a href="../estudio/">VOLTAR AO ESTÚDIO</a></div>
+  <div class="canon-work">
+    <div class="canon-grid"><canvas id="canonCanvas" aria-label="GRADE CANÔNICA 34 POR 34"></canvas></div>
+    <aside class="canon-meta">
+      <strong class="canon-name" id="canonName">NORMAL</strong>
+      <div class="canon-row"><button class="ctl" id="canonPrev" type="button">&lt;</button><button class="ctl" id="canonNext" type="button">&gt;</button></div>
+      <div class="canon-data" id="canonStats"></div>
+      <div class="canon-data" id="canonLink"></div>
+    </aside>
+  </div>
+</main>
+<script src="../assets/pixelfont.js"></script>
+<script src="../assets/qevr.js"></script>
+<script src="../assets/cascade.js"></script>
+<script>
+(function () {
+  "use strict";
+  var names = [], index = 0;
+  function brand() { return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00"; }
+  function drawWord(canvas) {
+    var m = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
+    var room = canvas.parentElement.clientWidth || 108;
+    var cell = Math.max(2, Math.floor(Math.min(room, 108) / m.w));
+    var dpr = Math.min(devicePixelRatio || 1, 3);
+    canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
+    canvas.style.width = m.w * cell + "px"; canvas.style.height = m.h * cell + "px";
+    var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = brand();
+    for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) if (m.cells[y * m.w + x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+  }
+  function paint() {
+    if (!names.length) return;
+    var name = names[index], m = window.Qevr.matrix(name), def = window.Qevr.matrix("Default"), n = m.n;
+    var host = document.querySelector(".canon-grid");
+    var room = Math.min(host.clientWidth - 22, innerHeight - 150, innerWidth >= 2200 ? 1200 : 760);
+    var cell = Math.max(5, Math.floor(room / n));
+    var canvas = document.getElementById("canonCanvas"), dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = n * cell * dpr; canvas.height = n * cell * dpr;
+    canvas.style.width = n * cell + "px"; canvas.style.height = n * cell + "px";
+    var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, n * cell, n * cell);
+    var lime = 0, ink = 0, diff = 0;
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var i = y * n + x, value = m.cells[i], changed = value !== def.cells[i];
+      if (value === 1) lime++; if (value === 2) ink++; if (changed) diff++;
+      ctx.fillStyle = changed ? "#FF007F" : value === 1 ? brand() : value === 2 ? "#141416" : "#09090B";
+      ctx.fillRect(x * cell, y * cell, cell, cell);
+    }
+    document.getElementById("canonName").textContent = name.toUpperCase();
+    document.getElementById("canonStats").textContent = "34 × 34 / BODY " + lime + " / MODULE " + ink + " / DIFF " + diff;
+    document.getElementById("canonLink").textContent = "qevr.party/galeria/?face=" + encodeURIComponent(name);
+  }
+  document.getElementById("canonPrev").addEventListener("click", function () { index = (index - 1 + names.length) % names.length; paint(); });
+  document.getElementById("canonNext").addEventListener("click", function () { index = (index + 1) % names.length; paint(); });
+  window.Qevr.load("../assets/qevr-expressions.json").then(function (list) { names = list; drawWord(document.querySelector(".bar__mark canvas")); paint(); });
+  addEventListener("resize", function () { drawWord(document.querySelector(".bar__mark canvas")); paint(); });
+  window.QevrCascade.wireLinks(".bar a, .canon-head a");
+})();
+</script>
+<script type="module" src="../assets/qa.mjs"></script>
+</body>
+</html>

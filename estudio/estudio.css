@@ -17,8 +17,8 @@
   align-items: center; justify-content: flex-start;
 }
 
-.maker__art { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
-.maker__canvasbox { display: grid; place-items: center; min-width: 0; min-height: 0; }
+.maker__art { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; align-self: stretch; }
+.maker__canvasbox { display: grid; place-items: center; min-width: 0; min-height: 0; width: 100%; flex: 1 1 auto; }
 .maker__canvas { display: block; image-rendering: pixelated; touch-action: none; cursor: crosshair; }
 /* a label that names a piece of art centers with that art */
 .maker__caption { font-size: 10px; letter-spacing: .24em; color: var(--qevr-muted); text-align: center; height: 24px; line-height: 24px; }
@@ -79,21 +79,35 @@
 }
 
 @media (max-width: 720px) {
+  .maker { height: auto; min-height: 100svh; overflow-y: auto; }
   .maker__frame {
     flex-direction: column; align-items: stretch; justify-content: flex-start;
-    gap: 8px; padding: 12px;
+    gap: 8px; padding: 12px; height: auto; min-height: calc(100svh - var(--bar));
   }
   /* the name lives at the top: the keyboard rises from the bottom and can
      never cover it */
   .maker__tools { width: 100%; order: 2; gap: 8px; }
-  .maker__art { order: 1; flex: 1 1 auto; min-height: 0; justify-content: center; }
-  .maker__canvasbox { flex: 1 1 auto; min-height: 0; }
-  .maker__caption { height: 18px; line-height: 18px; font-size: 9px; }
+  .maker__art { order: 1; flex: none; min-height: 0; justify-content: center; }
+  .maker__canvasbox { flex: none; min-height: 0; }
+  .maker__previews canvas { height: 64px !important; width: auto !important; }
   .maker__zoom { display: flex; }
   .maker__previews { justify-content: center; }
   .maker__section { padding-top: 8px; }
   .maker__name { font-size: 13px; padding: 10px 11px; }
   .maker__topname { order: 0; }
+}
+
+.canon-door {
+  position: fixed; left: 0; bottom: 0; z-index: 20; padding: 8px 10px;
+  border: var(--rule) solid var(--qevr-hair); border-left: 0; border-bottom: 0;
+  background: var(--ground); color: var(--qevr-muted); text-decoration: none;
+  font-size: 8px; letter-spacing: .18em;
+}
+.canon-door:hover, .canon-door:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); outline: 0; }
+
+@media (min-width: 2200px) {
+  .maker__tools { width: clamp(520px, 28vw, 820px); }
+  .maker__frame { gap: clamp(60px, 4vw, 140px); }
 }
 
 @media (max-height: 499px) {

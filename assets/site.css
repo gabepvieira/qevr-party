@@ -69,7 +69,15 @@ body {
   letter-spacing: 0.055em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand) var(--qevr-hair);
 }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--qevr-hair); }
+::-webkit-scrollbar-thumb { background: var(--brand); }
+html.scroll-fire { scrollbar-color: var(--qevr-fire) var(--qevr-hair); }
+html.scroll-fire::-webkit-scrollbar-thumb { background: var(--qevr-fire); }
 
 ::selection { background: var(--brand); color: var(--qevr-ink); }
 
@@ -77,7 +85,7 @@ body {
 
 .bar {
   position: fixed; inset: 0 0 auto 0; height: var(--bar); z-index: 60;
-  padding: env(safe-area-inset-top, 0px) var(--gut) 0 calc(var(--gut) + 10px);
+  padding: env(safe-area-inset-top, 0px) var(--gut) 0 var(--gut);
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
 }
@@ -120,11 +128,11 @@ body {
 
 /* ---------- thermometer ---------- */
 
-.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: 10px; background: var(--qevr-hair); z-index: 70; }
+.thermo { display: none; }
 .thermo__fill { position: absolute; left: 0; right: 0; top: 0; height: 0; background: var(--brand); }
 .thermo.is-fire .thermo__fill { background: var(--qevr-fire); box-shadow: 0 0 18px 2px var(--qevr-fire); }
 
-main { padding-left: 10px; padding-top: var(--bar); }
+main { padding-top: var(--bar); }
 
 /* ---------- arrival: him and the colour question own the whole first screen ---------- */
 
@@ -308,8 +316,14 @@ main { padding-left: 10px; padding-top: var(--bar); }
      app. small zone, small cell, and only he himself takes the tap */
   .companion { width: 92px; height: 92px; right: 10px; bottom: 12px; }
   .lang button { font-size: 10px; padding: 9px 10px; }
-  .thermo { width: 6px; }
-  main { padding-left: 6px; }
+  .bar { padding-inline: 0; }
+  .bar__in { gap: 0; max-width: none; }
+  .bar__mark { flex: 0 0 64px; width: 64px; overflow: hidden; display: flex; justify-content: center; }
+  .bar__nav { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bar__nav a {
+    min-width: 0; margin-left: -1px; padding: 10px 2px;
+    font-size: 8px; letter-spacing: .055em; text-align: center; white-space: nowrap;
+  }
   .arrival { padding-inline: 16px; gap: 14px; }
   .door { padding: 13px 16px; }
   .arrival__color-controls { width: min(100%, 260px); }
@@ -347,13 +361,29 @@ main { padding-left: 10px; padding-top: var(--bar); }
 /* the quick loading bar of the entrance ritual */
 .arrival__loading { width: min(46vw, 220px); height: 8px; border: var(--rule) solid var(--qevr-hair); }
 .arrival__loading i { display: block; height: 100%; width: 0; background: var(--brand); }
+.arrival__signal { min-height: 18px; display: grid; place-items: center; }
+.arrival__signal > * { grid-area: 1 / 1; }
+.arrival__signal .arrival__hint { visibility: hidden; }
+.arrival__signal.is-ready .arrival__hint { visibility: visible; }
+.arrival__signal.is-ready .arrival__loading { display: none; }
+.arrival__signal.is-loading .arrival__hint { visibility: hidden; }
+.arrival__signal.is-loading .arrival__loading { display: block; }
+body.is-booting .bar,
+body.is-booting > .lang,
+body.is-booting .arrival__mascot > :not(.arrival__signal),
+body.is-booting .arrival__from,
+body.is-booting .arrival__color,
+body.is-booting .arrival__floor { visibility: hidden; }
+body.is-booting [data-qevr-cascade] { display: none !important; }
+body.is-booting .arrival__mascot { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; }
+body.is-booting .arrival__signal { position: fixed; inset: 0; }
 
 /* ---------- the error tag and loader above his head (poke ladder) ---------- */
 .arrival__mascot { position: relative; }
 .mascot__tag {
   position: absolute; top: -6px; left: 50%; transform: translate(-50%, -100%);
   font-size: 10px; letter-spacing: .3em; font-weight: 700; color: var(--qevr-pink);
-  padding: 4px 8px; border: var(--rule) solid var(--qevr-pink); background: var(--ground);
+  padding: 4px 8px; border: 0; background: transparent;
   display: none; white-space: nowrap;
 }
 .mascot__tag.on { display: block; }
@@ -364,6 +394,16 @@ main { padding-left: 10px; padding-top: var(--bar); }
 }
 .mascot__load i { display: block; height: 100%; width: 0; background: var(--brand); }
 .mascot__load.on { display: block; }
+
+/* The error hits the whole document in stepped slices, not a floating box. */
+html.page-glitch body { animation: page-glitch-shake 90ms steps(2, end) 7; }
+html.page-glitch body::after {
+  content: ""; position: fixed; inset: 0; z-index: 89; pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 17px, color-mix(in srgb, var(--brand) 42%, transparent) 17px 20px);
+  mix-blend-mode: difference; animation: page-glitch-slice 80ms steps(2, end) 8;
+}
+@keyframes page-glitch-shake { 0% { transform: translate(0); } 33% { transform: translate(8px, -3px); } 66% { transform: translate(-7px, 2px); } }
+@keyframes page-glitch-slice { 0% { clip-path: inset(8% 0 72% 0); transform: translateX(-10px); } 50% { clip-path: inset(46% 0 30% 0); transform: translateX(12px); } 100% { clip-path: inset(74% 0 4% 0); transform: translateX(-5px); } }
 
 /* ---------- the read: expansion bay + full volume ---------- */
 /* tiles stay short; the opened body lives in a full-width band under its row */
@@ -397,15 +437,19 @@ main { padding-left: 10px; padding-top: var(--bar); }
 @media (min-width: 1101px) { [data-open="true"] .block__field { display: block; } }
 
 /* ---------- the doors out: two bands at heading scale ---------- */
-.doors { margin-top: clamp(24px, 4vh, 44px); border-top: var(--rule) solid var(--qevr-hair); }
+.doors {
+  width: 100vw; margin-top: clamp(24px, 4vh, 44px); margin-left: calc(50% - 50vw);
+  border-top: var(--rule) solid var(--qevr-hair);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .doorband {
   display: flex; align-items: center; justify-content: space-between; gap: 18px;
   padding: clamp(18px, 2.6vh, 30px) clamp(16px, 2vw, 26px);
-  border: var(--rule) solid var(--qevr-hair); border-top: 0;
+  border: var(--rule) solid var(--qevr-hair); border-top: 0; min-width: 0;
   text-decoration: none; color: var(--qevr-light); background: transparent;
 }
-.doorband canvas { display: block; image-rendering: pixelated; }
-.doorband span { font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .18em; text-align: right; }
+.doorband canvas { display: block; image-rendering: pixelated; max-width: 72%; height: auto !important; }
+.doorband span { min-width: 0; font-size: clamp(9.5px, 1vw, 11px); color: var(--qevr-muted); letter-spacing: .18em; text-align: right; }
 .doorband:hover, .doorband:focus-visible { background: var(--qevr-light); outline: none; }
 .doorband:hover span, .doorband:focus-visible span { color: var(--qevr-ink); }
 
@@ -413,16 +457,22 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .stamp { border-top: 0; padding-top: 0; max-width: none; }
 .stamp__band { border-top: 3px solid var(--brand); padding-top: clamp(14px, 2.2vh, 24px); }
 .stamp canvas { display: block; image-rendering: pixelated; max-width: 100%; }
+.stamp__city { display: block; margin-top: 10px; color: var(--qevr-muted); font-size: 9px; letter-spacing: .24em; }
 
 /* ---------- AS REGRAS: the poster pop ---------- */
-.poster { position: fixed; inset: 0; z-index: 90; background: var(--qevr-ink); display: none; overflow: auto; }
-.poster.on { display: block; }
-.poster__in {
-  min-height: 100%; max-width: 880px; margin-inline: auto;
-  border-left: 6px solid var(--brand); border-right: 6px solid var(--brand);
-  padding: clamp(20px, 4vh, 48px) clamp(18px, 4vw, 56px);
-  display: flex; flex-direction: column; gap: clamp(16px, 2.6vh, 28px);
+.poster {
+  position: fixed; inset: 0; z-index: 90; background: rgb(9 9 11 / 88%); display: none;
+  overflow: auto; padding: clamp(12px, 3vh, 28px); place-items: center;
 }
+.poster.on { display: grid; }
+.poster__in { width: min(100%, 760px); display: grid; gap: 8px; }
+.poster__sheet {
+  aspect-ratio: 210 / 297; width: min(100%, calc((100svh - 112px) * 210 / 297));
+  max-height: calc(100svh - 112px); margin-inline: auto; overflow: hidden;
+  border: clamp(3px, .55vw, 6px) solid var(--brand); background: var(--qevr-ink);
+  padding: clamp(12px, 2.5vmin, 28px); display: flex; flex-direction: column; gap: clamp(8px, 1.6vmin, 18px);
+}
+.poster__controls { display: flex; justify-content: center; }
 .poster__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .poster__title canvas { display: block; image-rendering: pixelated; }
 .poster__close {
@@ -431,15 +481,22 @@ main { padding-left: 10px; padding-top: var(--bar); }
   border: var(--rule) solid var(--qevr-hair); padding: 10px 13px;
 }
 .poster__close:hover, .poster__close:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); outline: none; }
-.poster__body { display: flex; gap: clamp(18px, 3vw, 44px); align-items: flex-start; }
+.poster__body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(8px, 1.8vmin, 22px); align-items: start; min-height: 0; }
 .poster__art { flex: none; }
 .poster__art canvas { display: block; image-rendering: pixelated; }
 .poster__rules { min-width: 0; flex: 1; display: flex; flex-direction: column; }
-.poster__rule { border-bottom: var(--rule) solid var(--qevr-hair); padding: clamp(10px, 1.6vh, 16px) 0; }
-.poster__rule b { display: block; font-size: clamp(14px, 1.5vw, 19px); letter-spacing: .05em; }
-.poster__rule i { display: block; font-style: normal; margin-top: 5px; font-size: clamp(11px, 1vw, 13px); color: var(--qevr-muted); line-height: 1.6; }
+.poster__rule { border-bottom: var(--rule) solid var(--qevr-hair); padding: clamp(4px, .85vmin, 10px) 0; }
+.poster__rule b { display: block; font-size: clamp(7px, 1.18vmin, 13px); letter-spacing: .03em; }
+.poster__rule i { display: block; font-style: normal; margin-top: 2px; font-size: clamp(6px, .92vmin, 10px); color: var(--qevr-muted); line-height: 1.35; }
 .poster__foot { font-size: 10px; letter-spacing: .24em; color: var(--qevr-muted); display: flex; justify-content: space-between; gap: 12px; }
-@media (max-width: 720px) { .poster__body { flex-direction: column; } .poster__in { border-width: 4px; } }
+@media (max-width: 720px) {
+  .poster { padding: 8px; }
+  .poster__in { width: 100%; }
+  .poster__sheet { max-height: calc(100svh - 70px); width: min(100%, calc((100svh - 70px) * 210 / 297)); padding: 11px; }
+  .poster__top { gap: 8px; }
+  .poster__body { grid-template-columns: minmax(0, 1fr) 74px; }
+  .poster__foot { font-size: 6.5px; }
+}
 
 /* ---------- the hold: charging into the secret room ---------- */
 .mascot__charge {
@@ -450,16 +507,28 @@ main { padding-left: 10px; padding-top: var(--bar); }
 .mascot__charge i { display: block; height: 100%; width: 0; background: var(--qevr-pink); }
 .mascot__charge.on { display: block; }
 
-/* ---------- phone: the reading gutter — he never sits on a word ---------- */
+/* ---------- phone: the companion changes corners instead of changing copy width ---------- */
 @media (max-width: 720px) {
-  body.gutter .blocks { padding-right: 88px; }
-  body.gutter .stances__bay { padding-right: 12px; }
   .arrival__floor { left: 16px; right: 16px; }
   .people__grid .stance--still { flex-direction: column; gap: 6px; }
   .people__grid .stance__head { min-width: 0; }
-  .doorband { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .doorband span { text-align: left; }
+  .doorband { padding: 14px 10px; justify-content: center; }
+  .doorband span { display: none; }
+  .doorband canvas { max-width: 100%; }
   .stances__bay { padding: 14px; }
+}
+
+.companion[data-corner="bottom-left"] { right: auto; left: 10px; }
+.companion[data-corner="top-right"] { bottom: auto; top: calc(var(--bar) + 12px); }
+.companion[data-corner="top-left"] { right: auto; bottom: auto; left: 10px; top: calc(var(--bar) + 12px); }
+
+@media (min-width: 2200px) {
+  :root { --wrap: min(86vw, 3000px); --gut: clamp(48px, 4vw, 150px); }
+  body { font-size: 20px; }
+  .copy p, .stances__bay-copy p, .people__grid .stance--still .stance__body p { font-size: clamp(18px, .82vw, 26px); max-width: 76ch; }
+  .heading__sub { font-size: clamp(13px, .55vw, 18px); }
+  .block__field { right: clamp(50px, 4vw, 150px); }
+  .poster__in { width: min(100%, 960px); }
 }
 
 /* screen-reader-only heading: the document has a name even before the paint */

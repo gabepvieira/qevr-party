@@ -30,9 +30,9 @@
   <div class="bar__in">
     <a class="bar__mark" href="../" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
     <nav class="bar__nav">
-      <a href="../#manifesto" id="barManifesto">O MANIFESTO</a>
-      <a href="./" aria-current="page" id="barEstudio">O ESTÚDIO</a>
-      <a href="../galeria/" id="barGaleria">A GALERIA</a>
+      <a href="../#manifesto" id="barManifesto">MANIFESTO</a>
+      <a href="./" aria-current="page" id="barEstudio">ESTÚDIO</a>
+      <a href="../galeria/" id="barGaleria">GALERIA</a>
     </nav>
   </div>
 </header>
@@ -49,7 +49,6 @@
         <canvas class="maker__canvas" id="editor" aria-label="EDITOR"></canvas>
         <div class="loupe" id="loupe"><canvas id="loupeCanvas"></canvas></div>
       </div>
-      <div class="maker__caption" id="makerHint"></div>
     </div>
 
     <div class="maker__tools">
@@ -100,6 +99,7 @@
       </div>
     </div>
   </div>
+  <a class="canon-door" href="../canon/">CANON</a>
 </main>
 
 <script src="../assets/pixelfont.js"></script>
@@ -129,8 +129,9 @@
     if (next === LANG) return;
     try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
     window.QevrCascade.through(function () {
-      if (location.search || location.hash) location.href = location.pathname;
-      else location.reload();
+      var nextURL = new URL(location.href);
+      nextURL.searchParams.delete("lang");
+      location.href = nextURL.pathname + nextURL.search + nextURL.hash;
     });
   }
   document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
@@ -201,8 +202,7 @@
     var cellCss;
     if (isPhone()) {
       var w = (box.clientWidth || vw - 24);
-      var h = (box.clientHeight || vh - 400);
-      cellCss = Math.max(8, Math.min(Math.floor(w / cols), Math.floor(h / rows)));
+      cellCss = Math.max(8, Math.floor(w / cols));
     } else {
       var availW = box.clientWidth || (vw * 0.5);
       var availH = box.clientHeight || (vh - 140);
@@ -440,11 +440,10 @@
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
   });
   document.getElementById("btnReset").addEventListener("click", function () {
-    var def = window.Qevr.matrix("Default");
     var changes = [];
     for (var y = BAND.y0; y < BAND.y0 + BAND.h; y++) for (var x = BAND.x0; x < BAND.x0 + BAND.w; x++) {
       var idx = y * GRID + x;
-      if (work[idx] !== def.cells[idx]) { changes.push({ idx: idx, from: work[idx], to: def.cells[idx] }); work[idx] = def.cells[idx]; }
+      if (work[idx] !== LIME) { changes.push({ idx: idx, from: work[idx], to: LIME }); work[idx] = LIME; }
     }
     if (changes.length) { undoStack.push(changes); if (undoStack.length > UNDO_CAP) undoStack.shift(); }
     paintEditor();
@@ -581,7 +580,6 @@
       document.getElementById("barGaleria").textContent = COPY.doors.galeria.label;
     }
     if (DECK) {
-      document.getElementById("makerHint").textContent = DECK.hint || "";
       document.getElementById("nameLabel").textContent = DECK.nameLabel || "DÁ UM NOME";
       document.getElementById("codeLabel").textContent = DECK.codeLabel || "SEU CÓDIGO";
       document.getElementById("btnUndo").textContent = DECK.undo || "DESFAZER";

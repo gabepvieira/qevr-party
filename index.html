@@ -30,7 +30,7 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body class="is-booting">
 
 <h1 class="sr-only">QIQI</h1>
 
@@ -40,9 +40,9 @@
   <div class="bar__in">
     <a class="bar__mark" href="#topo" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
     <nav class="bar__nav">
-      <a href="#manifesto" aria-current="page" id="barManifesto">O MANIFESTO</a>
-      <a href="estudio/" id="barEstudio">O ESTÚDIO</a>
-      <a href="galeria/" id="barGaleria">A GALERIA</a>
+      <a href="#manifesto" aria-current="page" id="barManifesto">MANIFESTO</a>
+      <a href="estudio/" id="barEstudio">ESTÚDIO</a>
+      <a href="galeria/" id="barGaleria">GALERIA</a>
     </nav>
   </div>
 </header>
@@ -55,19 +55,21 @@
 <main id="pageMain">
   <section class="arrival" id="topo">
     <div class="arrival__mascot" id="arrivalSlot">
-      <div class="arrival__hint" id="mascotHint"></div>
+      <div class="arrival__signal" id="arrivalSignal">
+        <div class="arrival__loading" id="bootBar" aria-hidden="true"><i></i></div>
+        <div class="arrival__hint" id="mascotHint"></div>
+      </div>
       <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
       <div class="mascot__tag" id="mascotTag" aria-hidden="true"></div>
       <div class="mascot__load" id="mascotLoad" aria-hidden="true"><i></i></div>
       <div class="mascot__charge" id="mascotCharge" aria-hidden="true"><i></i></div>
-      <div class="arrival__loading" id="bootBar" aria-hidden="true"><i></i></div>
     </div>
     <div class="arrival__from" id="arrivalFrom"></div>
     <div class="arrival__color" id="arrivalColor">
       <div class="arrival__question" id="arrivalColorQuestion"></div>
       <div class="arrival__color-controls" role="group" aria-labelledby="arrivalColorQuestion">
-        <button class="ctl ctl--swatch ctl--green" id="arrivalGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
-        <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
+        <button class="ctl ctl--swatch ctl--green" id="arrivalGreen" type="button" aria-pressed="true"><span>VERDE</span></button>
+        <button class="ctl ctl--swatch ctl--pink" id="arrivalPink" type="button" aria-pressed="false"><span>ROSA</span></button>
       </div>
     </div>
     <div class="arrival__floor">
@@ -91,8 +93,8 @@
       <div class="block__field" aria-hidden="true"></div>
     </div>
 
-    <div class="block" id="pessoas" data-open="false">
-      <button class="heading heading--toggle" aria-expanded="false" aria-controls="peopleBody">
+    <div class="block" id="pessoas" data-open="true">
+      <button class="heading heading--toggle" aria-expanded="true" aria-controls="peopleBody">
         <span class="heading__text" role="heading" aria-level="2">
           <canvas data-cells="AS PESSOAS" data-fit="470"></canvas>
           <span class="heading__sub" data-sub="people"></span>
@@ -141,29 +143,31 @@
       </button>
       <div class="block__body">
         <div class="copy gift" id="giftBody"></div>
-        <div class="stamp" id="stamp"><div class="stamp__band"><canvas id="stampCanvas"></canvas></div></div>
+        <div class="stamp" id="stamp"><div class="stamp__band"><canvas id="stampCanvas"></canvas><span class="stamp__city" id="stampCity"></span></div></div>
       </div>
       <div class="block__field" aria-hidden="true"></div>
     </div>
 
     <div class="doors" id="doors">
-      <a class="doorband" id="doorEstudio" href="estudio/"><canvas data-cells="O ESTÚDIO" data-fit="560" data-doorword></canvas><span></span></a>
-      <a class="doorband" id="doorGaleria" href="galeria/"><canvas data-cells="A GALERIA" data-fit="560" data-doorword></canvas><span></span></a>
+      <a class="doorband" id="doorEstudio" href="estudio/"><canvas data-cells="ESTÚDIO" data-fit="560" data-doorword></canvas><span></span></a>
+      <a class="doorband" id="doorGaleria" href="galeria/"><canvas data-cells="GALERIA" data-fit="560" data-doorword></canvas><span></span></a>
     </div>
   </section>
 </main>
 
 <div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="AS REGRAS">
   <div class="poster__in">
-    <div class="poster__top">
-      <span class="poster__title"><canvas id="posterTitle" data-cells="AS REGRAS" data-fit="420"></canvas></span>
-      <span><button class="poster__close" id="posterDownload" type="button" style="margin-right:-1px">BAIXAR</button><button class="poster__close" id="posterClose" type="button">FECHAR</button></span>
+    <div class="poster__sheet">
+      <div class="poster__top">
+        <span class="poster__title"><canvas id="posterTitle" data-cells="AS REGRAS" data-fit="420"></canvas></span>
+      </div>
+      <div class="poster__body">
+        <div class="poster__rules" id="posterRules"></div>
+        <span class="poster__art"><canvas id="posterArt"></canvas></span>
+      </div>
+      <div class="poster__foot"><span id="posterBrand"></span><span id="posterCity"></span></div>
     </div>
-    <div class="poster__body">
-      <span class="poster__art"><canvas id="posterArt"></canvas></span>
-      <div class="poster__rules" id="posterRules"></div>
-    </div>
-    <div class="poster__foot"><span id="posterBrand"></span><span id="posterCity"></span></div>
+    <div class="poster__controls"><button class="poster__close" id="posterDownload" type="button" style="margin-right:-1px">BAIXAR</button><button class="poster__close" id="posterClose" type="button">FECHAR</button></div>
   </div>
 </div>
 
@@ -175,9 +179,9 @@
   "brand": "QIQI",
   "city": "SÃO PAULO",
   "doors": {
-    "manifesto": { "label": "O MANIFESTO", "sub": "O QUE É O QIQI" },
-    "estudio": { "label": "O ESTÚDIO", "sub": "CRIA O SEU QIQI" },
-    "galeria": { "label": "A GALERIA", "sub": "OS 23 PROTÓTIPOS EXISTENTES" }
+    "manifesto": { "label": "MANIFESTO", "sub": "O QUE É O QIQI" },
+    "estudio": { "label": "ESTÚDIO", "sub": "CRIA O SEU QIQI" },
+    "galeria": { "label": "GALERIA", "sub": "OS 23 PROTÓTIPOS EXISTENTES" }
   },
   "ui": { "green": "VERDE", "pink": "ROSA", "yes": "SIM", "no": "NÃO" },
   "world": {
@@ -301,8 +305,9 @@
     if (next === LANG) return;
     try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
     window.QevrCascade.through(function () {
-      if (location.search || location.hash) location.href = location.pathname;
-      else location.reload();
+      var nextURL = new URL(location.href);
+      nextURL.searchParams.delete("lang");
+      location.href = nextURL.pathname + nextURL.search + nextURL.hash;
     });
   }
   document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
@@ -504,7 +509,7 @@
      and on desktop the companion jumps into the open block's right field. */
   function setOpen(box) {
     [].forEach.call(document.querySelectorAll(".block"), function (b) {
-      var open = box === b;
+      var open = b.id === "pessoas" || box === b;
       b.setAttribute("data-open", open ? "true" : "false");
       var btn = b.querySelector(".heading--toggle");
       if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
@@ -547,6 +552,8 @@
       btn.addEventListener("click", function () {
         /* AS REGRAS opens as the poster, not a dropdown */
         if (box.id === "regras") { openPoster(); return; }
+        /* AS PESSOAS is the human constant. It never collapses. */
+        if (box.id === "pessoas") { setOpen(openBlock()); return; }
         var open = box.getAttribute("data-open") === "true";
         if (open) {
           box.setAttribute("data-open", "false");
@@ -824,7 +831,7 @@
     var m = window.Qevr.matrix(COPY.nevers.face || "Angry");
     if (!m) return;
     var C = window.Qevr.CROP;
-    var cell = window.matchMedia("(max-width: 720px)").matches ? 6 : 9;
+    var cell = window.matchMedia("(max-width: 720px)").matches ? 3 : 6;
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = C.w * cell * dpr; canvas.height = C.h * cell * dpr;
     canvas.style.width = (C.w * cell) + "px"; canvas.style.height = (C.h * cell) + "px";
@@ -863,6 +870,7 @@
     if (hint && COPY.arrival) hint.textContent = COPY.arrival.mascotHint;
     var question = document.getElementById("arrivalColorQuestion");
     if (question && COPY.arrival) question.textContent = COPY.arrival.colorQuestion;
+    document.getElementById("stampCity").textContent = COPY.city;
   }
 
   /* ---------- L15: the stamp drawn in his cells, the smiley in the brand ---------- */
@@ -924,9 +932,15 @@
   var inCorner = false, jumpedBlock = null;
   function isSmall() { return window.matchMedia("(max-width: 720px)").matches; }
   function isDesktop() { return window.matchMedia("(min-width: 1101px)").matches; }
+  function largeMonitorScale(base, max) {
+    if (window.innerWidth < 2200) return base;
+    return Math.min(max, Math.max(base, Math.floor(base * window.innerWidth / 1560)));
+  }
   function arrivalCellFor() {
     if (!isSmall()) {
       var byH = Math.floor((window.innerHeight * 0.52) / window.Qevr.CROP.h);
+      var byW = Math.floor((window.innerWidth * 0.62) / window.Qevr.CROP.w);
+      if (window.innerWidth >= 2200) return Math.max(22, Math.min(40, byH, byW));
       return Math.max(14, Math.min(22, byH));
     }
     var arrival = document.getElementById("topo");
@@ -936,11 +950,11 @@
     return Math.max(8, Math.min(13, byWidth, byHeight));
   }
   function cellFor() {
-    if (jumpedBlock) return 6;
+    if (jumpedBlock) return largeMonitorScale(6, 14);
     return inCorner ? (isSmall() ? 3 : 4) : arrivalCellFor();
   }
   function boundsFor() {
-    if (jumpedBlock) return { x: 6, y: 5 };
+    if (jumpedBlock) return { x: largeMonitorScale(6, 14), y: largeMonitorScale(5, 12) };
     return inCorner ? { x: isSmall() ? 8 : 10, y: isSmall() ? 6 : 8 }
                     : { x: isSmall() ? 10 : 20, y: isSmall() ? 8 : 16 };
   }
@@ -977,7 +991,54 @@
     mascot.applyTransform();
     mascot.setCell(cellFor());
     mascot._bounds = boundsFor();
-    document.body.classList.toggle("gutter", inCorner && isSmall());
+    avoidCompanionOverlap();
+  }
+  function avoidCompanionOverlap() {
+    if (!inCorner || !isSmall()) return;
+    var slot = document.getElementById("companionSlot");
+    var size = slot.getBoundingClientRect().width || 92;
+    var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
+    var candidates = [], y;
+    for (y = bar + 8; y <= innerHeight - size - 8; y += 12) {
+      candidates.push({ name: "smart-left", left: 8, top: y });
+      candidates.push({ name: "smart-right", left: innerWidth - size - 8, top: y });
+    }
+    /* Score actual words and pixel lettering, not an entire card. Empty parts
+       of a card are valid places to stand; text and controls are not. */
+    var readable = [];
+    [].forEach.call(document.querySelectorAll(".blocks p, .heading--toggle, .stance, .stances__bay, .stamp__city, .doorband span"), function (el) {
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      var node;
+      while ((node = walker.nextNode())) {
+        if (!node.nodeValue.trim()) continue;
+        var range = document.createRange();
+        range.selectNodeContents(node);
+        [].forEach.call(range.getClientRects(), function (r) {
+          if (r.width > 0 && r.height > 0 && r.bottom > bar && r.top < innerHeight) readable.push(r);
+        });
+      }
+    });
+    [].forEach.call(document.querySelectorAll(".blocks canvas"), function (canvas) {
+      var r = canvas.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0 && r.bottom > bar && r.top < innerHeight) readable.push(r);
+    });
+    [].forEach.call(document.querySelectorAll(".lang button"), function (control) {
+      var r = control.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) readable.push(r);
+    });
+    function overlap(candidate) {
+      return readable.reduce(function (score, r) {
+        var w = Math.max(0, Math.min(candidate.left + size, r.right) - Math.max(candidate.left, r.left));
+        var h = Math.max(0, Math.min(candidate.top + size, r.bottom) - Math.max(candidate.top, r.top));
+        return score + w * h;
+      }, 0);
+    }
+    candidates.sort(function (a, b) { return overlap(a) - overlap(b); });
+    slot.setAttribute("data-corner", candidates[0].name);
+    slot.style.left = candidates[0].left + "px";
+    slot.style.top = candidates[0].top + "px";
+    slot.style.right = "auto";
+    slot.style.bottom = "auto";
   }
   function checkCorner() {
     var arrival = document.getElementById("topo");
@@ -1015,8 +1076,10 @@
       }
     }
     if (!fire && !fireFlipping) thermo.classList.remove("is-fire");
+    document.documentElement.classList.toggle("scroll-fire", fire);
     wasFire = fire;
     checkCorner();
+    avoidCompanionOverlap();
   }
 
   function watchSections() {
@@ -1085,15 +1148,19 @@
     laddering = true;
     mascot._busy = true;
     var tag = document.getElementById("mascotTag");
-    var load = document.getElementById("mascotLoad");
+    var signal = document.getElementById("arrivalSignal");
+    var load = document.getElementById("bootBar");
     tag.textContent = "ERRO";
     mascot.setFace("Dead", true);
     tag.classList.add("on");
-    /* more violent glitch: two rounds back to back */
+    document.documentElement.classList.add("page-glitch");
+    /* more violent glitch: three rounds back to back */
     mascot.glitch();
     setTimeout(function () { mascot.glitch(); }, 160);
+    setTimeout(function () { mascot.glitch(); }, 320);
     setTimeout(function () {
       tag.classList.remove("on");
+      document.documentElement.classList.remove("page-glitch");
       /* he breaks into the floor, row by row */
       var f = 0, frames = 8;
       (function collapse() {
@@ -1101,14 +1168,14 @@
         f++;
         if (f <= frames) { setTimeout(collapse, reduce ? 0 : 55); return; }
         /* gone. the network reloads him. */
-        load.classList.add("on");
+        signal.classList.remove("is-ready");
+        signal.classList.add("is-loading");
         var barFill = load.querySelector("i");
         var lp = 0;
         (function loadStep() {
           lp += 20;
           barFill.style.width = Math.min(100, lp) + "%";
-          if (lp < 100) { setTimeout(loadStep, reduce ? 0 : 90); return; }
-          load.classList.remove("on");
+          if (lp < 100) { setTimeout(loadStep, reduce ? 0 : 115); return; }
           barFill.style.width = "0";
           /* re-rez bottom-up */
           var C = window.Qevr.CROP;
@@ -1123,6 +1190,8 @@
             mascot._busy = false;
             laddering = false;
             pokeCount = 0;
+            signal.classList.remove("is-loading");
+            signal.classList.add("is-ready");
           })();
         })();
       })();
@@ -1136,10 +1205,19 @@
     if (pokeCount === 1) { mascot.poke(); return; }
     if (pokeCount === 2) { mascot.glitch(); return; }
     if (pokeCount === 3) { mascot.rowwave(); return; }
-    ladderDie();
+    if (pokeCount === 4) { mascot.setFace("Shocked"); return; }
+    if (pokeCount === 5) { mascot.poke(); return; }
+    if (pokeCount === 6) { mascot.glitch(); return; }
+    if (pokeCount === 7) { mascot.rowwave(); return; }
+    if (pokeCount === 8) {
+      document.documentElement.classList.add("page-glitch");
+      setTimeout(function () { document.documentElement.classList.remove("page-glitch"); }, 260);
+      return;
+    }
+    if (pokeCount >= 9) ladderDie();
   }
 
-  /* ---------- A08: hold him ~2s and the secret room opens ---------- */
+  /* ---------- A08: hold him ~2s and the three story rooms open ---------- */
   var holdTimer = 0, holdStart = 0, holdFired = false, holdRaf = 0;
   function wireHold(btn) {
     var charge = document.getElementById("mascotCharge");
@@ -1318,8 +1396,11 @@
        brain takes over on São Paulo time. reduced motion goes straight in. */
     var bootBar = document.getElementById("bootBar");
     var bootFill = bootBar.querySelector("i");
+    var arrivalSignal = document.getElementById("arrivalSignal");
     if (reduce) {
-      bootBar.style.display = "none";
+      bootFill.style.width = "100%";
+      document.body.classList.remove("is-booting");
+      arrivalSignal.classList.add("is-ready");
       mascot.setFace(hourFace(), true);
       mascot.start(boundsFor());
     } else {
@@ -1329,10 +1410,10 @@
       mascot.paint();
       var lp = 0;
       (function bootStep() {
-        lp += 25;
+        lp += 20;
         bootFill.style.width = Math.min(100, lp) + "%";
-        if (lp < 100) { setTimeout(bootStep, 90); return; }
-        bootBar.style.display = "none";
+        if (lp < 100) { setTimeout(bootStep, 115); return; }
+        document.body.classList.remove("is-booting");
         /* he builds in: cells arriving in stepped random chunks */
         var idx = [];
         for (var i = 0; i < savedRender.length; i++) if (savedRender[i]) idx.push(i);
@@ -1340,17 +1421,22 @@
           var k = Math.floor(Math.random() * (j + 1));
           var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
         }
-        var frames = 6, per = Math.ceil(idx.length / frames), p = 0;
+        var frames = 8, per = Math.ceil(idx.length / frames), p = 0;
         (function build() {
           for (var n = 0; n < per && p < idx.length; n++, p++) mascot.render[idx[p]] = savedRender[idx[p]];
           mascot.paint();
-          if (p < idx.length) { setTimeout(build, 55); return; }
-          setTimeout(function () { mascot.setFace("Anime"); }, 700);
-          setTimeout(function () { mascot.setFace("Joy"); }, 2000);
+          if (p < idx.length) { setTimeout(build, 75); return; }
+          document.documentElement.classList.add("page-glitch");
+          setTimeout(function () {
+            document.documentElement.classList.remove("page-glitch");
+            arrivalSignal.classList.add("is-ready");
+          }, 420);
+          setTimeout(function () { mascot.setFace("Anime"); }, 900);
+          setTimeout(function () { mascot.setFace("Joy"); }, 2400);
           setTimeout(function () {
             mascot.start(boundsFor());
             mascot.setFace(hourFace());
-          }, 3300);
+          }, 4000);
         })();
       })();
     }

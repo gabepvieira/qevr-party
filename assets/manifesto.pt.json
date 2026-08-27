@@ -5,15 +5,15 @@
   "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. O REGISTRO É FALADO: VC, TÁ, TÃO, TBM, TÔ, CÊ ficam. NUNCA 'corrigir' para VOCÊ, ESTÁ, ESTÃO, TAMBÉM: a voz é o produto. Consertar só erro real: acento, concordância, typo. Ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado. Este arquivo é o canônico; index.html embute uma cópia dele no bloco deck-pt (editar OS DOIS).",
   "doors": {
     "manifesto": {
-      "label": "O MANIFESTO",
+      "label": "MANIFESTO",
       "sub": "O QUE É O QIQI"
     },
     "estudio": {
-      "label": "O ESTÚDIO",
+      "label": "ESTÚDIO",
       "sub": "CRIA O SEU QIQI"
     },
     "galeria": {
-      "label": "A GALERIA",
+      "label": "GALERIA",
       "sub": "OS 23 PROTÓTIPOS EXISTENTES"
     }
   },

@@ -1,226 +1,144 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-mode="dawn">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>07:00</title>
+<title>QIQI / SALAS</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0C0C0E">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/site.css">
+<meta name="theme-color" content="#09090B">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
 <style>
-  /* the tender hour lives here and nowhere else. no bar, no map, no explanation. */
-  body { background: var(--ground); }
-  .sala {
-    min-height: 100svh; max-width: 980px; margin-inline: auto;
-    padding: clamp(20px, 4vh, 44px) var(--gut) 90px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: clamp(18px, 3.4vh, 34px);
-  }
+  .rooms { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: 54px var(--gut) 82px; display: grid; align-items: center; }
   .room { display: none; width: 100%; }
-  .room.on { display: flex; flex-direction: column; align-items: center; gap: clamp(16px, 3vh, 30px); }
-  .room--vazia.on { min-height: 40svh; justify-content: center; }
-  .hora { font-size: clamp(11px, 1.1vw, 13px); letter-spacing: .34em; color: var(--qevr-pink); }
-  .lenda { width: 100%; max-width: 640px; border-top: var(--rule) solid var(--qevr-hair); }
-  .lenda p {
-    font-size: clamp(12.5px, 1.1vw, 15px); line-height: 1.75; letter-spacing: .05em;
-    color: var(--qevr-light); border-bottom: var(--rule) solid var(--qevr-hair);
-    padding: clamp(11px, 1.8vh, 16px) 2px;
+  .room.on { display: block; }
+  .room__head { display: grid; gap: 6px; margin-bottom: clamp(18px, 3vh, 32px); }
+  .room__kicker { color: var(--brand); font-size: 10px; letter-spacing: .28em; }
+  .room__head h1 { font-size: clamp(24px, 4vw, 64px); letter-spacing: .04em; }
+  .room__head p { color: var(--qevr-muted); font-size: clamp(11px, 1vw, 14px); line-height: 1.65; max-width: 68ch; }
+  .exhibit { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); border: var(--rule) solid var(--qevr-hair); min-height: min(60svh, 680px); }
+  .exhibit__art { min-width: 0; display: grid; place-items: center; padding: clamp(14px, 3vw, 40px); border-right: var(--rule) solid var(--qevr-hair); overflow: hidden; }
+  .exhibit__art canvas { display: block; image-rendering: pixelated; max-width: 100%; }
+  .exhibit__panel { display: flex; flex-direction: column; min-width: 0; }
+  .exhibit__copy { padding: clamp(16px, 2.5vw, 30px); flex: 1; }
+  .exhibit__copy strong { color: var(--brand); display: block; font-size: clamp(16px, 2vw, 26px); margin-bottom: 10px; }
+  .exhibit__copy p { color: var(--qevr-light); font-size: clamp(11px, 1vw, 14px); line-height: 1.75; }
+  .exhibit__controls { display: flex; border-top: var(--rule) solid var(--qevr-hair); }
+  .exhibit__controls .ctl { min-height: 48px; }
+  .growth-range { width: calc(100% - 32px); margin: 20px 16px; accent-color: var(--brand); }
+  .room-nav { position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--ground); border-top: var(--rule) solid var(--qevr-hair); }
+  .room-nav button { min-width: 0; min-height: 52px; font: inherit; font-size: 10px; letter-spacing: .14em; color: var(--qevr-muted); background: transparent; border: 0; border-right: var(--rule) solid var(--qevr-hair); cursor: pointer; }
+  .room-nav button:last-child { border-right: 0; }
+  .room-nav button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
+  .back { position: fixed; z-index: 30; left: 0; top: 0; padding: 12px 14px; color: var(--qevr-muted); background: var(--ground); border-right: var(--rule) solid var(--qevr-hair); border-bottom: var(--rule) solid var(--qevr-hair); text-decoration: none; font-size: 9px; letter-spacing: .16em; }
+  @media (max-width: 720px) {
+    .rooms { padding: 58px 12px 72px; align-items: start; }
+    .exhibit { grid-template-columns: 1fr; min-height: 0; }
+    .exhibit__art { min-height: 42svh; border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair); }
+    .room-nav button { font-size: 8px; letter-spacing: .08em; }
   }
-  .lenda p:nth-child(odd) { color: var(--qevr-muted); }
-  /* the canon on display: the museum plaque next to the artwork */
-  .canon { width: 100%; display: flex; flex-wrap: wrap; gap: clamp(16px, 3vw, 34px); justify-content: center; align-items: flex-start; }
-  .canon__grid { overflow-x: auto; max-width: 100%; }
-  .canon__grid canvas { display: block; image-rendering: pixelated; }
-  .canon__meta { display: flex; flex-direction: column; gap: 10px; min-width: 230px; max-width: 320px; }
-  .canon__row { display: flex; }
-  .canon__meta .ctl { flex: 1; }
-  .canon__name { color: var(--brand); font-weight: 700; font-size: clamp(15px, 1.6vw, 20px); letter-spacing: .05em; }
-  .canon__stats, .canon__link { font-size: 9.5px; letter-spacing: .12em; color: var(--qevr-muted); line-height: 1.7; text-transform: none; overflow-wrap: anywhere; }
-  .doors3 { position: fixed; left: 0; right: 0; bottom: 0; display: flex; border-top: var(--rule) solid var(--qevr-hair); background: var(--ground); }
-  .doors3 button {
-    flex: 1; font: inherit; text-transform: uppercase; cursor: pointer;
-    background: transparent; color: var(--qevr-muted); font-size: 10px; letter-spacing: .2em;
-    padding: 14px 8px; border: 0; border-right: var(--rule) solid var(--qevr-hair); min-height: 44px;
-  }
-  .doors3 button:last-child { border-right: 0; }
-  .doors3 button[aria-pressed="true"] { color: var(--qevr-ink); background: var(--brand); font-weight: 700; }
-  .doors3 button:not([aria-pressed="true"]):hover { color: var(--qevr-ink); background: var(--qevr-light); }
-  .volta {
-    position: fixed; left: 0; top: 0; text-decoration: none;
-    color: var(--qevr-muted); font-size: 10px; letter-spacing: .2em;
-    padding: 12px 14px; border-right: var(--rule) solid var(--qevr-hair); border-bottom: var(--rule) solid var(--qevr-hair);
-    background: var(--ground);
-  }
-  .volta:hover, .volta:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); outline: none; }
+  @media (min-width: 2200px) { .exhibit { min-height: 64svh; } .exhibit__copy p { font-size: 20px; } }
 </style>
 </head>
 <body>
-
-<a class="volta" href="/" id="voltaLink">VOLTAR</a>
-
-<main class="sala">
-  <section class="room room--dawn on" id="roomDawn">
-    <span class="hora">07:00</span>
-    <button class="mascot" id="dawnBtn" aria-label="QIQI"><canvas id="dawnCanvas"></canvas></button>
-  </section>
-
-  <section class="room room--lenda" id="roomLenda">
-    <div class="lenda" id="lendaList"></div>
-    <div class="canon">
-      <div class="canon__grid"><canvas id="canonCanvas" aria-label="GRADE 34 X 34"></canvas></div>
-      <div class="canon__meta">
-        <span class="canon__name" id="canonName">NORMAL</span>
-        <div class="canon__row">
-          <button class="ctl" id="canonPrev" type="button">&lt;</button>
-          <button class="ctl" id="canonNext" type="button">&gt;</button>
-        </div>
-        <span class="canon__stats" id="canonStats"></span>
-        <span class="canon__link" id="canonLink"></span>
+<a class="back" href="../">VOLTAR</a>
+<main class="rooms">
+  <section class="room on" id="roomStory" data-room="story">
+    <header class="room__head"><span class="room__kicker">01 / HISTÓRIA</span><h1>DE QEVR PRA QIQI</h1><p>O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.</p></header>
+    <div class="exhibit">
+      <div class="exhibit__art"><canvas id="storyCanvas" aria-label="QIQI"></canvas></div>
+      <div class="exhibit__panel">
+        <div class="exhibit__copy"><strong id="storyTitle">QEVR</strong><p id="storyCopy">UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR.</p></div>
+        <div class="exhibit__controls"><button class="ctl" data-story="0" aria-pressed="true">QEVR</button><button class="ctl" data-story="1" aria-pressed="false">QIQI</button><button class="ctl" data-story="2" aria-pressed="false">AGORA</button></div>
       </div>
     </div>
   </section>
 
-  <section class="room room--vazia" id="roomVazia"></section>
+  <section class="room" id="roomDna" data-room="dna">
+    <header class="room__head"><span class="room__kicker">02 / DNA</span><h1>O CORPO NÃO MUDA</h1><p>SÃO 23 PROTÓTIPOS. A FAIXA DO ROSTO MUDA. O RESTO É A MESMA REGRA.</p></header>
+    <div class="exhibit">
+      <div class="exhibit__art"><canvas id="dnaCanvas" aria-label="GRADE DO QIQI"></canvas></div>
+      <div class="exhibit__panel">
+        <div class="exhibit__copy"><strong id="dnaName">NORMAL</strong><p id="dnaStats"></p></div>
+        <div class="exhibit__controls"><button class="ctl" id="dnaPrev" type="button">&lt;</button><button class="ctl" id="dnaNext" type="button">&gt;</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="room" id="roomGrowth" data-room="growth">
+    <header class="room__head"><span class="room__kicker">03 / MUDANÇAS</span><h1>MUDAR SEM VIRAR OUTRA COISA</h1><p>ARRASTA. CADA PASSO TROCA UM PEDAÇO DO ROSTO, SEM QUEBRAR O DNA DO QIQI.</p></header>
+    <div class="exhibit">
+      <div class="exhibit__art"><canvas id="growthCanvas" aria-label="TRANSFORMAÇÃO DO QIQI"></canvas></div>
+      <div class="exhibit__panel">
+        <div class="exhibit__copy"><strong id="growthTitle">NORMAL → FELIZ DA VIDA</strong><p id="growthCopy">0% MUDOU. O CORPO CONTINUA INTEIRO.</p></div>
+        <input class="growth-range" id="growthRange" type="range" min="0" max="100" value="0" aria-label="QUANTO O ROSTO MUDOU">
+      </div>
+    </div>
+  </section>
 </main>
-
-<div class="doors3" role="group" aria-label="SALAS">
-  <button id="dDawn" type="button" aria-pressed="true">07:00</button>
-  <button id="dLenda" type="button" aria-pressed="false">A LENDA</button>
-  <button id="dVazia" type="button" aria-pressed="false" aria-label="SALA VAZIA"></button>
-</div>
-
-<script src="/assets/pixelfont.js"></script>
-<script src="/assets/qevr.js"></script>
-<script src="/assets/cascade.js"></script>
+<nav class="room-nav" aria-label="SALAS"><button data-open-room="Story" aria-pressed="true">HISTÓRIA</button><button data-open-room="Dna" aria-pressed="false">DNA</button><button data-open-room="Growth" aria-pressed="false">MUDANÇAS</button></nav>
+<script src="../assets/qevr.js"></script>
+<script src="../assets/cascade.js"></script>
 <script>
 (function () {
   "use strict";
-  var LANG = "pt";
-  try { var l = localStorage.getItem("qevr.lang"); if (l === "en") LANG = "en"; } catch (e) {}
-  if (LANG === "en") document.documentElement.lang = "en";
-
-  /* ⚠ agent-drafted PT under the new register rules; GP reviews before it settles */
-  var LENDA_PT = [
-    "O QIQI É UM QR CODE QUE GANHOU VIDA.",
-    "SÃO 23 PROTÓTIPOS. SÓ O ROSTO MUDA. O CORPO NUNCA.",
-    "ELE JÁ SE CHAMOU QEVR. NINGUÉM CONSEGUIA FALAR. AGORA É QIQI.",
-    "CADA VERSÃO DESTE SITE FOI FEITA POR UMA VOZ DIFERENTE. ESTA É A SÉTIMA.",
-    "A PRIMEIRA VOZ CONSTRUIU RÁPIDO DEMAIS E INVENTOU COISA QUE NÃO EXISTIA.",
-    "A SEGUNDA CORRIGIU TANTO QUE MATOU A VOZ FALADA. A TERCEIRA TROUXE ELA DE VOLTA.",
-    "A QUARTA CONFERIU TUDO. A QUINTA REESCREVEU CADA PALAVRA, UMA POR UMA.",
-    "A SEXTA MUDOU O SITE DE CASA. A SÉTIMA CONSTRUIU O QUE VC TÁ VENDO.",
-    "O NÚMERO 23 NÃO SE EXPLICA."
+  var names = [], dnaIndex = 0, storyIndex = 0;
+  var stories = [
+    { title: "QEVR", face: "Default", copy: "UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR." },
+    { title: "QIQI", face: "Anime", copy: "O NOME FICOU FÁCIL DE DIZER. ELE CONTINUOU SENDO O MESMO BICHO." },
+    { title: "AGORA", face: "Joy", copy: "ELE CRESCEU PRA TER ESTÚDIO, GALERIA E LUGAR PRA MOSTRAR O PRÓPRIO DNA." }
   ];
-  var LENDA_EN = [
-    "QIQI IS A QR CODE THAT CAME ALIVE.",
-    "THERE ARE 23 PROTOTYPES. ONLY THE FACE CHANGES. THE BODY NEVER DOES.",
-    "IT USED TO BE CALLED QEVR. NOBODY COULD SAY IT. NOW IT'S QIQI.",
-    "EVERY VERSION OF THIS SITE WAS MADE BY A DIFFERENT VOICE. THIS IS THE SEVENTH.",
-    "THE FIRST VOICE BUILT TOO FAST AND MADE THINGS UP.",
-    "THE SECOND CORRECTED SO HARD IT KILLED THE SPOKEN VOICE. THE THIRD BROUGHT IT BACK.",
-    "THE FOURTH CHECKED EVERYTHING. THE FIFTH REWROTE EVERY WORD, ONE BY ONE.",
-    "THE SIXTH MOVED THE SITE'S HOME. THE SEVENTH BUILT WHAT YOU'RE LOOKING AT.",
-    "THE NUMBER 23 DOESN'T GET EXPLAINED."
-  ];
-
-  var host = document.getElementById("lendaList");
-  (LANG === "en" ? LENDA_EN : LENDA_PT).forEach(function (t) {
-    var p = document.createElement("p");
-    p.textContent = t;
-    host.appendChild(p);
-  });
-  if (LANG === "en") {
-    document.getElementById("voltaLink").textContent = "BACK";
-    document.getElementById("dLenda").textContent = "THE LORE";
+  function color(name, fallback) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback; }
+  function canvasCell(canvas, n, maxCell) {
+    var host = canvas.parentElement, room = Math.min(host.clientWidth - 24, host.clientHeight - 24 || innerHeight * .5);
+    if (innerWidth >= 2200) room = Math.min(room, 1200);
+    return Math.max(4, Math.min(maxCell, Math.floor(room / n)));
   }
-
-  function show(which) {
-    ["Dawn", "Lenda", "Vazia"].forEach(function (k) {
-      document.getElementById("room" + k).classList.toggle("on", k === which);
-    });
-    document.getElementById("dDawn").setAttribute("aria-pressed", String(which === "Dawn"));
-    document.getElementById("dLenda").setAttribute("aria-pressed", String(which === "Lenda"));
-    document.getElementById("dVazia").setAttribute("aria-pressed", String(which === "Vazia"));
-    if (which === "Lenda") paintCanon();
-  }
-  document.getElementById("dDawn").addEventListener("click", function () { show("Dawn"); });
-  document.getElementById("dLenda").addEventListener("click", function () { show("Lenda"); });
-  document.getElementById("dVazia").addEventListener("click", function () { show("Vazia"); });
-
-  /* ---------- the canon on display ---------- */
-  var names = [], canonIdx = 0, DATA = null;
-  function paintCanon() {
-    if (!names.length) return;
-    var name = names[canonIdx];
-    var m = window.Qevr.matrix(name), def = window.Qevr.matrix("Default");
-    var n = m.n;
-    var pad = 22;
-    var room = Math.min(window.innerWidth - 60, 520);
-    var cell = Math.max(6, Math.floor((room - pad) / n));
-    var canvas = document.getElementById("canonCanvas");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W = n * cell + pad, H = n * cell + pad;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    canvas.style.width = W + "px"; canvas.style.height = H + "px";
-    var ctx = canvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    ctx.font = "8px 'Space Mono', monospace";
-    ctx.fillStyle = "#9A9AA5";
-    ctx.textAlign = "center";
-    for (var x = 0; x < n; x += 5) ctx.fillText(String(x), pad + x * cell + cell / 2, 9);
-    ctx.textAlign = "right";
-    for (var y = 0; y < n; y += 5) ctx.fillText(String(y), 18, pad + y * cell + 7);
-    var body = 0, module = 0, diffs = 0;
-    for (y = 0; y < n; y++) for (x = 0; x < n; x++) {
-      var i = y * n + x, v = m.cells[i];
-      var isDiff = v !== def.cells[i];
-      if (v === 1) body++;
-      if (v === 2) module++;
-      if (isDiff) diffs++;
-      ctx.fillStyle = isDiff ? "#FF007F" : (v === 1 ? "#CCFF00" : (v === 2 ? "#141416" : "#0C0C0E"));
-      ctx.fillRect(pad + x * cell, pad + y * cell, cell, cell);
+  function paintCrop(canvas, matrix) {
+    var C = window.Qevr.CROP, cell = canvasCell(canvas, Math.max(C.w, C.h), 40), dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = C.w * cell * dpr; canvas.height = C.h * cell * dpr;
+    canvas.style.width = C.w * cell + "px"; canvas.style.height = C.h * cell + "px";
+    var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, C.w * cell, C.h * cell);
+    for (var y = 0; y < C.h; y++) for (var x = 0; x < C.w; x++) {
+      var v = matrix.cells[(y + C.y0) * matrix.n + x + C.x0]; if (!v) continue;
+      ctx.fillStyle = v === 2 ? color("--qevr-ink", "#09090B") : color("--brand", "#CCFF00"); ctx.fillRect(x * cell, y * cell, cell, cell);
     }
-    document.getElementById("canonName").textContent = name.toUpperCase();
-    document.getElementById("canonStats").textContent =
-      "BODY " + body + " / MODULE " + module + " / DIFF " + diffs;
-    document.getElementById("canonLink").textContent = "qevr.party/galeria/?face=" + encodeURIComponent(name);
   }
-  document.getElementById("canonPrev").addEventListener("click", function () {
-    canonIdx = (canonIdx - 1 + names.length) % names.length; paintCanon();
-  });
-  document.getElementById("canonNext").addEventListener("click", function () {
-    canonIdx = (canonIdx + 1) % names.length; paintCanon();
-  });
-
-  window.Qevr.load("/assets/qevr-expressions.json").then(function (ns) {
-    names = ns;
-    /* the dawn room: him at his quietest. eyes closed, barely there. */
-    var btn = document.getElementById("dawnBtn");
-    var cell = Math.max(7, Math.min(12, Math.floor((window.innerHeight * 0.36) / window.Qevr.CROP.h)));
-    var mascot = new window.Qevr.Mascot(document.getElementById("dawnCanvas"), {
-      host: btn, cell: cell, face: "Eyes Closed"
-    });
-    btn.addEventListener("click", function () {
-      /* even here he answers. quietly. */
-      mascot.setFace("Blissful");
-      setTimeout(function () { mascot.setFace("Eyes Closed"); }, 2600);
-    });
-    /* a slow breath: blissful and back, on long random rests. no brain here. */
-    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduce) {
-      (function breathe() {
-        setTimeout(function () {
-          mascot.setFace("Blissful");
-          setTimeout(function () { mascot.setFace("Eyes Closed"); }, 1800);
-          breathe();
-        }, 9000 + Math.random() * 9000);
-      })();
-    }
-  }).catch(function (e) { console.error("[sala]", e); });
+  function paintStory() {
+    var item = stories[storyIndex];
+    paintCrop(document.getElementById("storyCanvas"), window.Qevr.matrix(item.face));
+    document.getElementById("storyTitle").textContent = item.title; document.getElementById("storyCopy").textContent = item.copy;
+    [].forEach.call(document.querySelectorAll("[data-story]"), function (b) { b.setAttribute("aria-pressed", String(+b.getAttribute("data-story") === storyIndex)); });
+  }
+  function paintDna() {
+    if (!names.length) return; var name = names[dnaIndex], m = window.Qevr.matrix(name), def = window.Qevr.matrix("Default"), n = m.n;
+    var canvas = document.getElementById("dnaCanvas"), cell = canvasCell(canvas, n, 28), dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = n * cell * dpr; canvas.height = n * cell * dpr; canvas.style.width = n * cell + "px"; canvas.style.height = n * cell + "px";
+    var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); var diff = 0;
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) { var i = y * n + x, v = m.cells[i], changed = v !== def.cells[i]; if (changed) diff++; ctx.fillStyle = changed ? "#FF007F" : v === 1 ? color("--brand", "#CCFF00") : v === 2 ? "#141416" : "#09090B"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+    document.getElementById("dnaName").textContent = name.toUpperCase(); document.getElementById("dnaStats").textContent = diff + " CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.";
+  }
+  function paintGrowth() {
+    var from = window.Qevr.matrix("Default"), to = window.Qevr.matrix("Joy"), pct = +document.getElementById("growthRange").value, mixed = { n: from.n, cells: new Uint8Array(from.cells) };
+    var changed = []; for (var i = 0; i < from.cells.length; i++) if (from.cells[i] !== to.cells[i]) changed.push(i);
+    var take = Math.round(changed.length * pct / 100); for (i = 0; i < take; i++) mixed.cells[changed[i]] = to.cells[changed[i]];
+    paintCrop(document.getElementById("growthCanvas"), mixed); document.getElementById("growthCopy").textContent = pct + "% MUDOU. O CORPO CONTINUA INTEIRO.";
+  }
+  function openRoom(name) {
+    ["Story", "Dna", "Growth"].forEach(function (key) { document.getElementById("room" + key).classList.toggle("on", key === name); });
+    [].forEach.call(document.querySelectorAll("[data-open-room]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-open-room") === name)); });
+    if (name === "Story") paintStory(); if (name === "Dna") paintDna(); if (name === "Growth") paintGrowth();
+  }
+  [].forEach.call(document.querySelectorAll("[data-story]"), function (b) { b.addEventListener("click", function () { storyIndex = +b.getAttribute("data-story"); paintStory(); }); });
+  [].forEach.call(document.querySelectorAll("[data-open-room]"), function (b) { b.addEventListener("click", function () { openRoom(b.getAttribute("data-open-room")); }); });
+  document.getElementById("dnaPrev").addEventListener("click", function () { dnaIndex = (dnaIndex - 1 + names.length) % names.length; paintDna(); });
+  document.getElementById("dnaNext").addEventListener("click", function () { dnaIndex = (dnaIndex + 1) % names.length; paintDna(); });
+  document.getElementById("growthRange").addEventListener("input", paintGrowth);
+  window.Qevr.load("../assets/qevr-expressions.json").then(function (list) { names = list; paintStory(); paintDna(); paintGrowth(); });
+  addEventListener("resize", function () { var on = document.querySelector(".room.on"); if (on) openRoom(on.id.replace("room", "")); });
+  window.QevrCascade.wireLinks(".back");
 })();
 </script>
-<script type="module" src="/assets/qa.mjs"></script>
+<script type="module" src="../assets/qa.mjs"></script>
 </body>
 </html>

@@ -5,15 +5,15 @@
   "note": "COPY DECK, ENGLISH. ALL CAPS always. No em dashes, no exclamation marks, no emoji. THE REGISTER IS SPOKEN: the way a partier texts a friend, never marketing. Mirror the PT deck beat for beat; where PT uses VC/TBM texting forms, EN may use U and contractions. Read every line out loud before committing. The stamp is the last line of A GIFT, not a separate footer.",
   "doors": {
     "manifesto": {
-      "label": "THE MANIFESTO",
+      "label": "MANIFESTO",
       "sub": "WHAT QIQI IS"
     },
     "estudio": {
-      "label": "THE STUDIO",
+      "label": "STUDIO",
       "sub": "MAKE YOUR QIQI"
     },
     "galeria": {
-      "label": "THE GALLERY",
+      "label": "GALLERY",
       "sub": "THE 23 EXISTING PROTOTYPES"
     }
   },

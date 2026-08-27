@@ -30,17 +30,12 @@
   <div class="bar__in">
     <a class="bar__mark" href="../" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
     <nav class="bar__nav">
-      <a href="../#manifesto" id="barManifesto">O MANIFESTO</a>
-      <a href="../estudio/" id="barEstudio">O ESTÚDIO</a>
-      <a href="./" aria-current="page" id="barGaleria">A GALERIA</a>
+      <a href="../#manifesto" id="barManifesto">MANIFESTO</a>
+      <a href="../estudio/" id="barEstudio">ESTÚDIO</a>
+      <a href="./" aria-current="page" id="barGaleria">GALERIA</a>
     </nav>
   </div>
 </header>
-
-<div class="lang" role="group" aria-label="PT / EN">
-  <button id="langPt" type="button" aria-pressed="true">PT</button>
-  <button id="langEn" type="button" aria-pressed="false">EN</button>
-</div>
 
 <main class="studio">
   <div class="frame" id="frame">
@@ -48,6 +43,10 @@
     <div class="strip strip--top" id="stripTop"></div>
 
     <section class="plate" aria-labelledby="stageName">
+      <div class="lang" role="group" aria-label="PT / EN">
+        <button id="langPt" type="button" aria-pressed="true">PT</button>
+        <button id="langEn" type="button" aria-pressed="false">EN</button>
+      </div>
       <div class="stage__art">
         <button class="mascot" id="stageBtn" aria-label="QIQI"><canvas id="stageCanvas"></canvas></button>
       </div>
@@ -57,30 +56,19 @@
           <div class="stage__credit" id="stageCredit"></div>
         </div>
         <div class="stage__controls">
-          <div class="ctlset">
-            <div class="ctlset__label"><span class="lbl-long" id="moveLabel">ELE SE MEXE SOZINHO?</span><span class="lbl-short" id="moveLabelShort">SE MEXE?</span></div>
-            <div class="ctlrow">
-              <button class="ctl" id="ctlLive" type="button" aria-pressed="true">SIM</button>
-              <button class="ctl" id="ctlHold" type="button" aria-pressed="false">NÃO</button>
-            </div>
+          <div class="ctlrow">
+            <button class="ctl" id="ctlLive" type="button" aria-pressed="true">SE MEXE</button>
+            <button class="ctl" id="ctlHold" type="button" aria-pressed="false">PARADO</button>
           </div>
-          <div class="ctlset">
-            <div class="ctlset__label"><span class="lbl-long" id="colorLabel">COR</span><span class="lbl-short" id="colorLabelShort">COR</span></div>
-            <div class="ctlrow">
-              <button class="ctl ctl--swatch ctl--green" id="ctlGreen" type="button" aria-pressed="true"><i></i><span>VERDE</span></button>
-              <button class="ctl ctl--swatch ctl--pink" id="ctlPink" type="button" aria-pressed="false"><i></i><span>ROSA</span></button>
-            </div>
+          <div class="ctlrow">
+            <button class="ctl ctl--green" id="ctlGreen" type="button" aria-pressed="true">VERDE</button>
+            <button class="ctl ctl--pink" id="ctlPink" type="button" aria-pressed="false">ROSA</button>
           </div>
-          <div class="ctlset ctlset--glitch">
-            <div class="ctlset__label"><span class="lbl-long" id="glitchLabel">QUER VER UMA COISA?</span><span class="lbl-short" id="glitchLabelShort">QUER VER UMA COISA?</span></div>
-            <div class="ctlrow"><button class="ctl" id="ctlGlitch" type="button">GLITCH</button></div>
-          </div>
-          <div class="ctlset ctlset--wall">
-            <div class="ctlset__label"><span class="lbl-long" id="wallLabel">WALLPAPER</span><span class="lbl-short" id="wallLabelShort">WALLPAPER</span></div>
-            <div class="ctlrow"><button class="ctl" id="ctlWall" type="button">WALLPAPER</button></div>
+          <div class="ctlrow">
+            <button class="ctl" id="ctlGlitch" type="button">GLITCH</button>
+            <button class="ctl" id="ctlWall" type="button">BAIXAR</button>
           </div>
         </div>
-        <div class="stage__meta"><span class="stage__meta-title" id="stageMetaTitle"></span><span id="stageMetaLines"></span></div>
       </div>
     </section>
 
@@ -124,8 +112,9 @@
     if (next === LANG) return;
     try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
     window.QevrCascade.through(function () {
-      if (location.search || location.hash) location.href = location.pathname;
-      else location.reload();
+      var nextURL = new URL(location.href);
+      nextURL.searchParams.delete("lang");
+      location.href = nextURL.pathname + nextURL.search + nextURL.hash;
     });
   }
   document.getElementById("langPt").setAttribute("aria-pressed", String(LANG === "pt"));
@@ -136,6 +125,7 @@
   var stage = null;
   var live = true;
   var current = "Default";
+  var pinnedFace = null;
   var names = [];
   var chips = [];
   var framePaused = false;
@@ -239,8 +229,9 @@
     });
     /* L20: a face has an address. picking one updates the URL, no reload. */
     try {
-      var qs = "?face=" + encodeURIComponent(name);
-      history.replaceState(null, "", location.pathname + qs + location.hash);
+      var nextURL = new URL(location.href);
+      nextURL.searchParams.set("face", name);
+      history.replaceState(null, "", nextURL.pathname + nextURL.search + nextURL.hash);
     } catch (e) {}
   }
 
@@ -326,17 +317,23 @@
     return 2 * (W + S) / (S + GAP) + 2 * (H + cellH) / (cellH + GAP);
   }
 
+  function fullLaneSlots(W, H, S) {
+    var cellH = laneCellH(S);
+    return 2 * Math.max(0, W - S) / (S + GAP) + 2 * Math.max(0, H - cellH) / (cellH + GAP);
+  }
+
   function solveChipSize(W, H, count) {
     var lo = 80, hi = 700, best = 80;
     while (lo <= hi) {
       var mid = (lo + hi) >> 1;
-      var fits = H - 2 * (laneCellH(mid) + GAP) >= 300 && laneSlots(W, H, mid) >= count;
+      var fits = H - 2 * (laneCellH(mid) + GAP) >= 300 && fullLaneSlots(W, H, mid) >= count;
       if (fits) { best = mid; lo = mid + 1; } else { hi = mid - 1; }
     }
     return best;
   }
 
   function lanePoint(tau) {
+    if (!lane.runs.length) return null;
     var runs = lane.runs;
     for (var r = 0; r < runs.length - 1; r++) {
       if (tau < runs[r].slots) break;
@@ -351,6 +348,7 @@
   function placeChips() {
     for (var i = 0; i < chips.length; i++) {
       var p = lanePoint((i + lane.phase) % lane.count);
+      if (!p) return;
       var el = chips[i].el;
       el.style.zIndex = p.front ? "2" : "1";
       el.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y) + "px)";
@@ -397,15 +395,15 @@
       lane.S = solveChipSize(fw, fh, lane.count);
       lane.cellH = laneCellH(lane.S);
       lane.W = fw; lane.H = fh;
-      var scale = laneSlots(fw, fh, lane.S) / lane.count;
+      var scale = fullLaneSlots(fw, fh, lane.S) / lane.count;
       var pitchH = (lane.S + GAP) * scale;
       var pitchV = (lane.cellH + GAP) * scale;
-      var hw = fw + lane.S, vv = fh + lane.cellH;
+      var hw = Math.max(0, fw - lane.S), vv = Math.max(0, fh - lane.cellH);
       lane.runs = [
-        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: d - lane.S, y: 0 }; } },
-        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: lane.W - lane.S, y: d - lane.cellH }; } },
-        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: lane.W - d, y: lane.H - lane.cellH }; } },
-        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: 0, y: lane.H - d }; } }
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: d, y: 0 }; } },
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: lane.W - lane.S, y: d }; } },
+        { len: hw, pitch: pitchH, front: true,  point: function (d) { return { x: lane.W - lane.S - d, y: lane.H - lane.cellH }; } },
+        { len: vv, pitch: pitchV, front: false, point: function (d) { return { x: 0, y: lane.H - lane.cellH - d }; } }
       ];
       lane.runs.forEach(function (run) { run.slots = run.len / run.pitch; });
       lane.slotSec = pitchH / LANE_SPEED;
@@ -626,32 +624,16 @@
       result[2].expressions.forEach(function (e) { window.__exprByName[e.name] = e; });
     }
     var deck = COPY && (COPY.galeria || COPY.studio);
-    if (COPY && COPY.ui) {
-      document.getElementById("ctlLive").textContent = COPY.ui.yes;
-      document.getElementById("ctlHold").textContent = COPY.ui.no;
-      document.querySelector("#ctlGreen span").textContent = COPY.ui.green;
-      document.querySelector("#ctlPink span").textContent = COPY.ui.pink;
-    }
+    document.getElementById("ctlLive").textContent = LANG === "en" ? "MOVES" : "SE MEXE";
+    document.getElementById("ctlHold").textContent = LANG === "en" ? "STILL" : "PARADO";
+    document.getElementById("ctlGreen").textContent = LANG === "en" ? "GREEN" : "VERDE";
+    document.getElementById("ctlPink").textContent = LANG === "en" ? "PINK" : "ROSA";
+    document.getElementById("ctlWall").textContent = LANG === "en" ? "DOWNLOAD" : "BAIXAR";
     if (COPY && COPY.doors) {
       document.title = COPY.brand + " / " + COPY.doors.galeria.label;
       document.getElementById("barManifesto").textContent = COPY.doors.manifesto.label;
       document.getElementById("barEstudio").textContent = COPY.doors.estudio.label;
       document.getElementById("barGaleria").textContent = COPY.doors.galeria.label;
-    }
-    if (deck) {
-      document.getElementById("moveLabel").textContent = deck.moveLabel;
-      document.getElementById("moveLabelShort").textContent = deck.moveLabelShort || deck.moveLabel;
-      document.getElementById("colorLabel").textContent = deck.colorLabel;
-      document.getElementById("colorLabelShort").textContent = deck.colorLabelShort || deck.colorLabel;
-      document.getElementById("glitchLabel").textContent = deck.glitchLabel;
-      document.getElementById("glitchLabelShort").textContent = deck.glitchLabel;
-      document.getElementById("wallLabel").textContent = deck.wallpaperLabel || "WALLPAPER";
-      document.getElementById("wallLabelShort").textContent = deck.wallpaperLabel || "WALLPAPER";
-      document.getElementById("ctlWall").textContent = deck.wallpaperLabel || "WALLPAPER";
-      document.getElementById("stageMetaTitle").textContent = deck.metaTitle || "";
-      /* the count reads from the data, never from a hardcoded line */
-      document.getElementById("stageMetaLines").textContent =
-        (deck.metaLines || []).map(function (l) { return l.replace("{N}", names.length); }).join(" / ");
     }
 
     stage = new window.Qevr.Mascot(document.getElementById("stageCanvas"), {
@@ -664,14 +646,14 @@
     if (wanted) {
       try { wanted = decodeURIComponent(wanted).toLowerCase(); } catch (e) { wanted = null; }
       if (wanted) {
-        names.forEach(function (n) { if (n.toLowerCase() === wanted) startFace = n; });
+        names.forEach(function (n) { if (n.toLowerCase() === wanted) { startFace = n; pinnedFace = n; } });
       }
     } else {
       startFace = hourFace();
     }
     stage.setFace(startFace, true);
     setCurrent(startFace);
-    setLive(true);
+    setLive(!pinnedFace);
     reducedBlinkLoop();
 
     document.getElementById("stageBtn").addEventListener("click", function () {
@@ -725,7 +707,8 @@
     var resizeTimer;
     window.addEventListener("resize", function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(relayout, 150);
+      framePaused = true;
+      resizeTimer = setTimeout(function () { relayout(); framePaused = false; }, 150);
     });
   }).catch(function (error) { console.error("[galeria] boot failed", error); });
 

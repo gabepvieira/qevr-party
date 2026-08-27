@@ -34,9 +34,9 @@
   <div class="bar__in">
     <a class="bar__mark" href="/" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
     <nav class="bar__nav">
-      <a href="/#manifesto" id="barManifesto">O MANIFESTO</a>
-      <a href="/estudio/" id="barEstudio">O ESTÚDIO</a>
-      <a href="/galeria/" id="barGaleria">A GALERIA</a>
+      <a href="/#manifesto" id="barManifesto">MANIFESTO</a>
+      <a href="/estudio/" id="barEstudio">ESTÚDIO</a>
+      <a href="/galeria/" id="barGaleria">GALERIA</a>
     </nav>
   </div>
 </header>
@@ -46,7 +46,7 @@
     <span class="wrong__code"><canvas id="codeWord" data-cells="404" data-fit="300"></canvas></span>
     <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
     <div class="wrong__line" id="wrongLine">ESSA PÁGINA NÃO EXISTE :(</div>
-    <a class="wrong__door" href="/#manifesto" id="wrongDoor">O MANIFESTO</a>
+    <a class="wrong__door" href="/#manifesto" id="wrongDoor">MANIFESTO</a>
   </section>
 </main>
 
@@ -71,6 +71,12 @@
   function brandColor() {
     return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00";
   }
+  function roomCell() {
+    var byH = Math.floor((window.innerHeight * 0.45) / window.Qevr.CROP.h);
+    var byW = Math.floor((window.innerWidth * 0.28) / window.Qevr.CROP.w);
+    if (window.innerWidth >= 2200) return Math.max(14, Math.min(40, byH, byW));
+    return Math.max(8, Math.min(14, byH, byW));
+  }
   function drawWord(canvas) {
     var m = window.QevrType.textMatrix(canvas.getAttribute("data-cells"));
     var fit = parseFloat(canvas.getAttribute("data-fit")) || 300;
@@ -91,17 +97,21 @@
   [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawWord);
 
   /* even the wrong room is his room: he shows up big, dead, and still pokeable */
+  var mascot = null;
   window.Qevr.load("/assets/qevr-expressions.json").then(function () {
     var btn = document.getElementById("mascotBtn");
-    var cell = Math.max(8, Math.min(14, Math.floor((window.innerHeight * 0.4) / window.Qevr.CROP.h)));
-    var mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
-      host: btn, cell: cell, face: "Shocked"
+    mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
+      host: btn, cell: roomCell(), face: "Shocked"
     });
     /* shocked, a beat, then dead. the stare arc of walking into the wrong room. */
     setTimeout(function () { mascot.setFace("Dead"); }, 1400);
     btn.addEventListener("click", function () { mascot.poke(); });
     window.QevrCascade.wireLinks(".bar__nav a, .bar__mark, .wrong__door");
   }).catch(function (e) { console.error("[qiqi 404]", e); });
+  window.addEventListener("resize", function () {
+    [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawWord);
+    if (mascot) mascot.setCell(roomCell());
+  });
 })();
 </script>
 <script type="module" src="/assets/qa.mjs"></script>
