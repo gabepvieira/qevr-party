@@ -56,7 +56,8 @@
       ],
       [
         "THE LOVE OF YOUR LIFE",
-        "THAT PERSON YOU FOUND AT 7AM, IN AN ABANDONED FACTORY."
+        "THAT PERSON YOU FOUND AT 7AM, IN AN ABANDONED FACTORY.",
+        "fire"
       ]
     ],
     "close": [
@@ -210,5 +211,49 @@
     "colorQuestion": "I CHANGE COLORS TOO :3",
     "scrollLabel": "SCROLL",
     "fromPattern": "{NOME} GAVE YOU THIS."
+  },
+  "sala": {
+    "back": "BACK",
+    "roomsAria": "ROOMS",
+    "nav": {
+      "story": "THE STORY",
+      "dna": "DNA",
+      "growth": "CHANGES"
+    },
+    "story": {
+      "kicker": "01 / THE STORY",
+      "title": "FROM QEVR TO QIQI",
+      "sub": "THE NAME CHANGED. THE SILHOUETTE STAYED. TOUCH THE MOMENTS TO SEE WHAT HE CARRIED.",
+      "stages": [
+        {
+          "title": "QEVR",
+          "copy": "A QR CODE GREW A BODY, A FACE, AND A NAME NOBODY KNEW HOW TO SAY."
+        },
+        {
+          "title": "QIQI",
+          "copy": "THE NAME GOT EASY TO SAY. HE STAYED THE SAME CREATURE."
+        },
+        {
+          "title": "NOW",
+          "copy": "HE GREW A STUDIO, A GALLERY, AND A PLACE TO SHOW HIS OWN DNA."
+        }
+      ]
+    },
+    "dna": {
+      "kicker": "02 / DNA",
+      "title": "THE BODY DOESN'T CHANGE",
+      "sub": "23 PROTOTYPES. THE FACE BAND CHANGES. THE REST IS THE SAME RULE.",
+      "stats": "{N} CELLS CHANGE. THE 34 × 34 GRID DOESN'T.",
+      "gridAria": "QIQI'S GRID"
+    },
+    "growth": {
+      "kicker": "03 / CHANGES",
+      "title": "CHANGING WITHOUT BECOMING SOMETHING ELSE",
+      "sub": "DRAG. EACH STEP SWAPS A PIECE OF THE FACE WITHOUT BREAKING QIQI'S DNA.",
+      "copy": "{PCT}% CHANGED. THE BODY STAYS WHOLE.",
+      "pairTitle": "NORMAL → SO HAPPY",
+      "artAria": "QIQI'S TRANSFORMATION",
+      "rangeAria": "HOW MUCH THE FACE CHANGED"
+    }
   }
 }

@@ -165,7 +165,7 @@
       [ "AMIGOS", "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA." ],
       [ "DESCONHECIDOS", "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU." ],
       [ "CRUSHES", "VC SABE QUEM SÃO." ],
-      [ "O AMOR DA SUA VIDA", "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA." ]
+      [ "O AMOR DA SUA VIDA", "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA.", "fire" ]
     ],
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
@@ -561,6 +561,96 @@
         setTimeout(function () { mascot.squash = 1; mascot.applyTransform(); }, 110);
       }
     }
+    placeBayAndStamp();
+    setPhoneAccordionTail(id);
+    /* GP 2026-08-28: opening a section shows THAT section — the tapped head
+       lands right under the bar, one hard cut (his third sanctioned scroll).
+       A GIFT is the exception: the four above collapse and stay visible, so
+       the scroll lands on the read's top instead (GP sketch). */
+    if (id && isSmall()) {
+      var barEl = document.querySelector(".bar");
+      if (id === "presente") {
+        var blocksTop = document.querySelector(".blocks").getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, Math.max(0, Math.round(blocksTop - (barEl ? barEl.offsetHeight : 52))));
+      } else {
+        var headTap = document.getElementById(id);
+        if (headTap && barEl) {
+          window.scrollTo(0, Math.max(0, headTap.getBoundingClientRect().top + window.scrollY - barEl.offsetHeight - 2));
+        }
+      }
+    }
+  }
+  function setPhoneAccordionTail(id) {
+    var blocksEl = document.querySelector(".blocks");
+    if (!blocksEl) return;
+    blocksEl.style.removeProperty("min-height");
+    blocksEl.classList.toggle("is-open", !!id && isSmall());
+    blocksEl.classList.toggle("is-gift-open", id === "presente" && isSmall());
+    if (!id || !isSmall()) return;
+    /* A GIFT deliberately lands at the read's top so the four rows above it
+       stay visible. It does not need the artificial tail used to pin the
+       other headings under the bar. */
+    if (id === "presente") return;
+    var head = document.getElementById(id);
+    var bar = document.querySelector(".bar");
+    if (!head || !bar) return;
+    var headTop = head.getBoundingClientRect().top + window.scrollY;
+    var targetY = Math.max(0, Math.round(headTop - bar.offsetHeight - 2));
+    var maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    var missing = targetY - maxY;
+    if (missing > 0) blocksEl.style.minHeight = Math.ceil(blocksEl.getBoundingClientRect().height + missing) + "px";
+  }
+  /* GP's accordion (2026-08-28): on phones the bay opens right under the
+     tapped head — the heads below get pushed down — and the stamp rides
+     inside the open section instead of standing at the read's floor.
+     Desktop keeps the ruled rail + bay + standing band untouched. */
+  var stampEverOpened = false;
+  function placeBayAndStamp() {
+    var bayEl = document.getElementById("bay");
+    var rail = document.getElementById("panelRail");
+    var panel = document.getElementById("panel");
+    var band = document.querySelector(".stampband");
+    if (!bayEl || !rail || !panel || !band) return;
+    if (!band._home) band._home = band.parentElement;
+    var phone = isSmall();
+    /* GP's stamp flow (2026-08-28, final): before any click the stamp does
+       not exist. PHONE: it rides inside the open section, hugging its last
+       line, and hides again when everything closes. DESKTOP: the first click
+       reveals it PINNED at the bottom, right above ESTÚDIO/GALERIA, and it
+       stays there — never moved, never re-rendered — whatever gets clicked
+       next. */
+    if (activeSection) stampEverOpened = true;
+    function parkBandHome() {
+      if (band.parentElement === band._home) return;
+      var doorsEl = document.getElementById("doors");
+      if (doorsEl && doorsEl.parentElement === band._home) band._home.insertBefore(band, doorsEl);
+      else band._home.appendChild(band);
+    }
+    document.querySelector(".blocks").classList.toggle("is-open", !!activeSection);
+    if (phone) {
+      if (activeSection) {
+        var head = document.getElementById(activeSection);
+        if (head && bayEl.previousElementSibling !== head) rail.insertBefore(bayEl, head.nextSibling);
+        if (band.parentElement !== bayEl) bayEl.appendChild(band);
+        band.hidden = false;
+        bayEl.hidden = false;
+      } else {
+        if (bayEl.parentElement !== panel) panel.appendChild(bayEl);
+        parkBandHome();
+        band.hidden = true;
+        /* closed on a phone the empty bay (and its cursor) takes no room */
+        bayEl.hidden = true;
+      }
+    } else {
+      /* desktop: the stamp lives at the BAY's floor (inside the section
+         column, above the doors) — same node forever once revealed */
+      if (bayEl.parentElement !== panel) panel.appendChild(bayEl);
+      bayEl.hidden = false;
+      if (band.parentElement !== bayEl) bayEl.appendChild(band);
+      band.hidden = !stampEverOpened;
+    }
+    /* re-fit the stamp to its new room — only once it has assembled */
+    if (stampShown) paintStamp();
   }
   /* the bay NEVER resizes: reserve the tallest section once per width */
   function measureBay() {
@@ -570,6 +660,15 @@
     var prev = activeSection;
     els.bay.style.minHeight = "";
     els.bay.style.visibility = "hidden";
+    /* the desktop stamp is pinned to the bay's floor, so the reserve must
+       include it — measured visible; placeBayAndStamp() (always called right
+       after) restores the proper hidden state */
+    var bandM = document.querySelector(".stampband");
+    if (bandM) {
+      if (!bandM._home) bandM._home = bandM.parentElement;
+      els.bay.appendChild(bandM);
+      bandM.hidden = false;
+    }
     var max = 0;
     ["manifesto", "pessoas", "stances", "presente"].forEach(function (id) {
       renderSection(id, { instant: true });
@@ -685,6 +784,8 @@
     COPY.people.items.forEach(function (pair) {
       var p = document.createElement("p"); p.className = "bay__stanza";
       var b = document.createElement("b"); b.textContent = pair[0];
+      /* deck-carried emphasis: "fire" paints the name in the fire pink (GP, 2026-08-28) */
+      if (pair[2] === "fire") b.style.color = "var(--qevr-fire)";
       p.appendChild(b);
       p.appendChild(document.createTextNode(" · " + pair[1]));
       stanzas.appendChild(p);
@@ -1068,7 +1169,14 @@
   }
   function cellFor() {
     if (jumpedBlock) return largeMonitorScale(4, 9);
-    return inCorner ? (isSmall() ? 2 : 3) : arrivalCellFor();
+    /* phone corner: ~15% bigger per GP (2026-08-28), snapped so every cell
+       lands on whole DEVICE pixels — a fractional backing cell drew faint
+       seams through his body (GP's screenshot) */
+    if (inCorner && isSmall()) {
+      var d = Math.min(window.devicePixelRatio || 1, 3);
+      return Math.max(2, Math.round(2.3 * d) / d);
+    }
+    return inCorner ? 3 : arrivalCellFor();
   }
   function boundsFor() {
     if (jumpedBlock) return { x: largeMonitorScale(4, 9), y: largeMonitorScale(4, 8) };
@@ -1077,7 +1185,8 @@
   }
   function syncJump() {
     var target = null;
-    if (inCorner && isDesktop() && activeSection) target = activeSection;
+    /* GP 2026-08-28: no more jumping into the bay — on every width he keeps
+       the bottom-right corner and just pulls the section's face there. */
     if (target !== jumpedBlock) {
       jumpedBlock = target;
       placeMascot();
@@ -1104,17 +1213,16 @@
     avoidCompanionOverlap();
   }
   function avoidCompanionOverlap() {
-    /* GP's ruling (2026-08-28): on phones he does not roam the edges scanning
-       for clean spots or sidle up to the open row — he keeps his own small
-       zone at the bottom left and wanders only inside it. */
+    /* GP's ruling (2026-08-28, amended same day): on phones he does not roam
+       the edges or sidle up to the open row — he keeps his own small zone at
+       the BOTTOM RIGHT and wanders only inside it. */
     if (!inCorner || !isSmall()) return;
     var slot = document.getElementById("companionSlot");
-    var rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail")) || 14;
-    slot.setAttribute("data-corner", "bottom-left");
-    slot.style.left = (rail + 8) + "px";
+    slot.setAttribute("data-corner", "bottom-right");
+    slot.style.right = "10px";
     slot.style.bottom = "12px";
     slot.style.top = "auto";
-    slot.style.right = "auto";
+    slot.style.left = "auto";
   }
   function checkCorner() {
     var arrival = document.getElementById("topo");
@@ -1453,6 +1561,7 @@
     drawAllCells();
     unifyToggleHeadings();
     measureBay();
+    placeBayAndStamp();
     startBayCursor();
     wireCascade();
     wireToggles();
@@ -1533,7 +1642,7 @@
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        drawAllCells(); unifyToggleHeadings(); measureBay(); paintStamp(); placeMascot();
+        drawAllCells(); unifyToggleHeadings(); measureBay(); placeBayAndStamp(); paintStamp(); placeMascot();
       });
     }
   }).catch(function (err) { console.error("[qiqi] boot failed", err); });
@@ -1545,9 +1654,27 @@
     rt = setTimeout(function () {
       [].forEach.call(document.querySelectorAll(".panel__head canvas"), function (c) { c.removeAttribute("data-force-cell"); });
       closeBay();
-      drawAllCells(); unifyToggleHeadings(); measureBay(); paintStamp(); onScroll(); placeMascot(); syncJump();
+      drawAllCells(); unifyToggleHeadings(); measureBay(); placeBayAndStamp(); paintStamp(); onScroll(); placeMascot(); syncJump();
     }, 150);
   });
+
+  /* GP 2026-08-28: two pages on phones. A stop inside the boundary zone
+     between him and the read lands fully on one of them — hard cut, per
+     the motion law. Inside the read the finger rules; the pager never
+     fires there. */
+  var pagerT = 0;
+  window.addEventListener("scroll", function () {
+    if (!isSmall() || document.body.classList.contains("is-booting")) return;
+    clearTimeout(pagerT);
+    pagerT = setTimeout(function () {
+      var blocksEl = document.querySelector(".blocks");
+      var barEl = document.querySelector(".bar");
+      if (!blocksEl || !barEl) return;
+      var readTop = Math.max(0, Math.round(blocksEl.getBoundingClientRect().top + window.scrollY - barEl.offsetHeight));
+      var y = window.scrollY;
+      if (y > 1 && y < readTop - 1) window.scrollTo(0, y < readTop / 2 ? 0 : readTop);
+    }, 150);
+  }, { passive: true });
 })();
 </script>
 <script type="module" src="assets/qa.mjs"></script>

@@ -56,7 +56,8 @@
       ],
       [
         "O AMOR DA SUA VIDA",
-        "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
+        "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA.",
+        "fire"
       ]
     ],
     "close": [
@@ -210,5 +211,49 @@
     "colorQuestion": "EU TBM MUDO DE COR :3",
     "scrollLabel": "SCROLL",
     "fromPattern": "{NOME} TE DEU ISSO."
+  },
+  "sala": {
+    "back": "VOLTAR",
+    "roomsAria": "SALAS",
+    "nav": {
+      "story": "HISTÓRIA",
+      "dna": "DNA",
+      "growth": "MUDANÇAS"
+    },
+    "story": {
+      "kicker": "01 / HISTÓRIA",
+      "title": "DE QEVR PRA QIQI",
+      "sub": "O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.",
+      "stages": [
+        {
+          "title": "QEVR",
+          "copy": "UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR."
+        },
+        {
+          "title": "QIQI",
+          "copy": "O NOME FICOU FÁCIL DE DIZER. ELE CONTINUOU SENDO O MESMO BICHO."
+        },
+        {
+          "title": "AGORA",
+          "copy": "ELE CRESCEU PRA TER ESTÚDIO, GALERIA E LUGAR PRA MOSTRAR O PRÓPRIO DNA."
+        }
+      ]
+    },
+    "dna": {
+      "kicker": "02 / DNA",
+      "title": "O CORPO NÃO MUDA",
+      "sub": "SÃO 23 PROTÓTIPOS. A FAIXA DO ROSTO MUDA. O RESTO É A MESMA REGRA.",
+      "stats": "{N} CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.",
+      "gridAria": "GRADE DO QIQI"
+    },
+    "growth": {
+      "kicker": "03 / MUDANÇAS",
+      "title": "MUDAR SEM VIRAR OUTRA COISA",
+      "sub": "ARRASTA. CADA PASSO TROCA UM PEDAÇO DO ROSTO, SEM QUEBRAR O DNA DO QIQI.",
+      "copy": "{PCT}% MUDOU. O CORPO CONTINUA INTEIRO.",
+      "pairTitle": "NORMAL → FELIZ DA VIDA",
+      "artAria": "TRANSFORMAÇÃO DO QIQI",
+      "rangeAria": "QUANTO O ROSTO MUDOU"
+    }
   }
 }

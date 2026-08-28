@@ -64,7 +64,12 @@ html[data-mode="dawn"]  { --ground: #0C0C0E; --brand: var(--qevr-body); --accent
 * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
 
 /* the motion law is stepped and hard: anchor moves are cuts, never glides */
-html { background: var(--ground); scroll-behavior: auto; scroll-padding-top: var(--bar); }
+html {
+  background: var(--ground); scroll-behavior: auto; scroll-padding-top: var(--bar);
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
 body {
   margin-left: var(--rail);
@@ -83,7 +88,7 @@ body {
 /* ---------- bar ---------- */
 
 .bar {
-  position: fixed; left: var(--rail); right: 0; top: 0; height: var(--bar); z-index: 60;
+  position: fixed; left: 0; right: 0; top: 0; height: var(--bar); z-index: 60;
   padding: env(safe-area-inset-top, 0px) 0 0 12px;
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
@@ -130,7 +135,7 @@ body {
 
 /* ---------- thermometer ---------- */
 
-.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: 55; background: var(--qevr-ink); }
+.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: 55; background: transparent; }
 .thermo__fill {
   position: absolute; left: 0; right: 0; top: 0; height: 0;
   background-color: var(--brand);
@@ -196,8 +201,10 @@ main { padding-top: var(--chrome); }
 
 .blocks {
   max-width: var(--wrap); margin-inline: auto;
-  /* top padding clears the floating control clusters (24px) */
-  padding: clamp(30px, 4vh, 44px) var(--gut) clamp(28px, 4vh, 48px);
+  /* phone top padding clears the floating controls; desktop joins the top
+     grid rule in its breakpoint below. no bottom padding: the doors are the
+     page's floor and sit flush (GP, 2026-08-28) */
+  padding: clamp(30px, 4vh, 44px) var(--gut) 0;
 }
 #panel { display: grid; grid-template-columns: clamp(210px, 22vw, 320px) minmax(0, 1fr); align-items: stretch; }
 .panel__rail { display: flex; flex-direction: column; border-right: var(--rule) solid var(--qevr-hair); }
@@ -210,7 +217,21 @@ main { padding-top: var(--chrome); }
 .panel__head:hover { background: var(--qevr-surface); }
 .panel__head:focus-visible { outline: 2px solid var(--brand); outline-offset: -4px; }
 .panel__head canvas { display: block; image-rendering: pixelated; max-width: 100%; }
-.panel__bay { position: relative; padding: clamp(16px, 2.2vw, 28px); min-width: 0; }
+.panel__bay { position: relative; padding: clamp(16px, 2.2vw, 28px); min-width: 0; display: flex; flex-direction: column; }
+.panel__bay[hidden] { display: none; }
+.panel__bay > * { flex: none; }
+@media (min-width: 721px) {
+  /* The desktop grid starts on the read's top rule. Heading surfaces use
+     the whole left cell while their canvases stay on the shared text line. */
+  .blocks { padding-top: 0; }
+  .panel__head {
+    margin-left: calc(0px - var(--gut));
+    padding-left: calc(var(--gut) + clamp(12px, 1.4vw, 20px));
+  }
+}
+/* desktop: the stamp is pinned to the BAY's floor — inside the section
+   column, right above the doors (GP sketch, 2026-08-28) */
+@media (min-width: 721px) { .panel__bay .stampband { margin-top: auto; } }
 .panel__bay-sub { color: var(--qevr-muted); font-size: clamp(10px, .95vw, 11.5px); letter-spacing: .18em; margin-bottom: 14px; }
 .panel__bay-sub:empty { display: none; }
 .panel__bay-copy { min-width: 0; }
@@ -302,25 +323,36 @@ button, a, .mascot canvas { touch-action: manipulation; -webkit-tap-highlight-co
 }
 
 @media (max-width: 720px) {
-  /* the landing is two pages, not a scroll with half-states: a swipe settles
-     on him or on the read, never between. inside the read (an area taller
-     than the screen) scrolling stays free — snap only guards the two doors.
-     (body carries overflow-x: hidden, so it is the propagated scroller:
-     the snap-type must sit on BOTH roots or chromium ignores it)
-     PROXIMITY, not mandatory: mandatory yanked mid-read scrolls to the
-     nearest edge — the snap should settle a swipe near a boundary and
-     otherwise respect the finger (GP, 2026-08-28) */
-  html, body { scroll-snap-type: y proximity; }
-  .arrival { scroll-snap-align: start; }
-  .blocks { scroll-snap-align: start; }
-  /* the page's end is a legal resting point: the doors anchor the bottom */
-  .doors { scroll-snap-align: end; }
+  /* GP 2026-08-28: the landing and the read are TWO PAGES — you see him or
+     the read, never a half of each. CSS snap is gone (mandatory fought the
+     finger mid-read, proximity allowed split views); a JS pager resolves any
+     stop inside the boundary zone to a full page with a hard cut, and inside
+     the read the finger rules completely. Closed, the five heads STRETCH to
+     fill the page (no void, doors at the floor); open, they fall back to
+     natural height because the accordion's content fills the room. */
+  .blocks { display: flex; flex-direction: column; min-height: calc(100svh - var(--bar)); }
+  .blocks #panel {
+    display: flex; flex-direction: column; flex: 1 1 auto;
+    /* The row itself is the active surface. Let it reach both phone edges;
+       the extra head/bay padding below keeps every canvas and copy block on
+       the existing reading gutter. */
+    width: calc(100% + var(--gut) + var(--gut));
+    margin-inline: calc(0px - var(--gut));
+  }
+  .blocks .panel__rail { flex: 1 1 auto; }
+  .blocks .panel__head { flex: 1 1 auto; display: flex; align-items: center; }
+  .blocks.is-open .panel__head { flex: none; }
+  /* .blocks beats the base .doors rule that sits later in the file: the
+     doors sit flush under the last row — no band of ground between */
+  .blocks .doors { margin-top: 0; }
 
   .stances__grid, #neversList { grid-template-columns: minmax(0, 1fr); }
   /* GP's ruling: on the read he takes the bottom-right corner, same as the
      app. small zone, small cell, and only he himself takes the tap */
-  .companion { width: 64px; height: 64px; right: 10px; bottom: 12px; }
+  /* GP 2026-08-28: bottom-right, 15% bigger */
+  .companion { width: 74px; height: 74px; right: 10px; bottom: 12px; }
   .bar { padding-inline: 0; }
+  .switches { background: transparent; }
   .bar__in { gap: 0; max-width: none; }
   .bar__mark { flex: 0 0 64px; width: 64px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   .bar__nav { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -340,12 +372,29 @@ button, a, .mascot canvas { touch-action: manipulation; -webkit-tap-highlight-co
   .stamp { font-size: 15px; max-width: none; }
   #panel { grid-template-columns: minmax(0, 1fr); }
   .panel__rail { border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair); }
-  .panel__head { padding: 10px 14px; }
-  .panel__bay { padding: 14px; min-height: 0 !important; }
-  /* the read fills exactly one page: stamp and doors sit at its floor,
-     never a void in the middle (GP, 2026-08-27) */
-  .blocks { min-height: calc(100svh - var(--bar)); display: flex; flex-direction: column; }
-  .blocks .stampband { margin-top: auto; }
+  .panel__head { padding: 10px calc(var(--gut) + 14px); }
+  .panel__bay { padding: 14px calc(var(--gut) + 14px); min-height: 0 !important; }
+  /* GP's accordion (2026-08-28): the bay opens right under the tapped head
+     and the heads below get pushed down. The stamp rides INSIDE the open
+     section. (Page sizing lives with the two-page rules above.) */
+  .panel__rail > .panel__bay { border-bottom: var(--rule) solid var(--qevr-hair); flex: none; }
+  /* open on a phone: rows go compact and the BAY absorbs the leftover, so
+     the content area runs down to the doors — never a floating void */
+  .blocks.is-open .panel__head { flex: 0 0 auto; }
+  .blocks.is-open .panel__rail > .panel__bay { flex: 1 1 auto; }
+  /* A GIFT already has enough copy to make its own page. Do not stretch its
+     bay (or either flex ancestor) to the viewport floor: that creates a
+     blank tail after the stamp and strands the doors hundreds of pixels
+     below it. Other sections retain their head-pinning tail. */
+  .blocks.is-gift-open #panel,
+  .blocks.is-gift-open .panel__rail,
+  .blocks.is-gift-open .panel__rail > .panel__bay { flex: 0 0 auto; }
+  /* Gift copy can finish just shy of the phone floor. Keep the doors joined
+     to the stamp and let their white band absorb that remainder. */
+  .blocks.is-gift-open .doors { flex: 1 0 auto; }
+  /* on phones the bay cursor's row is stray space — the stamp is the
+     section's terminal beat; the cursor stays a desktop creature */
+  #bayCursor { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -423,8 +472,9 @@ body.is-booting [data-qevr-cascade] { display: none !important; }
 
 /* ---------- the doors out: two bands at heading scale ---------- */
 .doors {
-  width: calc(100vw - var(--rail)); margin-top: clamp(24px, 4vh, 44px);
-  margin-left: calc(50% - 50vw + 7px);
+  width: 100vw; margin-top: 0;
+  margin-left: calc(50% - 50vw - 7px);
+  position: relative; z-index: 56;
   border-top: var(--rule) solid var(--qevr-hair);
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -441,6 +491,8 @@ body.is-booting [data-qevr-cascade] { display: none !important; }
 
 /* ---------- the stamp drawn in his cells: a standing band below the panel ---------- */
 .stampband { padding: clamp(18px, 3vh, 34px) 0 0; }
+/* inside the bay (every width now) the stamp hugs the section's last line */
+.panel__bay .stampband { padding: 6px 0 4px; }
 .stamp { border-top: 0; padding-top: 0; max-width: none; }
 .stamp__band { border-top: 3px solid var(--brand); padding-top: clamp(14px, 2.2vh, 24px); }
 .stamp canvas { display: block; image-rendering: pixelated; max-width: 100%; }

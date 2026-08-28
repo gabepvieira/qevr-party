@@ -50,13 +50,13 @@
 </style>
 </head>
 <body>
-<a class="back" href="../">VOLTAR</a>
+<a class="back" href="../" id="backLink">VOLTAR</a>
 <div class="switches">
   <button id="langToggle" type="button"></button>
 </div>
 <main class="rooms">
   <section class="room on" id="roomStory" data-room="story">
-    <header class="room__head"><span class="room__kicker">01 / HISTÓRIA</span><h1>DE QEVR PRA QIQI</h1><p>O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.</p></header>
+    <header class="room__head"><span class="room__kicker" id="storyKicker">01 / HISTÓRIA</span><h1 id="storyH">DE QEVR PRA QIQI</h1><p id="storySub">O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.</p></header>
     <div class="exhibit">
       <div class="exhibit__art"><canvas id="storyCanvas" aria-label="QIQI"></canvas></div>
       <div class="exhibit__panel">
@@ -67,7 +67,7 @@
   </section>
 
   <section class="room" id="roomDna" data-room="dna">
-    <header class="room__head"><span class="room__kicker">02 / DNA</span><h1>O CORPO NÃO MUDA</h1><p>SÃO 23 PROTÓTIPOS. A FAIXA DO ROSTO MUDA. O RESTO É A MESMA REGRA.</p></header>
+    <header class="room__head"><span class="room__kicker" id="dnaKicker">02 / DNA</span><h1 id="dnaH">O CORPO NÃO MUDA</h1><p id="dnaSub">SÃO 23 PROTÓTIPOS. A FAIXA DO ROSTO MUDA. O RESTO É A MESMA REGRA.</p></header>
     <div class="exhibit">
       <div class="exhibit__art"><canvas id="dnaCanvas" aria-label="GRADE DO QIQI"></canvas></div>
       <div class="exhibit__panel">
@@ -78,7 +78,7 @@
   </section>
 
   <section class="room" id="roomGrowth" data-room="growth">
-    <header class="room__head"><span class="room__kicker">03 / MUDANÇAS</span><h1>MUDAR SEM VIRAR OUTRA COISA</h1><p>ARRASTA. CADA PASSO TROCA UM PEDAÇO DO ROSTO, SEM QUEBRAR O DNA DO QIQI.</p></header>
+    <header class="room__head"><span class="room__kicker" id="growthKicker">03 / MUDANÇAS</span><h1 id="growthH">MUDAR SEM VIRAR OUTRA COISA</h1><p id="growthSub">ARRASTA. CADA PASSO TROCA UM PEDAÇO DO ROSTO, SEM QUEBRAR O DNA DO QIQI.</p></header>
     <div class="exhibit">
       <div class="exhibit__art"><canvas id="growthCanvas" aria-label="TRANSFORMAÇÃO DO QIQI"></canvas></div>
       <div class="exhibit__panel">
@@ -107,6 +107,32 @@
   document.getElementById("langToggle").addEventListener("click", function () { chooseLang(LANG === "pt" ? "en" : "pt"); });
 
   var names = [], dnaIndex = 0, storyIndex = 0;
+  /* the rooms speak the visitor's language: strings come from the deck
+     (GP-flagged 2026-08-28 — EN never reached the secret rooms) */
+  var DNA_STATS = "{N} CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.";
+  var GROWTH_COPY = "{PCT}% MUDOU. O CORPO CONTINUA INTEIRO.";
+  fetch("../assets/manifesto." + LANG + ".json").then(function (r) { return r.json(); }).then(function (d) {
+    var S = d && d.sala;
+    if (!S) return;
+    function set(id, t) { var el = document.getElementById(id); if (el && t) el.textContent = t; }
+    set("backLink", S.back);
+    set("storyKicker", S.story.kicker); set("storyH", S.story.title); set("storySub", S.story.sub);
+    set("dnaKicker", S.dna.kicker); set("dnaH", S.dna.title); set("dnaSub", S.dna.sub);
+    set("growthKicker", S.growth.kicker); set("growthH", S.growth.title); set("growthSub", S.growth.sub);
+    set("growthTitle", S.growth.pairTitle);
+    DNA_STATS = S.dna.stats || DNA_STATS;
+    GROWTH_COPY = S.growth.copy || GROWTH_COPY;
+    var navMap = { Story: S.nav.story, Dna: S.nav.dna, Growth: S.nav.growth };
+    [].forEach.call(document.querySelectorAll("[data-open-room]"), function (b) {
+      var t = navMap[b.getAttribute("data-open-room")]; if (t) b.textContent = t;
+    });
+    document.querySelector(".room-nav").setAttribute("aria-label", S.roomsAria || "SALAS");
+    document.getElementById("dnaCanvas").setAttribute("aria-label", S.dna.gridAria || "");
+    document.getElementById("growthCanvas").setAttribute("aria-label", S.growth.artAria || "");
+    document.getElementById("growthRange").setAttribute("aria-label", S.growth.rangeAria || "");
+    S.story.stages.forEach(function (st, i) { if (stories[i]) { stories[i].title = st.title; stories[i].copy = st.copy; } });
+    if (names.length) { paintStory(); paintDna(); paintGrowth(); }
+  }).catch(function () { /* the hardcoded PT below stays the fallback */ });
   var stories = [
     { title: "QEVR", face: "Default", copy: "UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR." },
     { title: "QIQI", face: "Anime", copy: "O NOME FICOU FÁCIL DE DIZER. ELE CONTINUOU SENDO O MESMO BICHO." },
@@ -142,7 +168,7 @@
     canvas.width = n * cell * dpr; canvas.height = n * cell * dpr; canvas.style.width = n * cell + "px"; canvas.style.height = n * cell + "px";
     var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); var diff = 0;
     for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) { var i = y * n + x, v = m.cells[i], changed = v !== def.cells[i]; if (changed) diff++; ctx.fillStyle = changed ? "#FF007F" : v === 1 ? color("--brand", "#CCFF00") : v === 2 ? "#141416" : "#09090B"; ctx.fillRect(x * cell, y * cell, cell, cell); }
-    document.getElementById("dnaName").textContent = name.toUpperCase(); document.getElementById("dnaStats").textContent = diff + " CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.";
+    document.getElementById("dnaName").textContent = name.toUpperCase(); document.getElementById("dnaStats").textContent = DNA_STATS.replace("{N}", diff);
   }
   function paintGrowth() {
     if (!names.length) return;
@@ -151,7 +177,7 @@
     var pct = +document.getElementById("growthRange").value, mixed = { n: from.n, cells: new Uint8Array(from.cells) };
     var changed = []; for (var i = 0; i < from.cells.length; i++) if (from.cells[i] !== to.cells[i]) changed.push(i);
     var take = Math.round(changed.length * pct / 100); for (i = 0; i < take; i++) mixed.cells[changed[i]] = to.cells[changed[i]];
-    paintCrop(document.getElementById("growthCanvas"), mixed); document.getElementById("growthCopy").textContent = pct + "% MUDOU. O CORPO CONTINUA INTEIRO.";
+    paintCrop(document.getElementById("growthCanvas"), mixed); document.getElementById("growthCopy").textContent = GROWTH_COPY.replace("{PCT}", pct);
   }
   function openRoom(name) {
     ["Story", "Dna", "Growth"].forEach(function (key) { document.getElementById("room" + key).classList.toggle("on", key === name); });
