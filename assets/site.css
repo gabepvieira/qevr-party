@@ -275,13 +275,26 @@ main { padding-top: var(--chrome); }
 .mascot { background: transparent; border: 0; padding: 0; cursor: pointer; display: block; will-change: transform; }
 .mascot canvas { display: block; image-rendering: pixelated; }
 .mascot:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
-/* phones: a tap is a tap — no double-tap zoom on controls, no blue tap-highlight,
-   and a long hold on him charges the room instead of selecting/callout-ing him */
-button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+/* phones: a tap is a tap — no double-tap zoom anywhere, no blue tap-highlight,
+   and a long hold on him charges the room instead of selecting/callout-ing him.
+   manipulation on the roots kills double-tap-zoom in every mobile browser
+   (iOS Chrome ignored the per-element rule) while pinch zoom stays free. */
+html, body { touch-action: manipulation; }
+button, a, .mascot canvas { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .mascot, .mascot canvas {
   -webkit-touch-callout: none;
   -webkit-user-select: none; user-select: none;
 }
+
+/* H3 (GP-ruled 2026-08-28): touch is the hover twin. finger-down floods the
+   control the way pointer-over does; every existing glitch/flinch stays. */
+.ctl:active { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); }
+.ctl--swatch:active i { background: var(--qevr-ink); }
+.switches button:active { background: var(--qevr-light); color: var(--qevr-ink); }
+.switches .switch--color:active { background: var(--qevr-light); }
+.poster__close:active { background: var(--qevr-light); color: var(--qevr-ink); border-color: var(--qevr-light); }
+.bar__nav a:not([aria-current="page"]):active { color: var(--qevr-ink); background: var(--qevr-light); }
+.panel__head:active { background: var(--qevr-surface); }
 
 @media (max-width: 1100px) {
   .stances__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -293,8 +306,11 @@ button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent
      on him or on the read, never between. inside the read (an area taller
      than the screen) scrolling stays free — snap only guards the two doors.
      (body carries overflow-x: hidden, so it is the propagated scroller:
-     the snap-type must sit on BOTH roots or chromium ignores it) */
-  html, body { scroll-snap-type: y mandatory; }
+     the snap-type must sit on BOTH roots or chromium ignores it)
+     PROXIMITY, not mandatory: mandatory yanked mid-read scrolls to the
+     nearest edge — the snap should settle a swipe near a boundary and
+     otherwise respect the finger (GP, 2026-08-28) */
+  html, body { scroll-snap-type: y proximity; }
   .arrival { scroll-snap-align: start; }
   .blocks { scroll-snap-align: start; }
   /* the page's end is a legal resting point: the doors anchor the bottom */

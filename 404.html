@@ -19,6 +19,15 @@
     gap: clamp(16px, 3vh, 30px); text-align: center;
   }
   .wrong__code canvas { display: block; image-rendering: pixelated; }
+  /* H6 (GP-ruled 2026-08-28): the dead address wears its own death — the
+     strike is the house word for dead/over. thick line, white word, no color.
+     the path is data: the site's one sanctioned lowercase. */
+  .wrong__path {
+    color: var(--qevr-light); font-weight: 700; text-transform: none;
+    font-size: clamp(12px, 1.3vw, 15px); letter-spacing: .06em;
+    text-decoration: line-through; text-decoration-thickness: .16em;
+    word-break: break-all; max-width: min(92vw, 640px);
+  }
   .wrong__line { font-size: clamp(13px, 1.4vw, 18px); letter-spacing: .1em; color: var(--qevr-light); }
   .wrong__door {
     display: inline-block; text-decoration: none; color: var(--qevr-light);
@@ -48,6 +57,7 @@
 <main>
   <section class="wrong">
     <span class="wrong__code"><canvas id="codeWord" data-cells="404" data-fit="300"></canvas></span>
+    <span class="wrong__path" id="wrongPath" hidden></span>
     <button class="mascot" id="mascotBtn" aria-label="QIQI"><canvas id="mascotCanvas"></canvas></button>
     <div class="wrong__line" id="wrongLine"></div>
     <a class="wrong__door" href="/#manifesto" id="wrongDoor"></a>
@@ -113,6 +123,16 @@
     canvas.setAttribute("aria-label", canvas.getAttribute("data-cells"));
   }
   [].forEach.call(document.querySelectorAll("canvas[data-cells]"), drawWord);
+
+  /* the dead address, struck: the wall is gone and says so */
+  (function () {
+    var p = location.pathname + location.search;
+    if (p && p !== "/" && p.indexOf("/404") !== 0) {
+      var el = document.getElementById("wrongPath");
+      el.textContent = location.host + p;
+      el.hidden = false;
+    }
+  })();
 
   /* even the wrong room is his room: he shows up big, dead, and still pokeable */
   var mascot = null;

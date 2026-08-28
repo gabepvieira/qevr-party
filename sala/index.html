@@ -40,6 +40,12 @@
     .exhibit__art { min-height: 42svh; border-right: 0; border-bottom: var(--rule) solid var(--qevr-hair); }
     .room-nav button { font-size: 8px; letter-spacing: .08em; }
   }
+  @media (min-width: 721px) and (max-height: 820px) {
+    /* Short laptops keep the full exhibit; reclaim only the loose room spacing
+       so its controls finish above the fixed room bar. */
+    .rooms { padding-top: 52px; padding-bottom: 70px; }
+    .room__head { margin-bottom: 4px; }
+  }
   @media (min-width: 2200px) { .exhibit { min-height: 64svh; } .exhibit__copy p { font-size: 20px; } }
 </style>
 </head>

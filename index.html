@@ -1104,52 +1104,17 @@
     avoidCompanionOverlap();
   }
   function avoidCompanionOverlap() {
+    /* GP's ruling (2026-08-28): on phones he does not roam the edges scanning
+       for clean spots or sidle up to the open row — he keeps his own small
+       zone at the bottom left and wanders only inside it. */
     if (!inCorner || !isSmall()) return;
     var slot = document.getElementById("companionSlot");
-    var size = slot.getBoundingClientRect().width || 64;
-    var bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 52;
     var rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail")) || 14;
-    var candidates = [], y;
-    for (y = bar + 8; y <= innerHeight - size - 8; y += 12) {
-      candidates.push({ name: "smart-left", left: rail + 8, top: y });
-      candidates.push({ name: "smart-right", left: innerWidth - size - 8, top: y });
-    }
-    /* Score actual words and pixel lettering, not an entire card. Empty parts
-       of a card are valid places to stand; text and controls are not. */
-    var readable = [];
-    [].forEach.call(document.querySelectorAll(".blocks p, .panel__head, .stance, .stances__bay, .stamp__city, .doorband span"), function (el) {
-      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-      var node;
-      while ((node = walker.nextNode())) {
-        if (!node.nodeValue.trim()) continue;
-        var range = document.createRange();
-        range.selectNodeContents(node);
-        [].forEach.call(range.getClientRects(), function (r) {
-          if (r.width > 0 && r.height > 0 && r.bottom > bar && r.top < innerHeight) readable.push(r);
-        });
-      }
-    });
-    [].forEach.call(document.querySelectorAll(".blocks canvas"), function (canvas) {
-      var r = canvas.getBoundingClientRect();
-      if (r.width > 0 && r.height > 0 && r.bottom > bar && r.top < innerHeight) readable.push(r);
-    });
-    [].forEach.call(document.querySelectorAll(".switches button"), function (control) {
-      var r = control.getBoundingClientRect();
-      if (r.width > 0 && r.height > 0) readable.push(r);
-    });
-    function overlap(candidate) {
-      return readable.reduce(function (score, r) {
-        var w = Math.max(0, Math.min(candidate.left + size, r.right) - Math.max(candidate.left, r.left));
-        var h = Math.max(0, Math.min(candidate.top + size, r.bottom) - Math.max(candidate.top, r.top));
-        return score + w * h;
-      }, 0);
-    }
-    candidates.sort(function (a, b) { return overlap(a) - overlap(b); });
-    slot.setAttribute("data-corner", candidates[0].name);
-    slot.style.left = candidates[0].left + "px";
-    slot.style.top = candidates[0].top + "px";
+    slot.setAttribute("data-corner", "bottom-left");
+    slot.style.left = (rail + 8) + "px";
+    slot.style.bottom = "12px";
+    slot.style.top = "auto";
     slot.style.right = "auto";
-    slot.style.bottom = "auto";
   }
   function checkCorner() {
     var arrival = document.getElementById("topo");
@@ -1177,6 +1142,12 @@
     var px = Math.floor((p * window.innerHeight) / cell) * cell;
     fill.style.height = px + "px";
     var fire = p > 0.92;
+    /* H1 (GP-ruled 2026-08-28): the climb plays the four canonical stages —
+       cold gray, warm brand, hot pink, then the fire the top already had.
+       inline color cleared at fire so the .is-fire rule (the one glow) wins. */
+    var cells = Math.round(px / cell);
+    fill.style.backgroundColor = fire ? "" :
+      (cells <= 3 ? "var(--qevr-muted-dark)" : cells <= 8 ? "var(--brand)" : "var(--qevr-pink)");
     if (fire && !wasFire) {
       if (mascot) mascot.setFace(COPY ? COPY.gift.face : "Stars");
       if (!reduce && !fireFlipping) {
@@ -1361,6 +1332,8 @@
       if (performance.now() - holdStart > 450) { e.preventDefault(); e.stopPropagation(); return; }
       pokeLadder();
     });
+    /* two fast pokes are two pokes, never a zoom (iOS Chrome belt-and-braces) */
+    btn.addEventListener("dblclick", function (e) { e.preventDefault(); });
   }
 
   /* ---------- A15: the gift tag: the URL carries the dedication ---------- */
