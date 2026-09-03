@@ -28,6 +28,7 @@
   width: clamp(320px, 30vw, 520px); flex: none; min-width: 0;
 }
 .maker__row { display: flex; width: 100%; }
+.maker .ctl, .switches button, .canon-door { min-width: 44px; min-height: 44px; }
 .maker__label {
   color: var(--qevr-muted); font-size: 9px; letter-spacing: .14em;
   margin-bottom: 6px; display: block;
@@ -38,7 +39,7 @@
 .maker__name {
   width: 100%; background: transparent; color: var(--qevr-light);
   font: inherit; font-weight: 700; letter-spacing: .1em; font-size: 14px;
-  border: var(--rule) solid var(--qevr-hair); padding: 11px 12px;
+  border: var(--rule) solid var(--qevr-hair); padding: 11px 12px; min-height: 44px;
 }
 .maker__name:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 
@@ -60,6 +61,10 @@
 }
 
 .maker__hint { font-size: 10px; letter-spacing: .14em; color: var(--qevr-muted); line-height: 1.7; }
+.maker__hint.is-failure {
+  border: var(--rule) solid var(--qevr-pink); color: var(--qevr-pink);
+  padding: 8px;
+}
 
 /* the drag loupe: instrumentation, in grammar. phone drags only. */
 .loupe {
@@ -72,6 +77,19 @@
 /* mode toggle (phone): whole him, or just the face for fine work */
 .maker__zoom { display: none; }
 
+/* Round 2 preview: this room has one destination-language action. Dock it in
+   a reserved header slot so the old hanging switch cannot cover the face. */
+html.is-next .bar__nav { margin-right: 44px; }
+html.is-next .switches {
+  top: env(safe-area-inset-top, 0px);
+  height: calc(var(--bar) - env(safe-area-inset-top, 0px));
+  padding: 0; flex-direction: row; z-index: var(--z-header);
+}
+html.is-next .switches button {
+  width: 44px; height: 100%; min-height: 44px; padding: 0;
+  border-top: 0; border-bottom: 0;
+}
+
 @media (max-width: 1023px) and (orientation: portrait) and (min-width: 721px) {
   /* portrait tablet: tools stack full width under the canvas */
   .maker__frame { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 14px; }
@@ -79,6 +97,7 @@
 }
 
 @media (max-width: 720px) {
+  .bar__mark { margin-left: var(--rail); }
   .maker { height: auto; min-height: 100svh; overflow-y: auto; }
   .maker__frame {
     flex-direction: column; align-items: stretch; justify-content: flex-start;
@@ -100,12 +119,20 @@
 }
 
 .canon-door {
-  position: fixed; left: var(--rail); bottom: 0; z-index: 20; padding: 8px 10px;
+  position: fixed; display: flex; align-items: center;
+  left: max(var(--rail), env(safe-area-inset-left, 0px));
+  bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 20; padding: 8px 10px;
   border: var(--rule) solid var(--qevr-hair); border-left: 0; border-bottom: 0;
   background: var(--ground); color: var(--qevr-muted); text-decoration: none;
   font-size: 8px; letter-spacing: .18em;
 }
 .canon-door:hover, .canon-door:focus-visible { background: var(--qevr-light); color: var(--qevr-ink); outline: 0; }
+
+@media (min-width: 721px) {
+  .maker { position: relative; }
+  .canon-door { position: absolute; left: 0; }
+}
 
 @media (min-width: 2200px) {
   .maker__tools { width: clamp(520px, 28vw, 820px); }
@@ -117,4 +144,39 @@
   .maker__frame { flex-direction: row; gap: 14px; padding: 8px 14px; }
   .maker__tools { width: 300px; gap: 6px; }
   .maker__caption { display: none; }
+}
+
+/* Shipped 2026-09-02 (R2, Fable): the round-2 "one fixed room" phone
+   layout cut the share row under the CANON tab. Until the estúdio revamp the
+   page scrolls on phones — everything reachable — and CANON is a quiet door
+   in the flow at the end of the tools, not a tab floating over them. */
+@media (max-width: 720px) {
+  .canon-door {
+    position: static; width: auto; display: flex; justify-content: center;
+    margin: 12px var(--gut, 16px) calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 14px 10px;
+    border: var(--rule) solid var(--qevr-hair);
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  html.is-next .maker__frame { flex-direction: column; }
+  html.is-next .maker__art {
+    height: clamp(240px, 42svh, 400px); min-height: 0; flex: 0 1 auto;
+  }
+  html.is-next .maker__canvasbox { flex: 1 1 auto; }
+}
+
+@media (orientation: landscape) and (max-height: 499px) {
+  html.is-next .maker__frame {
+    flex-direction: row; align-items: stretch; gap: 12px;
+    padding: 8px 12px calc(44px + 8px + env(safe-area-inset-bottom, 0px));
+  }
+  html.is-next .maker__art { height: auto; min-width: 0; flex: 1 1 auto; }
+  html.is-next .maker__canvasbox { flex: 1 1 auto; }
+  html.is-next .maker__zoom { display: flex; }
+  html.is-next .maker__tools {
+    width: min(300px, 46vw); flex: 0 0 min(300px, 46vw);
+    overflow-y: auto; padding-top: 44px;
+  }
 }

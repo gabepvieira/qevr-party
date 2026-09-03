@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<script>document.documentElement.classList.add("is-next")</script>
 <title>QIQI / O ESTÚDIO</title>
 <meta name="description" content="CRIA O SEU QIQI. SÓ O ROSTO MUDA.">
 <meta name="theme-color" content="#09090B">
@@ -94,7 +95,7 @@
           <button class="ctl" id="btnCard" type="button">BAIXAR CARD</button>
           <button class="ctl" id="btnSend" type="button">MANDAR PRO QIQI</button>
         </div>
-        <div class="maker__hint" id="sendHint" style="margin-top:8px"></div>
+        <div class="maker__hint" id="sendHint" style="margin-top:8px" aria-live="polite"></div>
       </div>
     </div>
   </div>
@@ -108,6 +109,7 @@
 (function () {
   "use strict";
 
+  const NEXT = document.documentElement.classList.contains("is-next");
   var MODE_KEY = "qevr.mode";
   var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
   try {
@@ -157,7 +159,10 @@
   var editor = document.getElementById("editor");
   var cellDev = 1, dpr = 1;
 
-  function isPhone() { return window.matchMedia("(max-width: 720px)").matches; }
+  function isPhone() {
+    return window.matchMedia("(max-width: 720px)").matches ||
+      (NEXT && window.matchMedia("(orientation: landscape) and (max-height: 499px)").matches);
+  }
 
   /* ---------- the code: 220 bits, base64url, 37 chars ---------- */
   function encode() {
@@ -200,6 +205,12 @@
     if (isPhone()) {
       var w = (box.clientWidth || vw - 24);
       cellCss = Math.max(8, Math.floor(w / cols));
+      if (NEXT && window.matchMedia("(orientation: landscape)").matches) {
+        var h = box.clientHeight || Math.max(100, vh - 120);
+        cellCss = Math.max(4, Math.min(cellCss, Math.floor(h / rows)));
+      } else if (NEXT && box.clientHeight) {
+        cellCss = Math.max(4, Math.min(cellCss, Math.floor(box.clientHeight / rows)));
+      }
     } else {
       var availW = box.clientWidth || (vw * 0.5);
       var availH = box.clientHeight || (vh - 140);
@@ -296,6 +307,7 @@
       var qs = "?f=" + code;
       var n = nameValue();
       if (n) qs += "&n=" + encodeURIComponent(n);
+      if (NEXT) qs += "&next=1";
       history.replaceState(null, "", location.pathname + qs);
     } catch (e) {}
     return code;
@@ -303,7 +315,9 @@
   function shareURL() {
     var code = encode();
     var n = nameValue();
-    return location.origin + location.pathname + "?f=" + code + (n ? "&n=" + encodeURIComponent(n) : "");
+    var qs = "?f=" + code + (n ? "&n=" + encodeURIComponent(n) : "");
+    if (NEXT) qs += "&next=1";
+    return location.origin + location.pathname + qs;
   }
 
   /* ---------- the stroke: paint on down, mode-locked, one undo per stroke ---------- */
@@ -468,13 +482,25 @@
       navigator.clipboard.writeText(text).then(ok, ok);
     } else { ok(); }
   }
+  var shareFailureTimer = 0;
+  function showShareFailure() {
+    var hint = document.getElementById("sendHint");
+    clearTimeout(shareFailureTimer);
+    hint.classList.add("is-failure");
+    hint.setAttribute("role", "alert");
+    hint.scrollIntoView({ block: "nearest" });
+    shareFailureTimer = setTimeout(function () {
+      hint.classList.remove("is-failure");
+      hint.removeAttribute("role");
+    }, 2600);
+  }
   document.getElementById("btnLink").addEventListener("click", function () {
     copyText(shareURL(), this, (DECK && DECK.copied) || "COPIADO");
   });
   document.getElementById("btnSend").addEventListener("click", function () {
     var url = shareURL();
     if (navigator.share) {
-      navigator.share({ url: url }).catch(function () {});
+      navigator.share({ url: url }).catch(showShareFailure);
     } else {
       copyText(url, this, (DECK && DECK.copied) || "COPIADO");
     }

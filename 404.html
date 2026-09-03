@@ -6,6 +6,7 @@
 <title>QIQI / 404</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#09090B">
+<script>document.documentElement.classList.add("is-next");</script>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="/site.webmanifest">
@@ -70,6 +71,7 @@
 <script>
 (function () {
   "use strict";
+  const NEXT = document.documentElement.classList.contains("is-next");
   var MODE_KEY = "qevr.mode";
   try {
     var mode = localStorage.getItem(MODE_KEY);

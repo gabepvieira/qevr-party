@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>document.documentElement.classList.add("is-next")</script>
 <title>QIQI / A GALERIA</title>
 <meta name="description" content="OS 23 PROTÓTIPOS DO QIQI. UMA SÓ SILHUETA.">
 <meta name="theme-color" content="#09090B">
@@ -84,6 +85,7 @@
 (function () {
   "use strict";
 
+  const NEXT = document.documentElement.classList.contains("is-next");
   var MODE_KEY = "qevr.mode";
   var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
   function readModePreference() {
@@ -226,6 +228,9 @@
     syncCredit();
     [].forEach.call(document.querySelectorAll(".face"), function (face) {
       face.setAttribute("aria-pressed", String(face.getAttribute("data-name") === name));
+    });
+    chips.forEach(function (chip) {
+      chip.el.setAttribute("aria-pressed", String(chip.name === name));
     });
     /* L20: a face has an address. picking one updates the URL, no reload. */
     try {
@@ -562,6 +567,7 @@
     var newest = names[names.length - 1];
     setLive(false);
     stage.setFace("Default", true);
+    setCurrent("Default");
     setTimeout(function () {
       stage.setFace(newest);
       setCurrent(newest);
@@ -648,6 +654,7 @@
     } else {
       startFace = hourFace();
     }
+    makeChips();
     stage.setFace(startFace, true);
     setCurrent(startFace);
     setLive(!pinnedFace);
@@ -683,7 +690,6 @@
     document.getElementById("ctlPink").addEventListener("click", function () { setColor("pink"); });
     document.getElementById("ctlWall").addEventListener("click", downloadWallpaper);
 
-    makeChips();
     relayout();
     startLane();
     maybeCeremony();

@@ -6,13 +6,14 @@
 <title>QIQI / CANON</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#09090B">
+<script>document.documentElement.classList.add("is-next");</script>
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-  .canon-page { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: calc(var(--bar) + 24px) var(--gut) 48px; }
+  .canon-page { min-height: 100svh; max-width: var(--wrap); margin-inline: auto; padding: calc(var(--bar) + 24px) max(var(--gut), env(safe-area-inset-right, 0px)) calc(48px + env(safe-area-inset-bottom, 0px)) max(var(--gut), env(safe-area-inset-left, 0px)); }
   .canon-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: var(--rule) solid var(--qevr-hair); }
   .canon-head h1 { color: var(--brand); font-size: clamp(20px, 3vw, 48px); letter-spacing: .08em; }
-  .canon-head a { color: var(--qevr-muted); font-size: 10px; letter-spacing: .16em; text-decoration: none; }
+  .canon-head a { display: inline-flex; align-items: center; justify-content: flex-end; min-width: 44px; min-height: 44px; color: var(--qevr-muted); font-size: 10px; letter-spacing: .16em; text-decoration: none; }
   .canon-work { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: clamp(20px, 4vw, 64px); padding-top: 24px; align-items: start; }
   .canon-grid { min-width: 0; overflow: auto; border: var(--rule) solid var(--qevr-hair); padding: 10px; }
   .canon-grid canvas { display: block; image-rendering: pixelated; margin-inline: auto; }
@@ -22,7 +23,7 @@
   .canon-data { color: var(--qevr-muted); font-size: 10px; line-height: 1.8; letter-spacing: .1em; text-transform: none; overflow-wrap: anywhere; }
   @media (max-width: 720px) {
     .canon-work { grid-template-columns: 1fr; }
-    .canon-page { padding-inline: 12px; }
+    .canon-page { padding-right: max(12px, env(safe-area-inset-right, 0px)); padding-left: max(12px, env(safe-area-inset-left, 0px)); }
     .canon-head a { position: relative; }
     .canon-head a::before { content: ""; position: absolute; inset: -14px 0; }
   }
@@ -57,6 +58,7 @@
 <script>
 (function () {
   "use strict";
+  const NEXT = document.documentElement.classList.contains("is-next");
   var names = [], index = 0;
   function brand() { return getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#CCFF00"; }
   function drawWord(canvas) {

@@ -60,6 +60,24 @@
         "fire"
       ]
     ],
+    "headLines": [
+      {
+        "head": "AMIGOS",
+        "line": "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA."
+      },
+      {
+        "head": "DESCONHECIDOS",
+        "line": "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU."
+      },
+      {
+        "head": "CRUSHES",
+        "line": "VC SABE QUEM SÃO."
+      },
+      {
+        "head": "O AMOR DA SUA VIDA",
+        "line": "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA."
+      }
+    ],
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
       "E O MOMENTO PASSOU. É ISSO QUE FEZ DELE UM MOMENTO.",

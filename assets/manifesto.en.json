@@ -60,6 +60,24 @@
         "fire"
       ]
     ],
+    "headLines": [
+      {
+        "head": "FRIENDS",
+        "line": "PEOPLE YOU MET OUT ONE NIGHT, AND NOW THEY'RE PART OF YOUR LIFE."
+      },
+      {
+        "head": "STRANGERS",
+        "line": "THAT PERSON WHO WAS YOUR BEST FRIEND FOR 20 MIN IN THE BATHROOM LINE. AND YOU NEVER SAW AGAIN."
+      },
+      {
+        "head": "CRUSHES",
+        "line": "YOU KNOW WHO THEY ARE."
+      },
+      {
+        "head": "THE LOVE OF YOUR LIFE",
+        "line": "THAT PERSON YOU FOUND AT 7AM, IN AN ABANDONED FACTORY."
+      }
+    ],
     "close": [
       "PARTIES, LONELINESS, PEOPLE. ALL PART OF A MOMENT.",
       "AND THE MOMENT PASSED. THAT'S WHAT MADE IT A MOMENT.",

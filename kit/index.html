@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>QIQI KIT</title>
+  <link rel="stylesheet" href="./kit.css">
+</head>
+<body>
+  <header class="kit-head">
+    <button class="chrome-button nav-trigger" id="navTrigger" type="button" aria-expanded="false" aria-controls="catalogNav">CATALOG</button>
+    <div class="kit-title">
+      <strong>QIQI KIT</strong>
+      <span id="modeReadout">MANIFESTO / FULL SCREEN</span>
+    </div>
+    <div class="global-controls" aria-label="GLOBAL CONTROLS">
+      <fieldset class="global-control mode-control" id="modeField">
+        <legend>VERSION</legend>
+        <div class="button-pair">
+          <button type="button" data-kit-mode="live" aria-pressed="true">LIVE</button>
+          <button type="button" data-kit-mode="proposed" aria-pressed="false">PROPOSED</button>
+        </div>
+      </fieldset>
+      <label class="global-control width-control">
+        <span>WIDTH</span>
+        <select id="widthSelect" aria-label="WIDTH"></select>
+      </label>
+      <fieldset class="global-control" id="colourField">
+        <legend>COLOUR</legend>
+        <div class="button-pair">
+          <button type="button" data-global-colour="green">GREEN</button>
+          <button type="button" data-global-colour="pink">PINK</button>
+        </div>
+      </fieldset>
+      <fieldset class="global-control" id="languageField">
+        <legend>LANGUAGE</legend>
+        <div class="button-pair">
+          <button type="button" data-global-language="pt">PT</button>
+          <button type="button" data-global-language="en">EN</button>
+        </div>
+      </fieldset>
+    </div>
+  </header>
+
+  <main class="kit-layout">
+    <nav class="catalog-nav" id="catalogNav" aria-label="SCREENS AND COMPONENTS"></nav>
+    <button class="nav-backdrop" id="navBackdrop" type="button" aria-label="CLOSE CATALOG"></button>
+
+    <section class="stage-column" aria-label="LIVE STAGE">
+      <div class="stage-meta">
+        <span id="routeReadout">/</span>
+        <span id="sizeReadout">1280 × 800</span>
+        <span id="scaleReadout">SCALE —</span>
+      </div>
+      <div class="stage-area" id="stageArea">
+        <div class="device-wrap" id="deviceWrap">
+          <div class="device" id="device">
+            <iframe id="stageFrame" title="LIVE QIQI SCREEN"></iframe>
+            <svg class="spotlight" id="spotlight" aria-hidden="true" preserveAspectRatio="none">
+              <path id="scrimPath" class="scrim" fill-rule="evenodd"></path>
+              <g id="lawLayer"></g>
+              <g id="outlineLayer"></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="stage-flash" id="stageFlash" role="status" aria-live="polite"></div>
+    </section>
+
+    <aside class="component-sheet" id="componentSheet" aria-label="COMPONENT SHEET">
+      <header class="sheet-head">
+        <span id="sheetScreen">MANIFESTO</span>
+        <h1 id="sheetName">FULL SCREEN</h1>
+      </header>
+      <section class="sheet-section">
+        <h2>JOB</h2>
+        <p id="sheetJob"></p>
+        <p class="sheet-note" id="sheetNote" hidden></p>
+      </section>
+      <section class="sheet-section">
+        <h2>STATES / OPTIONS</h2>
+        <div class="state-list" id="stateList"></div>
+      </section>
+      <section class="sheet-section">
+        <h2>BUGS / FIXES</h2>
+        <div class="bug-list" id="bugList"></div>
+      </section>
+      <section class="sheet-section" id="ruledSection">
+        <h2>RULED</h2>
+        <div class="ruled-list" id="ruledList"></div>
+      </section>
+      <section class="sheet-section where-section">
+        <h2>WHERE</h2>
+        <code id="whereReadout"></code>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="./kit.js"></script>
+</body>
+</html>

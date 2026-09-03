@@ -8,6 +8,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+/* Shipped 2026-09-02 on GP's word: the one-screen read IS the site. The
+   is-next class is always on; ?next=1 is accepted and changes nothing. */
+document.documentElement.classList.add("is-next");
+</script>
 <title>QIQI</title>
 <meta name="description" content="O QIQI NASCEU DAS PISTAS E PERTENCE ÀS PISTAS.">
 <meta name="theme-color" content="#09090B">
@@ -29,6 +34,357 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="assets/site.css">
+<style>
+/* The page consumes the shared ladder without changing the legacy fallbacks.
+   Companion and boot reservation are deliberately live with either flag. */
+.thermo { z-index: var(--z-rail, 55); }
+.bar { z-index: var(--z-header, 60); }
+.doors { z-index: var(--z-doors, 56); }
+.poster { z-index: var(--z-poster, 90); }
+.companion { z-index: var(--z-companion, 57); }
+
+/* One zero-layout rule marks the exact page boundary at every width. */
+html.is-next .arrival::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - var(--rail) / 2);
+  bottom: -1px;
+  width: 100vw;
+  border-bottom: var(--rule) solid var(--brand);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+html.is-next body:not(.is-read-active) .blocks { visibility: hidden; }
+html.is-next body.is-read-active .arrival { visibility: hidden; }
+/* While the hard pager decides which page owns the viewport, keep the
+   outgoing arrival pinned as a complete screen. The hidden read can never
+   expose a black third frame, and the thermometer may still count all twelve
+   physical transition steps. */
+html.is-next body:not(.is-read-active) .arrival {
+  position: sticky;
+  top: var(--bar);
+  z-index: var(--z-content);
+  background: var(--ground);
+}
+html.is-next .blocks { min-height: calc(100svh - var(--bar)); }
+html.is-next .arrival__question { display: none; }
+html.is-next .arrival__signal[data-signal-takeover] .arrival__hint { visibility: hidden; }
+html.is-next .arrival__signal .mascot__tag {
+  position: static;
+  inset: auto;
+  transform: none;
+  grid-area: 1 / 1;
+}
+
+html.is-next .switches { display: none; }
+html.is-next .bar__dock {
+  display: flex;
+  align-items: stretch;
+  margin-left: auto;
+  min-width: 0;
+}
+html.is-next .bar__dock #langToggle {
+  min-width: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-left: var(--rule) solid var(--qevr-hair);
+  background: var(--ground);
+  color: var(--qevr-muted);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+html.is-next .bar__dock #langToggle:hover,
+html.is-next .bar__dock #langToggle:focus-visible {
+  color: var(--qevr-ink);
+  background: var(--qevr-light);
+  outline: 0;
+}
+html.is-next .bar__dock #colorToggle {
+  display: block;
+  min-width: 58px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-left: var(--rule) solid var(--qevr-hair);
+  font: inherit;
+  cursor: pointer;
+}
+html.is-next .bar__dock #colorToggle.to-pink { background: var(--qevr-pink); }
+html.is-next .bar__dock #colorToggle.to-green { background: var(--qevr-body); }
+html.is-next .bar__dock #colorToggle:hover,
+html.is-next .bar__dock #colorToggle:focus-visible,
+html.is-next .bar__dock #colorToggle:active {
+  background: var(--qevr-light);
+  outline: 0;
+}
+html.is-next { --thermo-cell: calc(100dvh / 12); }
+
+/* Fable 2026-09-02: the desktop read is ONE screen, like LIVE — rail, bay,
+   stamp and doors all in view. The twelve thermometer cells count the
+   arrival-to-read travel; the read itself never scrolls. (The agents' 200svh
+   frame pushed the doors below the fold at every desktop stop.) */
+@media (min-width: 431px) {
+  html.is-next .blocks {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--bar));
+  }
+  html.is-next .blocks #panel { flex: 1 1 auto; }
+  html.is-next .blocks .doors { flex: 0 0 auto; margin-top: 0; }
+}
+
+@media (max-width: 430px) {
+  /* GP 2026-09-01 (fourth flag): QIQI fills the bar vertically. The
+     stacked unit hugs the rooms: the colour chip is the top half of the
+     bar and the language label the bottom half — two full blocks. */
+  html.is-next .bar__mark { flex: 0 0 auto; width: auto; padding-left: 10px; padding-right: 8px; }
+  html.is-next .bar__dock {
+    flex: 0 0 auto;
+    margin-left: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-width: 44px;
+    height: 100%;
+  }
+  html.is-next .bar__nav { flex: 0 1 auto; }
+  html.is-next .bar__dock #langToggle {
+    order: 1;
+    flex: 1 1 50%;
+    min-width: 0;
+    min-height: 0;
+    padding: 0 8px;
+    border: 0;
+    background: transparent;
+    font-size: 9px;
+    letter-spacing: .1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  html.is-next .bar__dock #colorToggle {
+    order: 0;
+    flex: 1 1 50%;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    border: 0;
+  }
+
+  /* The manifesto read is one physical screen. The arrival may hand off to
+     it, but nothing inside this frame is allowed to create a third page or
+     a nested scroll area. */
+  html.is-next body.is-read-active { overscroll-behavior-y: none; }
+  /* Once page two owns the phone viewport, its physical frame also owns the
+     viewport floor. Bottom-sticky keeps that frame visually locked while a
+     new dynamic viewport is propagating, even before resize JavaScript can update the
+     document's page-end scroll offset. The element stays in flow, so the
+     two-page document height and thermometer progression remain intact. */
+  html.is-next body.is-read-active .blocks {
+    position: sticky;
+    bottom: 0;
+    z-index: var(--z-content);
+  }
+  html.is-next .blocks {
+    height: calc(100svh - var(--bar));
+    min-height: calc(100svh - var(--bar));
+    max-height: calc(100svh - var(--bar));
+    padding-top: 0;
+    overflow: clip;
+    /* The floor doors extend across the 14px thermometer rail. Expand only
+       the paint clip so their higher ruled layer can actually cover it. */
+    overflow-clip-margin: var(--rail);
+  }
+  html.is-next .blocks #panel {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: clip;
+  }
+  html.is-next .blocks .panel__rail {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: clip;
+  }
+  /* GP 2026-08-31: CLOSED, the five heads stretch and split the whole room
+     between the header and the doors — the live law kept inside the fixed
+     frame. Their labels run big from the left with a small right gutter. */
+  html.is-next .blocks .panel__head {
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: 4px 8px 4px calc(var(--rail) + 10px);
+  }
+  /* OPEN, the five rows KEEP stretching — they absorb every pixel the bay
+     does not need. The bay hugs its own section: JavaScript sets its height
+     once per section (content plus the tallest inner line) so expanding an
+     item never resizes the box. Type never rescales. */
+  html.is-next .blocks.is-open .panel__head {
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: 4px 8px 4px calc(var(--rail) + 10px);
+  }
+  html.is-next .blocks.is-open .panel__rail > .panel__bay {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    padding: 5px 10px 3px calc(var(--rail) + 10px);
+    overflow: clip;
+    overscroll-behavior: none;
+  }
+  /* GP 2026-09-01: the copy keeps the site's own phone rhythm — the base
+     13px/1.62 paragraphs rule here untouched. The permanent transition-fire
+     is a state, not an event: its wash never bleeds over the read. */
+  /* Fable 2026-09-02 (GP's flag: a black seam between the rail and a
+     hovered row): the rows and the bay run FULL BLEED from the screen's left
+     edge and the thermometer paints ABOVE them — the ruled ladder, done with
+     z-order instead of a transparent border. Header, doors and companion
+     stay above the rail. */
+  html.is-next:root { --z-rail: 25; }
+  html.is-next .blocks #panel {
+    width: 100vw;
+    margin-left: calc(0px - var(--rail) - var(--gut));
+    margin-right: 0;
+  }
+  /* Fable 2026-09-02: the list inside the bay is a MINI RAIL. At rest its
+     rows stretch and split the bay exactly the way the five sections split
+     the screen — there is never a void under the last item. Open one line
+     and the other rows give back only what that line needs, down to a
+     one-line floor. The bay's height is fixed per section (JavaScript sets
+     it once: the compressed rows plus the tallest possible line), so
+     nothing outside the bay ever moves. */
+  html.is-next .blocks .panel__bay { --row-min: 26px; }
+  html.is-next .blocks .panel__bay .panel__bay-copy.is-list,
+  html.is-next .blocks .panel__bay .panel__bay-copy.is-list > div {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  html.is-next .blocks .panel__bay .head-lines,
+  html.is-next .blocks .panel__bay #stancesGrid {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  html.is-next .blocks .panel__bay .panel__bay-copy .stance {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: var(--row-min);
+    padding: 0 8px 0 0;
+    letter-spacing: 0;
+  }
+  html.is-next .blocks .panel__bay .panel__bay-copy .stances__bay { flex: 0 0 auto; }
+  /* the measuring probe: JavaScript flips this on for one frame to read the
+     compressed floor of the list */
+  html.is-next .blocks .panel__bay .panel__bay-copy .is-probe-min .stance {
+    flex: 0 0 auto;
+    height: var(--row-min);
+    min-height: 0;
+    padding: 0;
+  }
+  /* the visual row keeps the reading rhythm; the touch target quietly
+     extends toward the 44px floor */
+  html.is-next .blocks .panel__bay .panel__bay-copy .stance::before {
+    content: "";
+    position: absolute;
+    inset: -5px 0;
+  }
+  /* the hit extension never reaches past the list itself */
+  html.is-next .blocks .panel__bay .panel__bay-copy .stance:first-child::before { top: 0; }
+  html.is-next .blocks .panel__bay .panel__bay-copy .stance:last-child::before { bottom: 0; }
+  html.is-next .blocks .panel__bay .panel__bay-copy .stance__head {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.45;
+    letter-spacing: .02em;
+  }
+  html.is-next .blocks .panel__bay .panel__bay-copy .stances__bay {
+    width: 100%;
+    padding: 2px 8px 8px 0;
+  }
+  html.is-next .blocks .panel__bay .stances__bay-copy p {
+    font-size: 12.5px;
+    line-height: 1.5;
+    letter-spacing: .02em;
+  }
+  html.is-next .blocks .panel__bay .stances__bay-copy p + p { margin-top: .5em; }
+  /* NOS VEMOS NA PISTA lives only inside UM PRESENTE, running long and
+     sitting low so it nearly touches the doors. */
+  html.is-next .blocks .panel__bay > .stampband {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding: 4px 0 2px;
+  }
+  html.is-next .blocks .panel__bay > .stampband .stamp { margin-top: 0; }
+  html.is-next .blocks .panel__bay > .stampband .stamp__band { padding-top: 2px; }
+  html.is-next .blocks .panel__bay > .stampband .stamp__city { margin-top: 2px; font-size: 7px; line-height: 1.2; }
+  html.is-next .blocks .doors { flex: 0 0 auto; margin-top: auto; }
+  /* Fable 2026-09-02 (GP's flag: the doors detach from the floor while a
+     phone scrolls): in the phone read the DOORS leave the frame. JavaScript
+     moves them out of .blocks and they are fixed to the screen's floor on
+     their own rung of the ladder — the frame can lag a toolbar animation,
+     the doors cannot. The frame keeps a floor of their height, the page
+     refuses over-scroll, and the safe-area zone under the doors paints as
+     part of the doors, divider included. */
+  html.is-next:root { overscroll-behavior-y: none; }
+  html.is-next .blocks { padding-bottom: var(--doors-h, 0px); }
+  html.is-next main > .doors {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    margin: 0;
+    z-index: var(--z-doors);
+  }
+  html.is-next body:not(.is-read-active) main > .doors { visibility: hidden; }
+  html.is-next .doors {
+    padding-bottom: var(--safe-bottom, env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(90deg, var(--qevr-light) 0 calc(50% - 1px), var(--qevr-hair) calc(50% - 1px) calc(50% + 1px), var(--qevr-light) calc(50% + 1px));
+  }
+
+  /* AS REGRAS keeps its pop; the sheet runs narrow and tall, the badge
+     hangs outside it on the scrim on purpose, and the sheet floor keeps
+     open air before the foot line. */
+  html.is-next .poster { padding: 14px 0; }
+  html.is-next .poster__in { width: min(78vw, 300px); }
+  /* Fable 2026-09-02: the sheet keeps its A4 body but USES it — the seven
+     rules spread over the full height at a readable size instead of
+     bunching at the top over a dead lower half. The badge stays outside
+     on the scrim; the companion hides while the poster is up, so there is
+     one QIQI on screen, the angry one. */
+  html.is-next .poster__sheet { width: 100%; max-height: calc(100svh - 96px); padding-bottom: var(--poster-pad); }
+  html.is-next .poster__body { flex: 1 1 auto; display: flex; min-height: 0; }
+  html.is-next .poster__rules { flex: 1 1 auto; justify-content: space-between; padding-right: 14px; }
+  html.is-next .poster__rule { padding: 5px 0; }
+  html.is-next .poster__rule b { font-size: 10.5px; }
+  html.is-next .poster__rule i { font-size: 8.5px; line-height: 1.4; }
+  html.is-next .poster__art { right: calc(0px - var(--poster-pad) - var(--poster-edge) - 30px); top: -6px; transform: none; }
+  html.is-next .poster.on ~ .companion { visibility: hidden; }
+  /* the section sub-titles drop on phones (?subs=on brings them back) */
+  html.is-next:not(.with-subs) .blocks .panel__bay-sub { display: none; }
+
+  /* svh above is the compatibility floor. Modern mobile browsers get the
+     live toolbar-aware room so both physical pages and the doors follow the
+     visible viewport without JavaScript-authored pixel heights. */
+  @supports (height: 100dvh) {
+    html.is-next .arrival { min-height: calc(100dvh - var(--bar)); }
+    html.is-next .blocks {
+      height: calc(100dvh - var(--bar));
+      min-height: calc(100dvh - var(--bar));
+      max-height: calc(100dvh - var(--bar));
+    }
+  }
+}
+</style>
 </head>
 <body class="is-booting">
 
@@ -39,6 +395,7 @@
 <header class="bar">
   <div class="bar__in">
     <a class="bar__mark" href="#topo" aria-label="QIQI"><canvas data-cells="QIQI" data-fit="108"></canvas></a>
+    <div class="bar__dock" id="headerDock"></div>
     <nav class="bar__nav">
       <a href="#manifesto" aria-current="page" id="barManifesto">MANIFESTO</a>
       <a href="estudio/" id="barEstudio">ESTÚDIO</a>
@@ -77,9 +434,9 @@
     </div>
   </section>
 
-  <!-- GP-18 ruled M-A: the read is ONE ROOM — five headings, one bay, zero
-       tower. Headings never move, the bay never resizes, the click glitches
-       (GP-06/07 + N01). All five load closed (GP-04/05). -->
+  <!-- GP-18 ruled M-A: the read is ONE ROOM — five headings, one fitted bay,
+       zero tower. The frame and headings never resize; selected content fits
+       the room, and the click glitches (GP-06/07 + N01). All five load closed. -->
   <section class="blocks">
     <div id="panel">
     <div class="panel__rail" id="panelRail" role="tablist">
@@ -100,10 +457,14 @@
       </button>
     </div>
     <div class="panel__bay" id="bay">
-      <div class="panel__bay-sub" id="baySub"></div>
-      <div class="panel__bay-copy" id="bayCopy"></div>
-      <span class="bay__cursor" id="bayCursor" aria-hidden="true"></span>
-      <div class="block__field" id="bayField" aria-hidden="true"></div>
+      <div class="panel__bay-slot" id="bayFitSlot">
+        <div class="panel__bay-fit" id="bayFit">
+          <div class="panel__bay-sub" id="baySub"></div>
+          <div class="panel__bay-copy" id="bayCopy"></div>
+          <span class="bay__cursor" id="bayCursor" aria-hidden="true"></span>
+          <div class="block__field" id="bayField" aria-hidden="true"></div>
+        </div>
+      </div>
     </div>
     </div>
     <div class="stampband">
@@ -140,6 +501,7 @@
   "lang": "pt-BR",
   "brand": "QIQI",
   "city": "SÃO PAULO",
+  "note": "COPY DECK. CAIXA ALTA sempre. Sem travessão, sem exclamação, sem emoji. O REGISTRO É FALADO: VC, TÁ, TÃO, TBM, TÔ, CÊ ficam. NUNCA 'corrigir' para VOCÊ, ESTÁ, ESTÃO, TAMBÉM: a voz é o produto. Consertar só erro real: acento, concordância, typo. Ler em voz alta antes de commitar. O stamp é a última linha de UM PRESENTE, não um rodapé separado. Este arquivo é o canônico; index.html embute uma cópia dele no bloco deck-pt (editar OS DOIS).",
   "doors": {
     "manifesto": { "label": "MANIFESTO", "sub": "O QUE É O QIQI" },
     "estudio": { "label": "ESTÚDIO", "sub": "CRIA O SEU QIQI" },
@@ -166,6 +528,12 @@
       [ "DESCONHECIDOS", "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU." ],
       [ "CRUSHES", "VC SABE QUEM SÃO." ],
       [ "O AMOR DA SUA VIDA", "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA.", "fire" ]
+    ],
+    "headLines": [
+      { "head": "AMIGOS", "line": "PESSOAS QUE VC CONHECEU NO ROLÊ, E QUE AGORA SÃO PARTE DA SUA VIDA." },
+      { "head": "DESCONHECIDOS", "line": "AQUELA PESSOA QUE FOI SEU MELHOR AMIGO POR 20 MIN NA FILA DO BANHEIRO. E QUE VC NUNCA MAIS VIU." },
+      { "head": "CRUSHES", "line": "VC SABE QUEM SÃO." },
+      { "head": "O AMOR DA SUA VIDA", "line": "AQUELA PESSOA QUE VC ENCONTROU 7 DA MANHÃ, NUMA FÁBRICA ABANDONADA." }
     ],
     "close": [
       "FESTAS, SOLIDÃO, PESSOAS. TODAS PARTE DE UM MOMENTO.",
@@ -231,11 +599,71 @@
     "protoWord": "PROTÓTIPO",
     "creditPattern": "QIQI {DE} {NOME}"
   },
+  "estudio": {
+    "title": "O ESTÚDIO",
+    "hint": "MEXE SÓ NO ROSTO. O RESTO É ELE.",
+    "nameLabel": "DÁ UM NOME",
+    "codeLabel": "SEU CÓDIGO",
+    "undo": "DESFAZER",
+    "reset": "APAGAR TUDO",
+    "copyLink": "COPIAR LINK",
+    "copied": "COPIADO",
+    "card": "BAIXAR CARD",
+    "send": "MANDAR PRO QIQI",
+    "sendHint": "COLA O LINK NO DIRECT DO QIQI. A RESPOSTA CHEGA NA MESMA CONVERSA."
+  },
+  "notFound": {
+    "line": "ESSA PÁGINA NÃO EXISTE :("
+  },
   "arrival": {
     "mascotHint": "VAI, CLICA EM MIM",
     "colorQuestion": "EU TBM MUDO DE COR :3",
     "scrollLabel": "SCROLL",
     "fromPattern": "{NOME} TE DEU ISSO."
+  },
+  "sala": {
+    "back": "VOLTAR",
+    "roomsAria": "SALAS",
+    "nav": {
+      "story": "HISTÓRIA",
+      "dna": "DNA",
+      "growth": "MUDANÇAS"
+    },
+    "story": {
+      "kicker": "01 / HISTÓRIA",
+      "title": "DE QEVR PRA QIQI",
+      "sub": "O NOME MUDOU. A SILHUETA FICOU. TOCA NOS MOMENTOS PRA VER O QUE ELE CARREGOU.",
+      "stages": [
+        {
+          "title": "QEVR",
+          "copy": "UM QR CODE GANHOU CORPO, CARA E UM NOME QUE NINGUÉM SABIA FALAR."
+        },
+        {
+          "title": "QIQI",
+          "copy": "O NOME FICOU FÁCIL DE DIZER. ELE CONTINUOU SENDO O MESMO BICHO."
+        },
+        {
+          "title": "AGORA",
+          "copy": "ELE CRESCEU PRA TER ESTÚDIO, GALERIA E LUGAR PRA MOSTRAR O PRÓPRIO DNA."
+        }
+      ]
+    },
+    "dna": {
+      "kicker": "02 / DNA",
+      "title": "O CORPO NÃO MUDA",
+      "sub": "SÃO 23 PROTÓTIPOS. A FAIXA DO ROSTO MUDA. O RESTO É A MESMA REGRA.",
+      "stats": "{N} CÉLULAS MUDAM. A GRADE 34 × 34 NÃO MUDA.",
+      "gridAria": "GRADE DO QIQI"
+    },
+    "growth": {
+      "kicker": "03 / MUDANÇAS",
+      "title": "MUDAR SEM VIRAR OUTRA COISA",
+      "sub": "ARRASTA. CADA PASSO TROCA UM PEDAÇO DO ROSTO, SEM QUEBRAR O DNA DO QIQI.",
+      "copy": "{PCT}% MUDOU. O CORPO CONTINUA INTEIRO.",
+      "pairTitle": "NORMAL → FELIZ DA VIDA",
+      "artAria": "TRANSFORMAÇÃO DO QIQI",
+      "rangeAria": "QUANTO O ROSTO MUDOU"
+    }
   }
 }
 </script>
@@ -247,6 +675,14 @@
 (function () {
   "use strict";
 
+  const NEXT = document.documentElement.classList.contains("is-next");
+  /* Shipped 2026-09-02: one shared label size (B) is the default; ?labels=perrow
+     shows the per-row fill (A) for GP's ruling. Sub-titles are off on phones;
+     ?subs=on shows them. */
+  const LABELS_SHARED = NEXT && new URLSearchParams(location.search).get("labels") !== "perrow";
+  if (NEXT && new URLSearchParams(location.search).get("subs") === "on") document.documentElement.classList.add("with-subs");
+  /* preview-only: simulate a phone's home-indicator inset (?inset=34) */
+  if (NEXT && /^\d+$/.test(new URLSearchParams(location.search).get("inset") || "")) document.documentElement.style.setProperty("--safe-bottom", new URLSearchParams(location.search).get("inset") + "px");
   var MODE_KEY = "qevr.mode";
   var forced = (location.search.match(/[?&]mode=(day|party)(?:&|$)/) || [])[1];
   function readModePreference() {
@@ -336,11 +772,30 @@
     canvas._cell = cell;
     return m;
   }
+  function fitBarMark() {
+    var c = document.querySelector(".bar__mark canvas");
+    if (!c || !window.QevrType) return;
+    if (NEXT && isNextPhone()) {
+      /* GP 2026-09-01 (fourth flag): QIQI fills the bar vertically */
+      var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
+      var cell = String(Math.max(2, Math.floor(44 / m.h)));
+      if (c.getAttribute("data-force-cell") !== cell) {
+        c.setAttribute("data-force-cell", cell);
+        drawCells(c);
+      }
+      return;
+    }
+    if (c.hasAttribute("data-force-cell")) {
+      c.removeAttribute("data-force-cell");
+      drawCells(c);
+    }
+  }
   function drawAllCells() {
     [].forEach.call(document.querySelectorAll("canvas[data-cells]"), function (c) {
       if (c.hasAttribute("data-doorword")) { drawDoorWord(c, false); return; }
       drawCells(c);
     });
+    fitBarMark();
     syncHeadingDim();
   }
 
@@ -464,6 +919,44 @@
     return p;
   }
 
+  var headerDock = document.getElementById("headerDock");
+  var langToggle = document.getElementById("langToggle");
+  var colorToggle = document.getElementById("colorToggle");
+  var colorToggleHome = colorToggle.parentElement;
+  var colorToggleNext = colorToggle.nextSibling;
+  var phoneReadPageEnd = 0;
+  var phoneZoomOwner = null;
+  function syncHeaderDock(readActive) {
+    if (!NEXT || !headerDock) return;
+    headerDock.appendChild(langToggle);
+    if (readActive) {
+      headerDock.appendChild(colorToggle);
+    } else if (colorToggle.parentElement !== colorToggleHome) {
+      colorToggleHome.insertBefore(colorToggle, colorToggleNext);
+    }
+  }
+  function syncReadActive() {
+    if (!NEXT) return;
+    if (isNextPhone() && isPinchZoomed()) return;
+    var blocksEl = document.querySelector(".blocks");
+    var barEl = document.querySelector(".bar");
+    if (!blocksEl || !barEl) return;
+    var phonePageEnd = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    var atCurrentPhoneEnd = window.scrollY >= phonePageEnd - 1;
+    var atPriorPhoneEnd = document.body.classList.contains("is-read-active")
+      && phoneReadPageEnd > 0
+      && Math.abs(window.scrollY - phoneReadPageEnd) <= 2;
+    var remainsOnReadSide = document.body.classList.contains("is-read-active")
+      && phonePageEnd > 0
+      && window.scrollY >= phonePageEnd / 2;
+    var readActive = isNextPhone()
+      ? atCurrentPhoneEnd || atPriorPhoneEnd || remainsOnReadSide
+      : blocksEl.getBoundingClientRect().top <= barEl.getBoundingClientRect().bottom + 1;
+    if (isNextPhone() && atCurrentPhoneEnd) phoneReadPageEnd = phonePageEnd;
+    document.body.classList.toggle("is-read-active", readActive);
+    syncHeaderDock(readActive);
+  }
+
   function syncTitles() {
     var map = [
       ["manifesto", COPY.world],
@@ -482,13 +975,15 @@
     });
   }
 
-  /* ---------- M-A: the panel. five headings, ONE bay, nothing ever resizes.
-     the content of the open section always renders in the same piece
-     (GP-07's own sentence made structural). ---------- */
-  var activeSection = null, panelSubs = {}, panelFaces = {}, panelContent = {}, bayGen2 = 0, bayBlinkTimer = 0;
+  /* ---------- M-A: five invariant headings and ONE fitted bay.
+     The frame never resizes; selected content and its stamp remain one piece
+     and fit the available phone room (GP-07 + GP 2026-08-31). ---------- */
+  var activeSection = null, panelSubs = {}, panelFaces = {}, panelContent = {}, panelContentPhone = {}, bayGen2 = 0, bayBlinkTimer = 0;
   function bayEls() {
     return {
       bay: document.getElementById("bay"),
+      slot: document.getElementById("bayFitSlot"),
+      fit: document.getElementById("bayFit"),
       sub: document.getElementById("baySub"),
       copy: document.getElementById("bayCopy"),
       cursor: document.getElementById("bayCursor")
@@ -508,10 +1003,15 @@
     closeBay();
     els.sub.textContent = id ? (panelSubs[id] || "") : "";
     els.copy.innerHTML = "";
+    els.copy.classList.remove("is-list");
     if (!id) return;
-    var content = panelContent[id];
+    /* D2 (shipped 2026-09-02): the accordion is a phone device — desktop
+       shows every line, as LIVE always did */
+    var content = (NEXT && isNextPhone() && panelContentPhone[id]) || panelContent[id];
     if (!content) return;
     els.copy.appendChild(content);
+    /* a list section runs the mini rail (PROPOSED phones); paragraphs don't */
+    els.copy.classList.toggle("is-list", !!content.querySelector(".stances__grid"));
     if (opts.instant || reduce) return;
     /* the words arrive in three hard chunks — never letter by letter */
     var g = bayGen2;
@@ -529,6 +1029,120 @@
       for (var n = 0; n < per && p < blocksList.length; n++, p++) blocksList[p].style.visibility = "";
       if (p < blocksList.length) setTimeout(step, 90);
     })();
+  }
+  function isNextPhone() {
+    return NEXT && window.matchMedia("(max-width: 430px)").matches;
+  }
+  function isPinchZoomed() {
+    return !!(window.visualViewport && window.visualViewport.scale > 1.01);
+  }
+  var bayFitFrame = 0, fittingBay = false;
+  function resetBayFit() {
+    var bayEl = document.getElementById("bay");
+    var slotEl = document.getElementById("bayFitSlot");
+    var fitEl = document.getElementById("bayFit");
+    if (!bayEl || !slotEl || !fitEl) return;
+    bayEl.style.removeProperty("height");
+    bayEl.removeAttribute("data-fit-scale");
+    slotEl.style.removeProperty("height");
+    fitEl.style.removeProperty("width");
+    fitEl.style.removeProperty("transform");
+    fitEl.style.removeProperty("--bay-fit-scale");
+  }
+  function measureTallestInnerExtra(bayEl) {
+    /* GP 2026-09-01: an expanding line must never resize the bay, so the
+       tallest possible inner answer is reserved up front. Each candidate is
+       measured in a hidden probe with the real styles at the real width. */
+    var grid = bayEl.querySelector(".head-lines, #stancesGrid");
+    if (!grid) return 0;
+    var bodies = [];
+    [].forEach.call(grid.querySelectorAll(".stance"), function (tile) {
+      var spec = tileBayState.get(tile);
+      if (spec && spec.paragraphs) bodies.push(spec.paragraphs);
+    });
+    if (!bodies.length) return 0;
+    var probe = document.createElement("div");
+    probe.className = "stances__bay";
+    probe.style.position = "absolute";
+    probe.style.visibility = "hidden";
+    probe.style.pointerEvents = "none";
+    probe.style.width = grid.clientWidth + "px";
+    var copyHost = document.createElement("div");
+    copyHost.className = "stances__bay-copy";
+    probe.appendChild(copyHost);
+    grid.appendChild(probe);
+    var tallest = 0;
+    var probeStyle = getComputedStyle(probe);
+    var probeMargins = (parseFloat(probeStyle.marginTop) || 0) + (parseFloat(probeStyle.marginBottom) || 0);
+    bodies.forEach(function (paragraphs) {
+      copyHost.innerHTML = "";
+      paragraphs.forEach(function (t) { copyHost.appendChild(para(t)); });
+      /* the type-on rides an inline block cursor that can wrap one more
+         line; measure with it so even the typing beat stays inside. The
+         block's own margins ride along too — offsetHeight excludes them. */
+      var typingCursor = document.createElement("span");
+      typingCursor.className = "cursor";
+      if (copyHost.lastElementChild) copyHost.lastElementChild.appendChild(typingCursor);
+      tallest = Math.max(tallest, probe.offsetHeight + probeMargins);
+    });
+    grid.removeChild(probe);
+    return tallest;
+  }
+  function fitOpenBay() {
+    if (bayFitFrame) { cancelAnimationFrame(bayFitFrame); bayFitFrame = 0; }
+    var bayEl = document.getElementById("bay");
+    if (!bayEl) return;
+    if (!(NEXT && isNextPhone()) || !activeSection || bayEl.hidden) {
+      resetBayFit();
+      return;
+    }
+    /* GP 2026-09-01: the bay hugs its section. Its height is fixed per
+       section at the larger of its two states — the resting list, or the
+       compressed list plus its tallest possible answer — so opening a line
+       never resizes the box, and the five rows absorb everything else. */
+    var grid = bayEl.querySelector(".head-lines, #stancesGrid");
+    var openInner = bayEl.querySelector(".stances__bay");
+    var openInnerHeight = openInner ? openInner.offsetHeight : 0;
+    bayEl.style.removeProperty("height");
+    var envelope;
+    if (grid) {
+      var wasCompressed = grid.classList.contains("is-inner-open");
+      grid.classList.remove("is-inner-open");
+      var restList = bayEl.offsetHeight - openInnerHeight;
+      /* the compressed floor: every row at its one-line minimum */
+      grid.classList.add("is-probe-min");
+      var compressedList = bayEl.offsetHeight - openInnerHeight;
+      grid.classList.remove("is-probe-min");
+      grid.classList.toggle("is-inner-open", wasCompressed);
+      /* the composed sum rides fractional line heights: three whole pixels
+         of slack absorb the rounding so the clip never eats a descender */
+      envelope = Math.max(restList, compressedList + measureTallestInnerExtra(bayEl) + 3);
+    } else {
+      envelope = bayEl.offsetHeight;
+    }
+    /* the five rows never squeeze below their 44px floor */
+    var rail = document.getElementById("panelRail");
+    var ceiling = rail ? rail.clientHeight - 5 * 44 : envelope;
+    bayEl.style.height = Math.max(0, Math.min(envelope, ceiling)) + "px";
+  }
+  function queueBayFit() {
+    if (!isNextPhone()) { fitOpenBay(); return; }
+    if (bayFitFrame) cancelAnimationFrame(bayFitFrame);
+    bayFitFrame = requestAnimationFrame(function () {
+      bayFitFrame = 0;
+      fitOpenBay();
+    });
+  }
+  function scrollReadIntoFrame() {
+    var blocksEl = document.querySelector(".blocks");
+    var barEl = document.querySelector(".bar");
+    if (!blocksEl) return;
+    if (isNextPhone() && document.body.classList.contains("is-read-active")) {
+      window.scrollTo(0, Math.max(0, document.documentElement.scrollHeight - window.innerHeight));
+      return;
+    }
+    var blocksTop = blocksEl.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo(0, Math.max(0, Math.round(blocksTop - (barEl ? barEl.offsetHeight : 52))));
   }
   function setOpen(id, opts) {
     opts = opts || {};
@@ -550,7 +1164,11 @@
     }
     renderSection(id, opts);
     var bayNode = document.getElementById("bay");
-    if (bayNode) bayNode.classList.toggle("has-field", !!id);
+    if (bayNode) {
+      bayNode.classList.toggle("has-field", !!id);
+      if (id) bayNode.setAttribute("data-section", id);
+      else bayNode.removeAttribute("data-section");
+    }
     if (mascot && id && panelFaces[id]) { mascot.ignoredSince = Date.now(); mascot.setFace(panelFaces[id]); }
     syncJump();
     if (isSmall()) {
@@ -569,9 +1187,8 @@
        the scroll lands on the read's top instead (GP sketch). */
     if (id && isSmall()) {
       var barEl = document.querySelector(".bar");
-      if (id === "presente") {
-        var blocksTop = document.querySelector(".blocks").getBoundingClientRect().top + window.scrollY;
-        window.scrollTo(0, Math.max(0, Math.round(blocksTop - (barEl ? barEl.offsetHeight : 52))));
+      if (isNextPhone() || id === "presente") {
+        scrollReadIntoFrame();
       } else {
         var headTap = document.getElementById(id);
         if (headTap && barEl) {
@@ -586,6 +1203,7 @@
     blocksEl.style.removeProperty("min-height");
     blocksEl.classList.toggle("is-open", !!id && isSmall());
     blocksEl.classList.toggle("is-gift-open", id === "presente" && isSmall());
+    if (isNextPhone()) return;
     if (!id || !isSmall()) return;
     /* A GIFT deliberately lands at the read's top so the four rows above it
        stay visible. It does not need the artificial tail used to pin the
@@ -605,12 +1223,29 @@
      inside the open section instead of standing at the read's floor.
      Desktop keeps the ruled rail + bay + standing band untouched. */
   var stampEverOpened = false;
+  /* Fable 2026-09-02: in the PROPOSED phone read the doors live OUTSIDE the
+     frame (fixed to the screen's floor, see the CSS); everywhere else they
+     stay the frame's last child, as LIVE has them. The frame reserves their
+     height so the rows end where the doors begin. */
+  function placeDoors() {
+    var doors = document.getElementById("doors");
+    var blocksEl = document.querySelector(".blocks");
+    if (!doors || !blocksEl) return;
+    if (NEXT && isNextPhone()) {
+      if (doors.parentElement !== blocksEl.parentElement) blocksEl.parentElement.appendChild(doors);
+      document.documentElement.style.setProperty("--doors-h", doors.offsetHeight + "px");
+    } else {
+      if (doors.parentElement !== blocksEl) blocksEl.appendChild(doors);
+      document.documentElement.style.removeProperty("--doors-h");
+    }
+  }
   function placeBayAndStamp() {
     var bayEl = document.getElementById("bay");
     var rail = document.getElementById("panelRail");
     var panel = document.getElementById("panel");
     var band = document.querySelector(".stampband");
     if (!bayEl || !rail || !panel || !band) return;
+    placeDoors();
     if (!band._home) band._home = band.parentElement;
     var phone = isSmall();
     /* GP's stamp flow (2026-08-28, final): before any click the stamp does
@@ -631,8 +1266,15 @@
       if (activeSection) {
         var head = document.getElementById(activeSection);
         if (head && bayEl.previousElementSibling !== head) rail.insertBefore(bayEl, head.nextSibling);
-        if (band.parentElement !== bayEl) bayEl.appendChild(band);
-        band.hidden = false;
+        /* GP 2026-08-31 (PROPOSED phones): the stamp belongs to UM PRESENTE
+           alone — every other open section reads without it. */
+        if (NEXT && isNextPhone() && activeSection !== "presente") {
+          parkBandHome();
+          band.hidden = true;
+        } else {
+          if (band.parentElement !== bayEl) bayEl.appendChild(band);
+          band.hidden = false;
+        }
         bayEl.hidden = false;
       } else {
         if (bayEl.parentElement !== panel) panel.appendChild(bayEl);
@@ -647,12 +1289,21 @@
       if (bayEl.parentElement !== panel) panel.appendChild(bayEl);
       bayEl.hidden = false;
       if (band.parentElement !== bayEl) bayEl.appendChild(band);
-      band.hidden = !stampEverOpened;
+      /* shipped 2026-09-02 (D3): on desktop too, the stamp is the gift's
+         signature — it shows only inside UM PRESENTE */
+      band.hidden = NEXT ? activeSection !== "presente" : !stampEverOpened;
     }
     /* re-fit the stamp to its new room — only once it has assembled */
     if (stampShown) paintStamp();
+    fitOpenBay();
+    /* the row heights just changed around the bay's new envelope: the
+       labels refill their rows, and the companion zone re-reads the live
+       geometry */
+    if (NEXT && isNextPhone()) unifyToggleHeadings();
+    avoidCompanionOverlap();
   }
-  /* the bay NEVER resizes: reserve the tallest section once per width */
+  /* Desktop keeps one reserved bay; the PROPOSED phone fitter owns its
+     explicit visual height and returns before this desktop measurement. */
   function measureBay() {
     var els = bayEls();
     if (!els.bay) return;
@@ -667,11 +1318,13 @@
     if (bandM) {
       if (!bandM._home) bandM._home = bandM.parentElement;
       els.bay.appendChild(bandM);
-      bandM.hidden = false;
+      bandM.hidden = !!NEXT;
     }
     var max = 0;
     ["manifesto", "pessoas", "stances", "presente"].forEach(function (id) {
       renderSection(id, { instant: true });
+      /* D3: the reserve counts the stamp only where it lives — the gift */
+      if (bandM && NEXT) bandM.hidden = id !== "presente";
       if (id === "stances") {
         /* reserve room for the tallest tile's answer too (GP-07) */
         var grid = els.copy.querySelector(".stances__grid");
@@ -732,6 +1385,30 @@
   function unifyToggleHeadings() {
     var cs = document.querySelectorAll(".panel__head canvas");
     if (!cs.length) return;
+    var phoneNext = NEXT && isNextPhone();
+    if (phoneNext) {
+      /* GP 2026-09-01: each label fills ITS OWN row — nearly the full row
+         height, anchored left, with a small right gutter. The word's own
+         width is the only other cap, so each row is redrawn whenever the
+         row heights change. The shared-cell law stays everywhere else. */
+      var fits = [].map.call(cs, function (c) {
+        var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
+        var host = c.parentElement;
+        var byWidth = Math.floor(Math.max(60, (host.clientWidth || window.innerWidth) - 18) / m.w);
+        var byHeight = Math.floor(Math.max(24, (host.clientHeight || 44) - 10) / m.h);
+        return Math.max(2, Math.min(byWidth, byHeight));
+      });
+      /* Shipped 2026-09-02 (Fable, GP's ruling pending): every row draws at
+         ONE cell — the largest that still fits the longest word — the live
+         rail's own law. ?labels=perrow shows the per-row fill of 2026-09-01. */
+      var sharedCell = Math.min.apply(null, fits);
+      [].forEach.call(cs, function (c, i) {
+        c.setAttribute("data-force-cell", LABELS_SHARED ? sharedCell : fits[i]);
+        drawCells(c);
+      });
+      syncHeadingDim();
+      return;
+    }
     var minCell = Infinity;
     [].forEach.call(cs, function (c) {
       var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
@@ -772,14 +1449,38 @@
 
   function buildWorld() {
     var host = document.createElement("div"); host.className = "copy";
-    COPY.world.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
+    if (NEXT && Array.isArray(COPY.world.headLines) && COPY.world.headLines.length) {
+      host.appendChild(buildHeadLines(COPY.world.headLines, COPY.world.face));
+    } else {
+      COPY.world.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
+    }
     panelContent.manifesto = host;
+  }
+
+  function appendPeopleClose(host) {
+    var close = document.createElement("div"); close.className = "bay__close";
+    COPY.people.close.forEach(function (t) { close.appendChild(para(t)); });
+    host.appendChild(close);
   }
 
   /* AS PESSOAS speaks as stanzas: name, the sentence, nothing else.
      no numbers, no borders, no table (GP-18). */
   function buildPeople() {
     var host = document.createElement("div");
+    if (NEXT && Array.isArray(COPY.people.headLines)) {
+      /* GP 2026-08-31: on phones AS PESSOAS is the four-item accordion
+         alone — the closing block is retired. The deck still carries the
+         "fire" emphasis on the matching name (GP, 2026-08-28). */
+      var lines = COPY.people.headLines.map(function (entry) {
+        var match = (COPY.people.items || []).filter(function (pair) { return pair[0] === entry.head; })[0];
+        return match && match[2] === "fire"
+          ? { head: entry.head, line: entry.line, fire: true }
+          : entry;
+      });
+      var phoneHost = document.createElement("div");
+      phoneHost.appendChild(buildHeadLines(lines, COPY.people.face));
+      panelContentPhone.pessoas = phoneHost;
+    }
     var stanzas = document.createElement("div");
     COPY.people.items.forEach(function (pair) {
       var p = document.createElement("p"); p.className = "bay__stanza";
@@ -791,15 +1492,24 @@
       stanzas.appendChild(p);
     });
     host.appendChild(stanzas);
-    var close = document.createElement("div"); close.className = "bay__close";
-    COPY.people.close.forEach(function (t) { close.appendChild(para(t)); });
-    host.appendChild(close);
+    /* D3 (shipped 2026-09-02): the closing block is retired on desktop too */
+    if (!NEXT) appendPeopleClose(host);
     panelContent.pessoas = host;
+  }
+
+  function buildHeadLines(entries, face) {
+    var grid = document.createElement("div");
+    grid.className = "stances__grid head-lines";
+    buildTiles(grid, entries.map(function (entry) {
+      return { head: entry.head, body: [entry.line], face: face, fire: entry.fire };
+    }));
+    return grid;
   }
 
   /* ---------- L08 + L09 + L13: tiles stay short; the opened body slides into a
      full-width bay under its row, at full volume, typing in hard chunks. ---------- */
   var bay = null, bayTimer = 0, bayGen = 0;
+  var tileBayState = new WeakMap();
   function closeBay() {
     bayGen++;
     if (bayTimer) { clearTimeout(bayTimer); bayTimer = 0; }
@@ -808,6 +1518,22 @@
     [].forEach.call(document.querySelectorAll(".stance[aria-expanded='true']"), function (t) {
       t.setAttribute("aria-expanded", "false");
     });
+    [].forEach.call(document.querySelectorAll(".is-inner-open"), function (g2) {
+      g2.classList.remove("is-inner-open");
+    });
+    queueBayFit();
+  }
+  function snapshotOpenBay() {
+    var tile = document.querySelector(".stance[aria-expanded='true']");
+    return tile ? { tile: tile, focused: document.activeElement === tile } : null;
+  }
+  function restoreOpenBay(state) {
+    if (!state || !state.tile || !state.tile.isConnected) return;
+    if (state.tile.getAttribute("aria-expanded") !== "true" || !bay || !bay.isConnected) {
+      var spec = tileBayState.get(state.tile);
+      if (spec) openBay(spec.grid, state.tile, spec.idxText, spec.paragraphs, { instant: true });
+    }
+    if (state.focused) state.tile.focus({ preventScroll: true });
   }
   function rowEndOf(grid, tile) {
     var tiles = [].filter.call(grid.children, function (c) { return c.classList.contains("stance"); });
@@ -815,10 +1541,14 @@
     tiles.forEach(function (t) { if (t.offsetTop === top) last = t; });
     return last;
   }
-  function openBay(grid, tile, idxText, paragraphs) {
+  function openBay(grid, tile, idxText, paragraphs, opts) {
+    opts = opts || {};
     closeBay();
     var g = ++bayGen;
     tile.setAttribute("aria-expanded", "true");
+    /* GP 2026-09-01: while one line is open the other lines compress — the
+       sections' own logic inside the bay */
+    grid.classList.add("is-inner-open");
     bay = document.createElement("div");
     bay.className = "stances__bay";
     var idx = document.createElement("span");
@@ -835,7 +1565,9 @@
     ps.forEach(function (p) { copyHost.appendChild(p); });
     var fullH = copyHost.offsetHeight;
     copyHost.style.minHeight = fullH + "px";
+    queueBayFit();
 
+    if (opts.instant) { dropFinalDot(copyHost, true); return; }
     if (reduce) { dropFinalDot(copyHost); return; }
 
     /* type in 3-4 hard chunks, block cursor blinks twice and dies */
@@ -874,14 +1606,16 @@
     })();
   }
   /* the final period lands, then only IT disappears */
-  function dropFinalDot(copyHost) {
+  function dropFinalDot(copyHost, immediate) {
     var ps = copyHost.querySelectorAll("p");
     if (!ps.length) return;
     var last = ps[ps.length - 1];
-    setTimeout(function () {
+    function drop() {
       var t = last.textContent;
       if (t && t.charAt(t.length - 1) === ".") last.textContent = t.slice(0, -1);
-    }, 500);
+    }
+    if (immediate) drop();
+    else setTimeout(drop, 500);
   }
 
   function buildTiles(grid, items) {
@@ -890,8 +1624,11 @@
       b.className = "stance"; b.type = "button";
       b.setAttribute("aria-expanded", "false");
       var idxText = "";
+      tileBayState.set(b, { grid: grid, idxText: idxText, paragraphs: item.body });
       var head = document.createElement("span");
       head.className = "stance__head"; head.textContent = item.head;
+      /* deck-carried emphasis: "fire" paints the name in the fire pink (GP, 2026-08-28) */
+      if (item.fire) head.style.color = "var(--qevr-fire)";
       b.appendChild(head);
       b.addEventListener("click", function () {
         var open = b.getAttribute("aria-expanded") === "true";
@@ -917,7 +1654,7 @@
   }
 
   /* ---------- AS REGRAS: the poster pop ---------- */
-  var posterOpen = false;
+  var posterOpen = false, posterReturnFocus = null;
   function buildPoster() {
     var rules = document.getElementById("posterRules");
     rules.innerHTML = "";
@@ -1012,10 +1749,27 @@
       }
     }
   }
+  function fitPosterTitle() {
+    /* GP 2026-08-31 (PROPOSED phones): the sheet runs narrow, so the title
+       is redrawn against the OPEN sheet's real width — the boot-time paint
+       measured a hidden host and bled past the edge. */
+    var c = document.getElementById("posterTitle");
+    var sheet = document.querySelector(".poster__sheet");
+    if (!c || !sheet || !window.QevrType) return;
+    var m = window.QevrType.textMatrix(c.getAttribute("data-cells"));
+    var pad = parseFloat(getComputedStyle(sheet).paddingLeft) || 11;
+    var room = Math.max(60, sheet.clientWidth - pad * 2 - 4);
+    c.setAttribute("data-force-cell", Math.max(2, Math.floor(room / m.w)));
+    drawCells(c);
+  }
   function openPoster() {
+    posterReturnFocus = document.activeElement && document.activeElement !== document.body
+      ? document.activeElement
+      : document.getElementById("regras");
     posterOpen = true;
     document.getElementById("poster").classList.add("on");
     document.body.style.overflow = "hidden";
+    if (NEXT && isNextPhone()) fitPosterTitle();
     paintPosterArt();
     drawCells(document.getElementById("posterTitle"));
     document.getElementById("posterClose").focus();
@@ -1025,53 +1779,112 @@
     posterOpen = false;
     document.getElementById("poster").classList.remove("on");
     document.body.style.overflow = "";
+    var returnTarget = posterReturnFocus;
+    posterReturnFocus = null;
+    if (returnTarget && returnTarget.isConnected) returnTarget.focus();
   }
 
   function buildGift() {
     var host = document.createElement("div"); host.className = "copy gift";
-    COPY.gift.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
+    if (NEXT && Array.isArray(COPY.gift.headLines) && COPY.gift.headLines.length) {
+      host.appendChild(buildHeadLines(COPY.gift.headLines, COPY.gift.face));
+    } else {
+      COPY.gift.paragraphs.forEach(function (entry) { host.appendChild(para(entry)); });
+    }
     if (COPY.gift.appLine) host.appendChild(para(COPY.gift.appLine, "dim"));
     panelContent.presente = host;
     var question = document.getElementById("arrivalColorQuestion");
     if (question && COPY.arrival) question.textContent = COPY.arrival.colorQuestion;
-    document.querySelector("#arrivalGreen span").textContent = COPY.ui.green;
-    document.querySelector("#arrivalPink span").textContent = COPY.ui.pink;
+    var green = document.getElementById("arrivalGreen");
+    var pink = document.getElementById("arrivalPink");
+    green.querySelector("span").textContent = COPY.ui.green;
+    pink.querySelector("span").textContent = COPY.ui.pink;
     syncArrivalColor();
     document.getElementById("stampCity").textContent = COPY.city;
   }
 
-  var hintBlinkTimer = 0;
+  var hintBlinkTimer = 0, hintRotateTimer = 0, hintTypeTimer = 0;
+  var signalCopy = null, signalLines = [], signalLineIndex = 0, signalTakeover = null;
+  function signalChunks(full) {
+    var words = full.trim().split(/\s+/);
+    var first = Math.max(1, Math.ceil(words.length / 3));
+    if (first === 1 && /^VAI[,]?$/i.test(words[0]) && words.length > 3) first = 2;
+    var second = Math.max(first + 1, Math.ceil(words.length * 2 / 3));
+    second = Math.min(words.length - 1, second);
+    return [
+      words.slice(0, first).join(" "),
+      words.slice(0, second).join(" "),
+      words.join(" ")
+    ];
+  }
+  function clearSignalSpeechTimers() {
+    clearTimeout(hintRotateTimer);
+    clearTimeout(hintTypeTimer);
+    hintRotateTimer = 0;
+    hintTypeTimer = 0;
+  }
+  function typeSignalLine(index) {
+    if (!signalCopy || !signalLines.length || signalTakeover) return;
+    clearSignalSpeechTimers();
+    signalLineIndex = index % signalLines.length;
+    var full = signalLines[signalLineIndex];
+    var hint = document.getElementById("mascotHint");
+    hint.setAttribute("aria-label", full);
+    if (reduce) {
+      signalCopy.textContent = full;
+      hint.setAttribute("data-signal-chunk", "static");
+      return;
+    }
+    var chunks = signalChunks(full);
+    var chunkIndex = 0;
+    (function typeChunk() {
+      if (signalTakeover) return;
+      signalCopy.textContent = chunks[chunkIndex];
+      hint.setAttribute("data-signal-chunk", String(chunkIndex + 1));
+      chunkIndex++;
+      if (chunkIndex < 3) {
+        hintTypeTimer = setTimeout(typeChunk, 90);
+      } else if (NEXT) {
+        hintRotateTimer = setTimeout(function () {
+          typeSignalLine((signalLineIndex + 1) % signalLines.length);
+        }, 3400);
+      }
+    })();
+  }
+  function takeSignalSlot(kind) {
+    if (!NEXT) return;
+    signalTakeover = kind;
+    clearSignalSpeechTimers();
+    document.getElementById("arrivalSignal").setAttribute("data-signal-takeover", kind);
+  }
+  function releaseSignalSlot(kind) {
+    if (!NEXT || signalTakeover !== kind) return;
+    signalTakeover = null;
+    document.getElementById("arrivalSignal").removeAttribute("data-signal-takeover");
+    if (!reduce) typeSignalLine(signalLineIndex);
+  }
   function revealArrivalHint() {
     var hint = document.getElementById("mascotHint");
     var signal = document.getElementById("arrivalSignal");
-    var full = COPY.arrival.mascotHint;
+    var signals = [COPY.arrival.mascotHint, COPY.arrival.colorQuestion];
+    signalLines = signals;
     hint.innerHTML = "";
-    hint.setAttribute("aria-label", full);
     var copy = document.createElement("span");
     copy.className = "arrival__hint-copy";
+    signalCopy = copy;
     var cursor = document.createElement("span");
     cursor.className = "arrival__cursor";
     cursor.setAttribute("aria-hidden", "true");
     hint.appendChild(copy);
     hint.appendChild(cursor);
     signal.classList.add("is-ready");
-
-    var words = full.split(" ");
-    if (reduce) {
-      copy.textContent = full;
-    } else {
-      var chunk = 1;
-      (function typeHint() {
-        copy.textContent = words.slice(0, Math.ceil(words.length * chunk / 3)).join(" ");
-        chunk++;
-        if (chunk <= 3) setTimeout(typeHint, 90);
-      })();
-    }
+    typeSignalLine(0);
     if (!hintBlinkTimer) {
       hintBlinkTimer = setInterval(function () {
         cursor.style.visibility = cursor.style.visibility === "hidden" ? "visible" : "hidden";
       }, 600);
     }
+    if (!NEXT || reduce) return;
   }
 
   /* ---------- L15: the stamp drawn in his cells, the smiley in the brand ---------- */
@@ -1083,7 +1896,11 @@
     var m = window.QevrType.textMatrix(text);
     var host = canvas.parentElement;
     var room = (host.clientWidth || window.innerWidth) - 4;
-    var cell = Math.max(3, Math.floor(Math.min(room, 900) / m.w));
+    /* The 360px phone cannot hold this matrix at a three-CSS-pixel cell
+       without the browser fractionally shrinking the canvas. Step down to
+       two whole pixels there; wider phones keep three. */
+    var minStampCell = isNextPhone() ? 2 : 3;
+    var cell = Math.max(minStampCell, Math.floor(Math.min(room, 900) / m.w));
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
     canvas.width = m.w * cell * dpr; canvas.height = m.h * cell * dpr;
     canvas.style.width = (m.w * cell) + "px"; canvas.style.height = (m.h * cell) + "px";
@@ -1106,6 +1923,7 @@
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", text);
     canvas._matrix = m;
+    if (!fittingBay) queueBayFit();
   }
   function stampFirstOpen() {
     if (stampShown || reduce) { paintStamp(); stampShown = true; return; }
@@ -1167,6 +1985,22 @@
     var byHeight = Math.floor(Math.max(200, window.innerHeight * 0.42) / window.Qevr.CROP.h);
     return Math.max(8, Math.min(13, byWidth, byHeight));
   }
+  function reserveArrivalMascot() {
+    var btn = document.getElementById("mascotBtn");
+    var crop = window.Qevr && window.Qevr.CROP;
+    if (!btn || !crop) return;
+    var cell = arrivalCellFor();
+    btn.style.width = (crop.w * cell) + "px";
+    btn.style.height = (crop.h * cell) + "px";
+    btn.setAttribute("data-layout-reserved", "true");
+  }
+  function releaseArrivalMascotReservation() {
+    var btn = document.getElementById("mascotBtn");
+    if (!btn) return;
+    btn.style.removeProperty("width");
+    btn.style.removeProperty("height");
+    btn.removeAttribute("data-layout-reserved");
+  }
   function cellFor() {
     if (jumpedBlock) return largeMonitorScale(4, 9);
     /* phone corner: ~15% bigger per GP (2026-08-28), snapped so every cell
@@ -1216,8 +2050,130 @@
     /* GP's ruling (2026-08-28, amended same day): on phones he does not roam
        the edges or sidle up to the open row — he keeps his own small zone at
        the BOTTOM RIGHT and wanders only inside it. */
-    if (!inCorner || !isSmall()) return;
+    if (!inCorner) return;
     var slot = document.getElementById("companionSlot");
+    if (NEXT && !isSmall()) {
+      /* Fable 2026-09-02 (PROPOSED desktop): the rail column runs empty
+         below UM PRESENTE — that is his pocket, instead of the corner where
+         he covered the GALERIA caption. Falls back to the corner if the
+         rail has no room. */
+      var railD = document.getElementById("panelRail");
+      var headsD = railD ? railD.querySelectorAll(".panel__head") : [];
+      var lastD = headsD.length ? headsD[headsD.length - 1] : null;
+      var sizeD = slot.offsetHeight || 96;
+      if (railD && lastD && document.body.classList.contains("is-read-active")) {
+        var railR = railD.getBoundingClientRect(), lastR = lastD.getBoundingClientRect();
+        var freeD = railR.bottom - lastR.bottom;
+        if (freeD >= sizeD + 28 && railR.width >= sizeD + 48) {
+          slot.setAttribute("data-corner", "rail");
+          slot.style.left = Math.round(railR.left + 24) + "px";
+          slot.style.right = "auto";
+          slot.style.top = "auto";
+          slot.style.bottom = Math.round(window.innerHeight - railR.bottom + 14) + "px";
+          var rx = Math.max(0, Math.min(40, Math.floor((railR.width - 48 - sizeD) / 2)));
+          var ry = Math.max(0, Math.min(16, Math.floor((freeD - sizeD - 28) / 2)));
+          if (mascot) {
+            if (mascot._bounds) { mascot._bounds.x = rx; mascot._bounds.y = ry; }
+            else mascot._bounds = { x: rx, y: ry };
+          }
+          return;
+        }
+      }
+      slot.removeAttribute("data-corner");
+      slot.style.left = "auto";
+      slot.style.right = "";
+      slot.style.top = "auto";
+      slot.style.bottom = "";
+      return;
+    }
+    if (!isSmall()) return;
+    if (NEXT && isNextPhone()) {
+      /* Fable 2026-09-02 (GP's 2026-09-01 ask: a free layer in the body,
+         independent of the section layout, above ESTÚDIO/GALERIA): he lives
+         in a POCKET — the empty right end of the section rows, where the
+         shorter labels leave room. He never sits on ink: not on a label, not
+         on the bay's copy, not on the stamp. The largest pocket that holds
+         him wins (ties go low); if no pocket holds his full size he shrinks
+         one step; only with no pocket at all does he fall back to the doors'
+         right shoulder. The engine hops symmetrically around its anchor, so
+         the anchor sits at the pocket's center and the hop reach is the
+         pocket's slack. */
+      var railEl = document.getElementById("panelRail");
+      var doorsEl = document.getElementById("doors");
+      var btnEl = document.getElementById("mascotBtn");
+      var crop = window.Qevr && window.Qevr.CROP;
+      var fullSlot = 74;
+      var runs = [], run = [];
+      if (railEl) {
+        [].forEach.call(railEl.children, function (child) {
+          if (child.classList.contains("panel__head")) {
+            var r = child.getBoundingClientRect();
+            var cv = child.querySelector("canvas");
+            var cr = cv ? cv.getBoundingClientRect() : r;
+            run.push({ top: r.top + 3, bottom: r.bottom - 3, left: cr.right + 8, right: r.right - 6 });
+          } else if (run.length) { runs.push(run); run = []; }
+        });
+        if (run.length) runs.push(run);
+      }
+      var best = null;
+      runs.forEach(function (rows) {
+        for (var i = 0; i < rows.length; i++) {
+          for (var j = i; j < rows.length; j++) {
+            var left = -Infinity, right = Infinity;
+            for (var k = i; k <= j; k++) { left = Math.max(left, rows[k].left); right = Math.min(right, rows[k].right); }
+            var top = rows[i].top, bottom = rows[j].bottom;
+            var w = right - left, h = bottom - top;
+            if (w < 44 || h < 44) continue;
+            var side = Math.min(w, h);
+            var p = { left: left, right: right, top: top, bottom: bottom, w: w, h: h, side: side };
+            if (!best || side > best.side || (side === best.side && bottom > best.bottom)) best = p;
+          }
+        }
+      });
+      var size = best ? Math.min(fullSlot, Math.floor(best.side) - 4) : 0;
+      if (size >= 44) {
+        slot.setAttribute("data-corner", "pocket");
+        slot.style.width = size + "px";
+        slot.style.height = size + "px";
+        slot.style.top = "auto";
+        slot.style.left = "auto";
+        var cx = (best.left + best.right) / 2, cy = (best.top + best.bottom) / 2;
+        slot.style.right = Math.round(window.innerWidth - cx - size / 2) + "px";
+        slot.style.bottom = Math.round(window.innerHeight - cy - size / 2) + "px";
+        var reachX = Math.max(0, Math.min(30, Math.floor((best.w - size) / 2)));
+        var reachY = Math.max(0, Math.min(12, Math.floor((best.h - size - 10) / 2)));
+        if (mascot && btnEl && btnEl.parentElement === slot) {
+          /* a smaller pocket shrinks him one step, on whole device pixels */
+          var d = Math.min(window.devicePixelRatio || 1, 3);
+          var wanted = size >= fullSlot ? cellFor() : Math.max(1, Math.floor((size - 6) / (crop ? crop.h : 25) * d) / d);
+          if (mascot.cell !== wanted) mascot.setCell(wanted);
+          if (mascot._bounds) { mascot._bounds.x = reachX; mascot._bounds.y = reachY; }
+          else mascot._bounds = { x: reachX, y: reachY };
+          var cX = Math.max(-reachX, Math.min(reachX, mascot.pos.x));
+          var cY = Math.max(-reachY, Math.min(reachY, mascot.pos.y));
+          if (cX !== mascot.pos.x || cY !== mascot.pos.y) {
+            mascot.pos.x = cX; mascot.pos.y = cY; mascot.applyTransform();
+          }
+        }
+        return;
+      }
+      /* no pocket at all: the doors' right shoulder, full size, still */
+      var doorsTop = doorsEl ? doorsEl.getBoundingClientRect().top : window.innerHeight;
+      slot.setAttribute("data-corner", "above-doors");
+      slot.style.width = fullSlot + "px";
+      slot.style.height = fullSlot + "px";
+      slot.style.top = "auto";
+      slot.style.left = "auto";
+      slot.style.right = "12px";
+      slot.style.bottom = Math.max(4, Math.round(window.innerHeight - doorsTop + 6)) + "px";
+      if (mascot && btnEl && btnEl.parentElement === slot) {
+        if (mascot.cell !== cellFor()) mascot.setCell(cellFor());
+        if (mascot._bounds) { mascot._bounds.x = 0; mascot._bounds.y = 0; }
+        else mascot._bounds = { x: 0, y: 0 };
+        if (mascot.pos.x || mascot.pos.y) { mascot.pos.x = 0; mascot.pos.y = 0; mascot.applyTransform(); }
+      }
+      return;
+    }
     slot.setAttribute("data-corner", "bottom-right");
     slot.style.right = "10px";
     slot.style.bottom = "12px";
@@ -1233,27 +2189,59 @@
   }
 
   /* ---------- L16: the thermometer counts cells ---------- */
+  const THERMO_STEPS = 12;
   var fill = document.getElementById("thermoFill");
   var thermo = document.getElementById("thermo");
   var wasFire = false, fireFlipping = false;
   /* L16: twelve countable cells, sized to the room */
   function thermoCell() {
+    if (NEXT) return window.innerHeight / THERMO_STEPS;
     var cell = Math.max(24, Math.floor(window.innerHeight / 12));
     document.documentElement.style.setProperty("--thermo-cell", cell + "px");
     return cell;
   }
+  function readScrollTop() {
+    var blocksEl = document.querySelector(".blocks");
+    var barEl = document.querySelector(".bar");
+    if (!blocksEl) return 0;
+    if (isNextPhone()) return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    return Math.max(0, blocksEl.getBoundingClientRect().top + window.scrollY - (barEl ? barEl.offsetHeight : 0));
+  }
+  function nextThermoProgress() {
+    var readTop = readScrollTop();
+    if (isNextPhone()) {
+      thermo.setAttribute("data-progress-source", "transition");
+      return readTop > 0 ? Math.min(1, Math.max(0, window.scrollY / readTop)) : 0;
+    }
+    var readEnd = Math.max(readTop, document.documentElement.scrollHeight - window.innerHeight);
+    var readTravel = readEnd - readTop;
+    thermo.setAttribute("data-progress-source", "read");
+    if (window.scrollY <= readTop || readTravel <= 0) return 0;
+    return Math.min(1, Math.max(0, (window.scrollY - readTop) / readTravel));
+  }
   function onScroll() {
     if (document.body.classList.contains("is-booting")) return;
     var max = document.documentElement.scrollHeight - window.innerHeight;
-    var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    var p = NEXT ? nextThermoProgress()
+                 : (max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
     var cell = thermoCell();
     var px = Math.floor((p * window.innerHeight) / cell) * cell;
-    fill.style.height = px + "px";
-    var fire = p > 0.92;
+    var cells;
+    if (NEXT) {
+      cells = Math.min(THERMO_STEPS, Math.floor(p * THERMO_STEPS));
+      fill.style.height = (cells / THERMO_STEPS * 100) + "%";
+      thermo.setAttribute("data-step", String(cells));
+    } else {
+      fill.style.height = px + "px";
+      cells = Math.round(px / cell);
+    }
+    /* GP 2026-09-02: the phone read is the document's end, and the end is
+       ON FIRE — the fire pink with its one glow, exactly as LIVE. (The
+       agents had parked the phone rail on the brand pink; GP flagged it.) */
+    var fire = NEXT ? cells === THERMO_STEPS : p > 0.92;
     /* H1 (GP-ruled 2026-08-28): the climb plays the four canonical stages —
        cold gray, warm brand, hot pink, then the fire the top already had.
        inline color cleared at fire so the .is-fire rule (the one glow) wins. */
-    var cells = Math.round(px / cell);
     fill.style.backgroundColor = fire ? "" :
       (cells <= 3 ? "var(--qevr-muted-dark)" : cells <= 8 ? "var(--brand)" : "var(--qevr-pink)");
     if (fire && !wasFire) {
@@ -1275,8 +2263,16 @@
     }
     if (!fire) { fireFlipping = false; thermo.classList.remove("is-fire"); }
     wasFire = fire;
-    checkCorner();
-    avoidCompanionOverlap();
+    /* the read-active class must land before the corner check reads the
+       arrival's geometry — the fixed phone frame emits no follow-up scroll
+       event to correct a stale pass. While a pinch explores the page the
+       corner state freezes: reparenting the mascot mid-pinch shifts layout
+       and scroll anchoring would yank the finger's position. */
+    syncReadActive();
+    if (!(isNextPhone() && isPinchZoomed())) {
+      checkCorner();
+      avoidCompanionOverlap();
+    }
   }
 
   /* ---------- A13: he keeps São Paulo hours, for the whole world ---------- */
@@ -1331,6 +2327,10 @@
     var tag = document.getElementById("mascotTag");
     var signal = document.getElementById("arrivalSignal");
     var load = document.getElementById("bootBar");
+    if (NEXT) {
+      if (tag.parentElement !== signal) signal.appendChild(tag);
+      takeSignalSlot("error");
+    }
     tag.textContent = "ERRO";
     mascot.setFace("Dead", true);
     tag.classList.add("on");
@@ -1348,6 +2348,7 @@
         f++;
         if (f <= frames) { setTimeout(collapse, reduce ? 0 : 55); return; }
         /* gone. the network reloads him. */
+        if (NEXT) takeSignalSlot("loading");
         signal.classList.remove("is-ready");
         signal.classList.add("is-loading");
         var barFill = load.querySelector("i");
@@ -1372,6 +2373,7 @@
             pokeCount = 0;
             signal.classList.remove("is-loading");
             signal.classList.add("is-ready");
+            if (NEXT) releaseSignalSlot("loading");
           })();
         })();
       })();
@@ -1405,6 +2407,7 @@
       signal.classList.remove("is-charging");
       charge.classList.remove("on");
       chargeFill.style.width = "0";
+      if (NEXT) releaseSignalSlot("charge");
     }
     btn.addEventListener("pointerdown", function (e) {
       if (laddering) return;
@@ -1414,6 +2417,7 @@
         var t = (now || performance.now()) - holdStart;
         /* a quick poke never flashes the bar: the charge shows after 350ms of hold */
         if (t > 350) {
+          if (NEXT && signalTakeover !== "charge") takeSignalSlot("charge");
           signal.classList.add("is-charging");
           charge.classList.add("on");
           chargeFill.style.width = Math.min(100, ((t - 350) / 1650) * 100) + "%";
@@ -1454,6 +2458,23 @@
     if (!name) return;
     var line = (COPY.arrival.fromPattern || "{NOME} TE DEU ISSO.").replace("{NOME}", name.toUpperCase());
     document.getElementById("arrivalFrom").textContent = line;
+  }
+
+  var reducedBlinkTimer = 0;
+  function startReducedBlink() {
+    if (!reduce || !mascot || reducedBlinkTimer || !NEXT) return;
+    (function scheduleBlink() {
+      reducedBlinkTimer = setTimeout(function () {
+        reducedBlinkTimer = 0;
+        if (document.hidden || !mascot || laddering) { scheduleBlink(); return; }
+        var prior = mascot.face && mascot.face.name ? mascot.face.name : "Default";
+        mascot.setFace("Eyes Closed", true);
+        setTimeout(function () {
+          if (mascot && mascot.face && mascot.face.name === "Eyes Closed") mascot.setFace(prior, true);
+          scheduleBlink();
+        }, 110);
+      }, 4200);
+    })();
   }
 
   /* ---------- L25: the visible tab blinks, a hidden one never moves ---------- */
@@ -1538,6 +2559,7 @@
   }
 
   /* ---------- boot ---------- */
+  reserveArrivalMascot();
   drawAllCells();
 
   var inlineDeck = null;
@@ -1558,6 +2580,7 @@
     }
     syncTitles();
     buildDoors(); buildWorld(); buildPeople(); buildStances(); buildPoster(); buildGift();
+    syncHeaderDock(false);
     drawAllCells();
     unifyToggleHeadings();
     measureBay();
@@ -1568,7 +2591,10 @@
     var initialAnchor = location.hash ? document.getElementById(location.hash.slice(1)) : null;
     if (initialAnchor && initialAnchor.classList.contains("panel__head") && initialAnchor.id !== "regras") setOpen(initialAnchor.id, { instant: true });
     function settleInitialAnchor() {
-      if (initialAnchor) initialAnchor.scrollIntoView({ behavior: "auto", block: "start" });
+      if (!initialAnchor) return;
+      if (isNextPhone() && initialAnchor.classList.contains("panel__head")) scrollReadIntoFrame();
+      else initialAnchor.scrollIntoView({ behavior: "auto", block: "start" });
+      syncReadActive();
     }
     wireScrollCue();
     giftTag();
@@ -1582,6 +2608,7 @@
     mascot = new window.Qevr.Mascot(document.getElementById("mascotCanvas"), {
       host: btn, cell: cellFor(), face: "Default"
     });
+    releaseArrivalMascotReservation();
     wireHold(btn);
     placeMascot();
 
@@ -1594,10 +2621,12 @@
     if (reduce) {
       bootFill.style.width = "100%";
       document.body.classList.remove("is-booting");
+      onScroll();
       revealArrivalHint();
       settleInitialAnchor();
       mascot.setFace(hourFace(), true);
       mascot.start(boundsFor());
+      startReducedBlink();
     } else {
       /* start empty: he is not there yet */
       var savedRender = new Uint8Array(mascot.render);
@@ -1609,6 +2638,7 @@
         bootFill.style.width = Math.min(100, lp) + "%";
         if (lp < 100) { setTimeout(bootStep, 115); return; }
         document.body.classList.remove("is-booting");
+        onScroll();
         /* he builds in: cells arriving in stepped random chunks */
         var idx = [];
         for (var i = 0; i < savedRender.length; i++) if (savedRender[i]) idx.push(i);
@@ -1648,32 +2678,136 @@
   }).catch(function (err) { console.error("[qiqi] boot failed", err); });
 
   window.addEventListener("scroll", onScroll, { passive: true });
-  var rt;
+  /* The CSS frame reacts to dynamic browser chrome immediately; refit the
+     selected bay on the same rendering beat instead of waiting for the
+     heavier canvas/redraw debounce below. */
+  var phoneReadResizeFrame = 0;
+  function syncPhoneReadResize() {
+    if (isNextPhone() && isPinchZoomed()) {
+      if (!phoneZoomOwner) {
+        phoneZoomOwner = document.body.classList.contains("is-read-active") ? "read" : "arrival";
+      }
+      clearTimeout(pagerT);
+      return;
+    }
+    if (isNextPhone() && phoneZoomOwner) {
+      var zoomOwner = phoneZoomOwner;
+      phoneZoomOwner = null;
+      var zoomPageEnd = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      var zoomRead = zoomOwner === "read";
+      document.body.classList.toggle("is-read-active", zoomRead);
+      syncHeaderDock(zoomRead);
+      if (zoomRead) {
+        phoneReadPageEnd = zoomPageEnd;
+        fitOpenBay();
+        window.scrollTo(0, zoomPageEnd);
+      } else {
+        window.scrollTo(0, 0);
+      }
+      queueBayFit();
+      return;
+    }
+    if (!isNextPhone() || !document.body.classList.contains("is-read-active")) {
+      queueBayFit();
+      return;
+    }
+    var nextPageEnd = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    var stillOwnsRead = Math.abs(window.scrollY - nextPageEnd) <= 2
+      || (phoneReadPageEnd > 0 && Math.abs(window.scrollY - phoneReadPageEnd) <= 2)
+      || (nextPageEnd > 0 && window.scrollY >= nextPageEnd / 2);
+    /* A scroll event and a visual-viewport resize can be delivered in either
+       order. If the finger has already left the settled floor, that user
+       navigation wins; never let the stale body class pull it back down. */
+    if (!stillOwnsRead) {
+      syncReadActive();
+      queueBayFit();
+      schedulePageBoundary();
+      return;
+    }
+    phoneReadPageEnd = nextPageEnd;
+    /* Resize events can arrive while requestAnimationFrame is throttled (for
+       example, when browser chrome changes or a preview tab is momentarily in
+       the background). Land and fit synchronously first so the old page end
+       can never leave a visible gap; the queued frame is only a follow-up. */
+    fitOpenBay();
+    scrollReadIntoFrame();
+    queueBayFit();
+    if (phoneReadResizeFrame) cancelAnimationFrame(phoneReadResizeFrame);
+    phoneReadResizeFrame = requestAnimationFrame(function () {
+      phoneReadResizeFrame = 0;
+      /* The arrival and read heights both follow the viewport. Keep page two landed
+         when browser chrome or a responsive preview changes that height, so
+         the doors cannot fall below the new floor for even one settled frame. */
+      var framePageEnd = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (!document.body.classList.contains("is-read-active")
+          || (Math.abs(window.scrollY - framePageEnd) > 2
+              && Math.abs(window.scrollY - phoneReadPageEnd) > 2
+              && window.scrollY < framePageEnd / 2)) {
+        syncReadActive();
+        return;
+      }
+      phoneReadPageEnd = framePageEnd;
+      scrollReadIntoFrame();
+    });
+  }
+  window.addEventListener("resize", syncPhoneReadResize, { passive: true });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", syncPhoneReadResize, { passive: true });
+  var rt, lastPhoneNext = null;
   window.addEventListener("resize", function () {
+    /* The bay changes parent at the shared 720px topology boundary. Move it
+       on the resize beat so there is no squeezed intermediate column, and
+       preserve focus while the same live nodes are reparented. */
+    var immediateFocus = document.activeElement;
+    /* D2: crossing the phone boundary swaps the section's form (accordion
+       on phones, every line on desktop) */
+    var nowPhoneNext = isNextPhone();
+    if (lastPhoneNext !== null && nowPhoneNext !== lastPhoneNext && activeSection) renderSection(activeSection, { instant: true });
+    lastPhoneNext = nowPhoneNext;
+    placeBayAndStamp();
+    if (immediateFocus && immediateFocus.isConnected && immediateFocus !== document.body) {
+      immediateFocus.focus({ preventScroll: true });
+    }
     clearTimeout(rt);
     rt = setTimeout(function () {
+      var openBayState = snapshotOpenBay();
       [].forEach.call(document.querySelectorAll(".panel__head canvas"), function (c) { c.removeAttribute("data-force-cell"); });
-      closeBay();
-      drawAllCells(); unifyToggleHeadings(); measureBay(); placeBayAndStamp(); paintStamp(); onScroll(); placeMascot(); syncJump();
+      drawAllCells(); unifyToggleHeadings(); measureBay(); placeBayAndStamp(); restoreOpenBay(openBayState); paintStamp(); onScroll(); placeMascot(); syncJump();
     }, 150);
   });
 
-  /* GP 2026-08-28: two pages on phones. A stop inside the boundary zone
-     between him and the read lands fully on one of them — hard cut, per
-     the motion law. Inside the read the finger rules; the pager never
-     fires there. */
+  /* GP 2026-08-31: there are only two pages, never an empty transition
+     frame. CSS keeps the outgoing page complete while this short, hard pager
+     resolves the boundary. PROPOSED settles faster; LIVE keeps its legacy
+     phone-only beat. Once a desktop read has landed, it scrolls freely. */
   var pagerT = 0;
-  window.addEventListener("scroll", function () {
-    if (!isSmall() || document.body.classList.contains("is-booting")) return;
+  function pageBoundary() {
+    var blocksEl = document.querySelector(".blocks");
+    var barEl = document.querySelector(".bar");
+    if (!blocksEl || !barEl) return null;
+    return {
+      readTop: isNextPhone()
+        ? Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+        : Math.max(0, Math.round(blocksEl.getBoundingClientRect().top + window.scrollY - barEl.offsetHeight)),
+      y: window.scrollY
+    };
+  }
+  function schedulePageBoundary(delay) {
     clearTimeout(pagerT);
     pagerT = setTimeout(function () {
-      var blocksEl = document.querySelector(".blocks");
-      var barEl = document.querySelector(".bar");
-      if (!blocksEl || !barEl) return;
-      var readTop = Math.max(0, Math.round(blocksEl.getBoundingClientRect().top + window.scrollY - barEl.offsetHeight));
-      var y = window.scrollY;
-      if (y > 1 && y < readTop - 1) window.scrollTo(0, y < readTop / 2 ? 0 : readTop);
-    }, 150);
+      var edge = pageBoundary();
+      if (!edge) return;
+      if (edge.y > 1 && edge.y < edge.readTop - 1) {
+        window.scrollTo(0, edge.y < edge.readTop / 2 ? 0 : edge.readTop);
+      }
+    }, delay == null ? (NEXT ? 32 : 150) : delay);
+  }
+  window.addEventListener("scroll", function () {
+    if ((!NEXT && !isSmall()) || document.body.classList.contains("is-booting")) return;
+    if (isNextPhone() && isPinchZoomed()) {
+      clearTimeout(pagerT);
+      return;
+    }
+    schedulePageBoundary(NEXT ? 32 : 150);
   }, { passive: true });
 })();
 </script>

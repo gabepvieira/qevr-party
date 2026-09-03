@@ -56,6 +56,26 @@
   --chrome: var(--bar);
   --rail: 14px;
   --thermo-cell: 60px;
+
+  /* Shared layer names preserve the live stack. The companion's only LIVE
+     change is the ruled repair above the doors. */
+  --z-rail: 55;
+  --z-content: 1;
+  --z-header: 60;
+  --z-doors: 56;
+  --z-poster: 90;
+  --z-companion: 57;
+}
+
+/* The proposed page uses the complete ruled ladder. Keep this as tokens so
+   no component invents a private stacking number. */
+html.is-next {
+  --z-rail: 10;
+  --z-content: 20;
+  --z-header: 30;
+  --z-doors: 40;
+  --z-poster: 50;
+  --z-companion: 60;
 }
 
 html[data-mode="party"] { --brand: var(--qevr-pink); --accent: var(--qevr-pink); }
@@ -88,8 +108,8 @@ body {
 /* ---------- bar ---------- */
 
 .bar {
-  position: fixed; left: 0; right: 0; top: 0; height: var(--bar); z-index: 60;
-  padding: env(safe-area-inset-top, 0px) 0 0 12px;
+  position: fixed; left: 0; right: 0; top: 0; height: var(--bar); z-index: var(--z-header);
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0 max(12px, env(safe-area-inset-left, 0px));
   background: var(--ground);
   border-bottom: var(--rule) solid var(--qevr-hair);
 }
@@ -116,7 +136,7 @@ body {
    site green shows a pink block. the old stacked boxes at the right edge
    (GP, 2026-08-27). */
 .switches {
-  position: fixed; top: var(--bar); right: 0; z-index: 59;
+  position: fixed; top: var(--bar); right: 0; z-index: calc(var(--z-header) - 1);
   display: flex; flex-direction: column;
   background: var(--ground); padding: 8px 0 8px 8px;
 }
@@ -135,7 +155,7 @@ body {
 
 /* ---------- thermometer ---------- */
 
-.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: 55; background: transparent; }
+.thermo { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: var(--z-rail); background: transparent; }
 .thermo__fill {
   position: absolute; left: 0; right: 0; top: 0; height: 0;
   background-color: var(--brand);
@@ -220,6 +240,11 @@ main { padding-top: var(--chrome); }
 .panel__bay { position: relative; padding: clamp(16px, 2.2vw, 28px); min-width: 0; display: flex; flex-direction: column; }
 .panel__bay[hidden] { display: none; }
 .panel__bay > * { flex: none; }
+/* These wrappers are layout-neutral everywhere except the fitted PROPOSED
+   phone frame. LIVE and desktop therefore keep their original geometry. */
+.panel__bay-slot { display: contents; }
+.panel__bay-fit { display: contents; }
+.panel__bay-fit > * { flex: none; }
 @media (min-width: 721px) {
   /* The desktop grid starts on the read's top rule. Heading surfaces use
      the whole left cell while their canvases stay on the shared text line. */
@@ -291,7 +316,7 @@ main { padding-top: var(--chrome); }
 /* ---------- companion ---------- */
 
 /* a true corner: small zone, so he never sits on the reading (soul: never covers content) */
-.companion { position: fixed; right: clamp(8px, 1.6vw, 22px); bottom: clamp(8px, 1.6vh, 22px); z-index: 50; width: 96px; height: 96px; display: grid; place-items: center; pointer-events: none; }
+.companion { position: fixed; right: clamp(8px, 1.6vw, 22px); bottom: clamp(8px, 1.6vh, 22px); z-index: var(--z-companion); width: 96px; height: 96px; display: grid; place-items: center; pointer-events: none; }
 .companion .mascot { pointer-events: auto; }
 .mascot { background: transparent; border: 0; padding: 0; cursor: pointer; display: block; will-change: transform; }
 .mascot canvas { display: block; image-rendering: pixelated; }
@@ -351,7 +376,7 @@ button, a, .mascot canvas { touch-action: manipulation; -webkit-tap-highlight-co
      app. small zone, small cell, and only he himself takes the tap */
   /* GP 2026-08-28: bottom-right, 15% bigger */
   .companion { width: 74px; height: 74px; right: 10px; bottom: 12px; }
-  .bar { padding-inline: 0; }
+  .bar { padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px); }
   .switches { background: transparent; }
   .bar__in { gap: 0; max-width: none; }
   .bar__mark { flex: 0 0 64px; width: 64px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
@@ -420,10 +445,11 @@ button, a, .mascot canvas { touch-action: manipulation; -webkit-tap-highlight-co
 .arrival__from { font-size: 10px; letter-spacing: .2em; color: var(--qevr-muted); text-align: center; }
 .arrival__from:empty { display: none; }
 /* the quick loading bar of the entrance ritual */
-.arrival__loading { width: min(46vw, 220px); height: 8px; border: var(--rule) solid var(--qevr-hair); }
+.arrival__loading { width: 100%; height: 8px; border: var(--rule) solid var(--qevr-hair); }
 .arrival__loading i { display: block; height: 100%; width: 0; background: var(--brand); }
-.arrival__signal { min-height: 18px; display: grid; place-items: center; }
+.arrival__signal { width: min(80vw, 260px); height: 20px; display: grid; place-items: center; }
 .arrival__signal > * { grid-area: 1 / 1; }
+.arrival__signal .arrival__hint { white-space: nowrap; }
 .arrival__signal .arrival__hint { visibility: hidden; }
 .arrival__signal.is-ready .arrival__hint { visibility: visible; }
 .arrival__signal.is-ready .arrival__loading { display: none; }
@@ -436,6 +462,8 @@ body.is-booting .arrival__mascot > :not(.arrival__signal),
 body.is-booting .arrival__from,
 body.is-booting .arrival__color,
 body.is-booting .arrival__floor { visibility: hidden; }
+body.is-booting .arrival__question:empty::before { content: "\00a0"; }
+body.is-booting .arrival__color-controls span:empty::before { content: "\00a0"; }
 body.is-booting [data-qevr-cascade] { display: none !important; }
 /* the boot bar loads IN THE SLOT above where he builds — one bar, one home,
    never a second centered copy (GP, 2026-08-27) */
@@ -474,7 +502,9 @@ body.is-booting [data-qevr-cascade] { display: none !important; }
 .doors {
   width: 100vw; margin-top: 0;
   margin-left: calc(50% - 50vw - 7px);
-  position: relative; z-index: 56;
+  position: relative; z-index: var(--z-doors);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--ground);
   border-top: var(--rule) solid var(--qevr-hair);
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -500,8 +530,15 @@ body.is-booting [data-qevr-cascade] { display: none !important; }
 
 /* ---------- AS REGRAS: the poster pop ---------- */
 .poster {
-  position: fixed; inset: 0; z-index: 90; background: rgb(9 9 11 / 88%); display: none;
+  position: fixed; inset: 0; z-index: var(--z-poster); background: rgb(9 9 11 / 88%); display: none;
   overflow: auto; padding: clamp(12px, 3vh, 28px); place-items: center;
+}
+
+html.is-next .arrival,
+html.is-next #panel,
+html.is-next .stampband {
+  position: relative;
+  z-index: var(--z-content);
 }
 .poster.on { display: grid; }
 .poster__in { width: min(100%, 760px); display: grid; gap: 8px; }

@@ -71,13 +71,31 @@
 .stage__controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .stage__controls .ctlrow:last-child { grid-column: 1 / -1; }
 .ctlrow { display: flex; width: 100%; }
-.stage__controls .ctl { min-width: 0; min-height: 44px; padding: 9px 8px; }
+.stage__controls .ctl { min-width: 0; min-height: 44px; padding: 9px 8px; white-space: nowrap; }
 
 .stage__meta {
   padding-top: 8px;
   color: var(--qevr-muted); font-size: 9px; line-height: 1.4; letter-spacing: .1em;
 }
 .stage__meta-title { display: block; color: var(--brand); font-weight: 700; letter-spacing: .2em; margin-bottom: 3px; }
+
+/* Round 2 preview: this room has one destination-language action. Dock it in
+   a reserved header slot so the old hanging switch cannot cover a face chip. */
+html.is-next .bar__nav { margin-right: 44px; }
+html.is-next .frame { overflow: hidden; }
+html.is-next .switches {
+  top: env(safe-area-inset-top, 0px);
+  height: calc(var(--bar) - env(safe-area-inset-top, 0px));
+  padding: 0; flex-direction: row; z-index: var(--z-header);
+}
+html.is-next .switches button {
+  width: 44px; height: 100%; min-height: 44px; padding: 0;
+  border-top: 0; border-bottom: 0;
+}
+
+@media (min-width: 721px) and (max-width: 1072px) {
+  .stage__controls { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ---------- phone: two swipeable strips, the playground between them,
      and the page itself never scrolls ---------- */
@@ -95,6 +113,16 @@
   }
   .strip::-webkit-scrollbar { display: none; }
   .strip .face { flex: none; width: var(--chip-w); height: 100%; }
+  .strip--bottom {
+    height: calc(var(--strip-h) + env(safe-area-inset-bottom, 0px));
+  }
+  .strip--bottom .face {
+    grid-template-rows: minmax(0, 1fr) calc(var(--face-name) + env(safe-area-inset-bottom, 0px));
+  }
+  .strip--bottom .face__name {
+    height: calc(var(--face-name) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 
   .plate {
     position: static; flex: 1 1 auto; min-height: 0;
